@@ -1,0 +1,427 @@
+$$ trash[0] => main.cpp
+    $$ Codigo para crear objetos "TerminoAlgebraico":
+        /*
+        setConsoleColor('v');
+        std::cout << "Bienvenido a la calculadora de Algebra. A continuacion, agrega los terminos algebracios que gustes:\n\n";
+
+        std::vector<TerminoAlgebraico> terminosAlgebraicos;
+        char addTermino = ' ';
+        while(addTermino != 'n') {
+            setConsoleColor('r');
+            std::cout << "Agregando nuevo termino algebraico...\n";
+            setConsoleColor('c');
+
+            //Se obtiene el coeficiente
+            double coeficiente;
+            std::cout << "Dame el coeficiente del termino algebraico: ";
+            std::cin >> coeficiente;
+
+            setConsoleColor('a');
+            std::cout << "Se ah ingresado el coeficiente: " << coeficiente << "\n\n";
+            setConsoleColor('c');
+
+            //Se obtienen las literales
+            std::vector<char> literales;
+            char nuevaLiteral = ' ';
+
+            std::cout << "Dame las literales del termino algebraico ('-' para terminar):\n";
+            while(nuevaLiteral != '-') {
+                std::cout << "Nueva literal: ";
+                std::cin >> nuevaLiteral;
+
+                bool letraMayuscula = (int)nuevaLiteral > (int)'A' -1 && (int)nuevaLiteral < (int)'Z' +1;
+                bool letraMinuscula = (int)nuevaLiteral > (int)'a' -1 && (int)nuevaLiteral < (int)'z' +1;
+
+                if(nuevaLiteral != '-' && (letraMayuscula || letraMinuscula))
+                    literales.push_back(nuevaLiteral);
+
+                if(!letraMayuscula && !letraMinuscula && nuevaLiteral != '-')
+                    std::cout << "Solo puedes ingresar letras!\n";
+            }
+
+            setConsoleColor('a');
+            std::cout << "\nSe han ingresado las literales: ";
+            for(char lit : literales)
+                std::cout << lit << " ";
+
+            std::cout << "\nNumero de literales: " << literales.size() << "\n\n";
+            setConsoleColor('c');
+
+            //Se obtienen los coeficientes
+            std::vector<double> exponentes;
+            double nuevoExponente;
+            bool addExponente = true;
+            int litN = 0;
+
+            std::cout << "Introduce los coeficientes de las literales:\n";
+            while(addExponente && litN < literales.size()) {
+                std::cout << "Exponente de '" << literales[litN] << "': ";
+                std::cin >> nuevoExponente;
+
+                exponentes.push_back(nuevoExponente);
+
+                /*
+                if(litN < literales.size()) {
+                    std::cout << "Desea agregar un nuevo exponente (s/n)? ";
+                    char resp;
+                    std::cin >> resp;
+                    addExponente = resp != 'n';
+                }
+                //
+
+                litN++;
+            }
+
+            setConsoleColor('a');
+            std::cout << "\nExponentes agregados:\n";
+            for(int i = 0; i < literales.size(); i++) {
+                std::cout << "\t" << i << ". " << literales[i] << "^" << exponentes[i] << "\n";
+            }
+
+            setConsoleColor('c');
+
+            TerminoAlgebraico nuevoTermino = TerminoAlgebraico(coeficiente, literales, exponentes);
+            terminosAlgebraicos.push_back(nuevoTermino);
+
+            setConsoleColor('r');
+            std::cout << "\nDesea agregar un nuevo termino algebraico (s/n)? ";
+            std::cin >> addTermino;
+            addExponente = addTermino != 'n';
+        }
+
+        setConsoleColor('v');
+        std::cout << "\n\nTerminos algebraicos agregados:\n";
+
+        setConsoleColor('a');
+        for(auto terminoIndex : terminosAlgebraicos) {
+            std::cout << "\tTermino: ";
+            terminoIndex.imprimir();
+        }
+
+        */
+        //debugMultiplicacion(multiplicacion);
+
+
+$$ trash[1] => console.cpp
+    $$ Codigo para obtener coeficiente double de strings
+        /*
+                numEntero = 0;
+                neg = firstChar == '-' ? -1 : 1;
+
+                //Se determina si existe un punto decimal
+                //y se busca el limite de los numeros
+                size_t i = neg > 1 ? 0 : 1, j;
+                bool puntoDecimal = false;
+                while(i < expresion.length() && !puntoDecimal && charEsNumero(expresion[i])) {
+                    puntoDecimal = expresion[i] == '.';
+                    i++;
+                }
+
+                const size_t entLimit = i;
+                for(j = entLimit -1, i = neg > 0 ? 0 : 1; i < entLimit; i++, j--) {
+                    int num = (int)strCoeficiente[i] -48;
+                    if(num != 0) 
+                        numEntero += num * pow(10.0f, j);
+                }
+
+                if(neg < 0)
+                    numEntero /= 10;
+
+                i = entLimit +1;
+                while(i < expresion.length() && charEsNumero(expresion[i]))
+                    i++;
+
+                const size_t decLimit = i;
+                numDecimales = 0;
+                for(double negExp = -1, i = entLimit +1; i < decLimit; i++, negExp--) {
+                    double num = (int)expresion[i] -48;
+                    numDecimales += (double)num *pow(10.0, negExp);
+                }
+        */
+
+$$ trash[2] => console.cpp
+    $$ Codigo para obtener un mapa de variables 
+        // if(strVariables[index +1] == '^' && charEsNumero(strVariables[index +2])){
+        //     std::string exp = "";
+        //     std::size_t expIndex = index;
+        //     char charExp = strVariables[expIndex];
+
+        //     exp.push_back(strVariables[index +2]);
+
+        //     variables[charIndex] = std::stod(exp);
+        //     index += 3;
+        // } else {
+        //     variables[charIndex] = 0;
+        //     index++;
+        // }
+
+
+$$ trash[3] => main.cpp
+    $$ Ni idea que es, solo se que es basura
+        // while(inrange_open && inrange_close) {
+        //     // Se establecen las condiciones del bucle
+        //     inrange_close = index_close < size_vector;
+        //     inrange_open = index_open < size_vector;
+
+        //     // Se obtiene la posicion de cada parentesis dentro de la string
+        //     pos_open = openPositions[index_open];
+        //     pos_close = closePositions[index_close];
+
+        //     if(pos_close > pos_open) {
+        //         parCount++;
+        //         if(inrange_close) 
+        //             index_close++;
+                
+        //         continue;
+        //     }
+            
+        //     index_close = parCount;
+        //     pos_close = closePositions[index_close -1];
+
+        //     in_parentesis.assign(str, pos_open, pos_close -pos_open);
+        //     strVector.push_back(in_parentesis);
+
+        //     parCount--;
+        //     break; 
+        // }
+
+        /*
+        openIndex = closeIndex = parentesisSize;
+        while(openIndex >= 0 && closeIndex >= 0) {
+            openPos = openPositions[openIndex];
+            closePos = closePositions[closeIndex];
+            
+            bool inRange = closeIndex >= 0 && openIndex >= 0;
+            bool noZero = closeIndex != 0 && openIndex != 0;
+            if(!inRange)
+                break;
+            
+            if(openPos < closePos) {
+                closeIndex--;
+                parCount++;
+                
+                continue;
+            }
+            
+            if(parCount > 0) {
+                newStrParentesis.assign(str, openIndex +1, closeIndex -1);
+                strVector.push_back(newStrParentesis);
+                newStrParentesis.clear();
+                
+                parCount--;
+            } else openIndex--;
+        }
+        */
+
+
+$$ trash[4] => main.cpp
+    $$ Este si que es, es debug lol
+        // Debug
+        // uti::setConsoleColor(C_BLUE);
+        // for(std::size_t i = 0; i < openPositions.size(); i++) {
+        //     std::cout << "    openVector[" << i << "] = ";
+            
+        //     if(openPositions[i] != snpos)
+        //         std::cout << openPositions[i] << '\n';
+        //     else 
+        //         std::cout << "npos\n";
+        // }
+        
+        // std::cout << '\n';
+        // for(std::size_t i = 0; i < closePositions.size(); i++) {
+        //     std::cout << "    closeVector[" << i << "] = ";
+            
+        //     if(closePositions[i] != snpos)
+        //         std::cout << closePositions[i] << '\n';
+        //     else 
+        //         std::cout << "npos\n";
+        // }
+
+
+$$ trash[5] => algebra.cpp
+    $$ Solo se que ya es obsoleta por completo (y por mucho)
+        //                               //
+        //                               //
+        //      DEFICINIÓN ANTERIOR      //
+        //        PRONTO OBSOLETA        //
+        //                               //
+        //                               //
+
+        // void TerminoAlgebraico::imprimir(void) {
+        //     if(vExponentes.size() == vLiterales.size()) {
+        //         std::cout << coeficiente;
+
+        //         for(std::size_t i = 0; i < vExponentes.size(); i++) {
+        //             std::cout << vLiterales[i];
+                    
+        //             if(vExponentes[i] != 1)
+        //                 std::cout << "^" << vExponentes[i];
+        //         }
+        //     } else 
+        //         std::cout << "error";
+
+        //     std::cout << "\n";
+        // }
+
+        // void TerminoAlgebraico::imprimir_vExponentes(void) {
+        //     for(const auto& exp : vExponentes)
+        //         std::cout << exp << ' ';
+
+        //     std::cout << '\n';
+        // }
+
+        // void TerminoAlgebraico::imprimir_vLiterales(void) {
+        //     for(const auto& exp : vLiterales) 
+        //         std::cout << exp << ' ';
+
+        //     std::cout << '\n';
+        // }
+
+        // void TerminoAlgebraico::arreglarOrdenAlfabetico(void) {
+        //     std::vector<int> listaNums;
+        //     std::vector<char> nuevoOrden;
+
+        //     //Guarda el vector existente en un nuevo vector tipo int
+        //     for(char lit : vLiterales) {
+        //         listaNums.push_back((int)lit);
+        //     } std::cout << "\n";
+
+        //     //Ordena la lista por orden alfabetico
+        //     bool desordenado = true;
+        //     while(!listaOrdenada(listaNums))
+        //         for(std::size_t i = 0, j = 1; j < listaNums.size(); i++, j++)
+        //             if(listaNums[i] > listaNums[j]) {
+        //                 int tempChar = listaNums[j];
+        //                 listaNums[j] = listaNums[i];
+        //                 listaNums[i] = tempChar;
+
+        //                 double tempExp = vExponentes[j];
+        //                 vExponentes[j] = vExponentes[i];
+        //                 vExponentes[i] = tempExp;
+
+        //                 std::cout << tempExp << " ";
+        //             }
+
+        //     //Guarda nuevamente la lista en caracteres char
+        //     for(int num : listaNums)
+        //         nuevoOrden.push_back((char)num);
+
+        //     vLiterales.swap(nuevoOrden);
+        // }
+
+
+        // //Constructores
+        // TerminoAlgebraico::TerminoAlgebraico(double coef, std::vector<char> lit = {}, std::vector<double> exp = {}) {
+        //     coeficiente = coef;
+        //     vLiterales = lit;
+        //     vExponentes = exp;
+
+        //     //Añade los exponentes en caso de no contar con las literales necesarias
+        //     while(vLiterales.size() > vExponentes.size())
+        //         vExponentes.push_back(1);
+
+        //     //Remueve los exponentes sobranes
+        //     while(vExponentes.size() > vLiterales.size())
+        //         vExponentes.pop_back();
+
+        //     //Ordena alfabeticamente las literales asignadas
+        //     arreglarOrdenAlfabetico();
+        // }
+
+        // TerminoAlgebraico::TerminoAlgebraico(double coef) {
+        //     coeficiente = coef;
+        // }
+
+        // TerminoAlgebraico::TerminoAlgebraico(double coef, std::vector<char> lit) {
+        //     coeficiente = coef;
+        //     vLiterales = lit;
+        //     vExponentes = {};
+
+        //     while(vLiterales.size() > vExponentes.size())
+        //         vExponentes.push_back(1);
+
+        //     arreglarOrdenAlfabetico();
+        // }
+
+        // TerminoAlgebraico::TerminoAlgebraico(std::vector<char> lit) {
+        //     vLiterales = lit;
+
+        //     while(vLiterales.size() > vExponentes.size())
+        //         vExponentes.push_back(1);
+
+        //     arreglarOrdenAlfabetico();
+        // }
+
+        // TerminoAlgebraico::TerminoAlgebraico(std::vector<char> lit, std::vector<double> exp) {
+        //     vLiterales = lit;
+        //     vExponentes = exp;
+
+        //     arreglarOrdenAlfabetico();
+        // }
+
+        // TerminoAlgebraico::TerminoAlgebraico() {
+        //     coeficiente = 0;
+        //     vLiterales = {}; 
+        //     vExponentes = {};
+        // }
+
+        // #pragma endregion
+        // #pragma region FUNC_DEF
+        // bool aptoSumaAlgebraica(const TerminoAlgebraico termino1, const TerminoAlgebraico termino2) {
+        //     bool bLiteral = false, bExponente = false;
+
+        //     if(termino1.vLiterales.size() == termino2.vLiterales.size())
+        //         for(std::size_t i = 0; i < termino1.vLiterales.size(); i++) {
+        //             bLiteral = termino1.vLiterales[i] == termino2.vLiterales[i];
+        //             bExponente = termino1.vExponentes[i] == termino2.vExponentes[i];
+
+        //             if(!bLiteral || !bExponente) 
+        //                 break;
+        //         }
+
+        //     if(!bLiteral)
+        //         std::cout << "error: literales no iguales\n";
+
+        //     if(!bExponente)
+        //         std::cout << "error: exponentes no iguales\n";
+
+        //     return bLiteral && bExponente;
+        // }
+
+        // //Aqui no importa el orden
+        // void sumaAlgebraica(TerminoAlgebraico& termino1, const TerminoAlgebraico termino2) {
+        //     if(aptoSumaAlgebraica(termino1, termino2)) {
+        //         double suma = termino1.coeficiente + termino2.coeficiente;
+        //         termino1.coeficiente = suma;
+
+        //         //Codigo debug (cualquier cosa activalo lol)
+        //         //std::cout << "Coeficiente resultante: " << suma << std::endl;
+        //     } else {
+        //         std::cout << "error\n";
+        //     }
+        // }
+
+        // //Aqui si importa el orden
+        // void restaAlgebraica(TerminoAlgebraico& termino1, TerminoAlgebraico termino2) {
+        //     termino2.coeficiente *= -1;
+        //     sumaAlgebraica(termino1, termino2);
+        // }
+
+        // void multiplicacionAlgebraica(TerminoAlgebraico& termino1, const TerminoAlgebraico termino2) {
+        //     termino1.coeficiente = termino1.coeficiente * termino2.coeficiente;
+
+        //     std::size_t i, j;
+
+        //     //Parte del codigo que suma los exponentes de las variables iguales
+        //     for(i = 0; i < termino1.vLiterales.size(); i++) {
+        //         for(j = 0; j < termino2.vLiterales.size(); j++) {
+        //             if(termino1.vLiterales[i] == termino2.vLiterales[j]) {
+        //                 termino1.vExponentes[i] += termino2.vExponentes[j];
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
+
+
+$$ trash[6] => 
