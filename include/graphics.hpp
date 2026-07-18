@@ -161,7 +161,7 @@ namespace render {
         AxisInfo(SDL_FPoint origen, int line_size);
     };
 
-    void render::renderTriangle(const SDL_FPoint origin, const float triangle_width, const float triangle_height);
+    void renderTriangle(const SDL_FPoint origin, const float triangle_width, const float triangle_height);
 
     /**
      *  Dibuja una linea con un grosor en específico.
