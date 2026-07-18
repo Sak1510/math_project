@@ -10,8 +10,8 @@ float sun_mass = 5.245e16f;
 bool listo = true;
 SDL_FPoint earth_position = {};
 SDL_FColor earth_color = {0.0f, 0.0f, 0.4687f};
-float earth_radius = 8.0f;
-float earth_mass = 2000.0f;
+float earth_radius = 40.0f;
+float earth_mass = 3000.0f;
 
 float sun_earth_distance_cuadratic; 
 
@@ -33,8 +33,8 @@ void physics::pmain::solar_system(render::Graph_Window &GW_Window) {
     render::renderAxis(GW_Window, origin, {255, 255, 255, SDL_ALPHA_OPAQUE});   
     render::drawBigPoint(GW_Window.renderer, origin_point.x, origin_point.y, sun_radius, 50, sun_color);
     render::drawBigPoint(GW_Window.renderer, earth_position.x, earth_position.y, earth_radius, 25, earth_color);
-    earth_vel.drawVector(GW_Window.renderer, earth_position, false);
-    earth_aceleration.drawVector(GW_Window.renderer, earth_position, false);
+    //earth_vel.drawVector(GW_Window.renderer, earth_position, false);
+    //earth_aceleration.drawVector(GW_Window.renderer, earth_position, false);
 
     // physics::Vector mearth_vel = earth_vel;
     // mearth_vel.drawVector(GW_Window.renderer, earth_position, false);

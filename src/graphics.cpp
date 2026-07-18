@@ -2,8 +2,6 @@
 #define NaN 0.0f / 0.0f
 
 #pragma region namespace render
-
-
 #pragma region Clases Propias
 void render::Graph_Window::printWidth(void) {
     std::cout << "width: " << width << "\n";
@@ -59,6 +57,40 @@ render::AxisInfo::AxisInfo(SDL_FPoint origen, int line_size) {
     this->origen = origen;
     this->line_size = line_size;
 }
+
+render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, CoordSystem coord_type) {
+    this->origin = origin;
+    this->GW_Window = GW_Window;
+    this->coord_type = coord_type;
+}
+
+render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, CoordSystem coord_type, float rotation, float scale) {
+    this->origin = origin;
+    this->GW_Window = GW_Window;
+    this->coord_type = coord_type;
+    this->rotation = rotation;
+    this->scale = scale;
+}
+
+void render::Axis_Coord_System::renderAxisX() {
+    if(!axis_x_info.render)
+        return;
+
+    
+}
+
+void render::Axis_Coord_System::render(bool on) {
+    if(!on)
+        return;
+
+    
+}
+
+
+
+
+
+
 #pragma endregion
 
 #pragma region Dibujado de ejes
@@ -112,6 +144,10 @@ void render::renderGrosorLine(SDL_Renderer *renderer, SDL_FPoint point1, SDL_FPo
         default:
             std::cout << "Creo se te olvido algo yo q se\n";
     }
+}
+
+void render::renderTriangle(const SDL_FPoint origin, const float triangle_width, const float triangle_height) {
+
 }
 
 #pragma region Eje X

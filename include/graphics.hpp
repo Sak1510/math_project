@@ -36,6 +36,15 @@ namespace render {
         Graph_Window(SDL_Window *window, SDL_Renderer *renderer);
     };
 
+    class MouseEvents {
+    public:
+        SDL_MouseButtonEvent button;
+        SDL_MouseMotionEvent motion;
+        SDL_MouseWheelEvent wheel;
+    
+        MouseEvents(SDL_MouseButtonEvent &button_event, SDL_MouseMotionEvent &motion_event, SDL_MouseWheelEvent &wheel_event);
+    };
+    
     enum AxisSigne {
         neg = -1,
         pos = 1
@@ -50,6 +59,39 @@ namespace render {
         cartesian,
         polar
     };
+
+    typedef struct cartesian_axis_info {
+        bool    render = true;
+        bool    arrow = true;
+        int     mask[3] = {1, 2, 5};
+        float   scale = 1.0f;
+        float   line_space = SPACE_AXIS_MEDIA_SPACE;       
+    } cartesian_axis_info;
+
+    // Sistema de coordenadas como objeto base de todo el programa
+    class Axis_Coord_System {
+    private:
+        void renderAxisX(void);
+        void renderAxisY(void);
+
+    public:
+        SDL_FPoint origin;
+        float rotation = 0.0f;
+        float scale = 1.0f;
+        Graph_Window GW_Window;
+        CoordSystem coord_type;
+
+        cartesian_axis_info axis_x_info;
+        cartesian_axis_info axis_y_info;
+
+        Axis_Coord_System(void);
+        Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, CoordSystem coord_type);
+        Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, CoordSystem coord_type, float rotation, float scale);
+    
+        void render(bool on);
+    };
+
+
 
     class AxisInfo {
     private:
@@ -119,15 +161,7 @@ namespace render {
         AxisInfo(SDL_FPoint origen, int line_size);
     };
 
-
-    class MouseEvents {
-    public:
-        SDL_MouseButtonEvent button;
-        SDL_MouseMotionEvent motion;
-        SDL_MouseWheelEvent wheel;
-    
-        MouseEvents(SDL_MouseButtonEvent &button_event, SDL_MouseMotionEvent &motion_event, SDL_MouseWheelEvent &wheel_event);
-    };
+    void render::renderTriangle(const SDL_FPoint origin, const float triangle_width, const float triangle_height);
 
     /**
      *  Dibuja una linea con un grosor en específico.

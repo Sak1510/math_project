@@ -29,11 +29,13 @@ SDL_FPoint origen = {
     WINDOW_HEIGHT / 2
 };
 
+
 std::string begin_name = "Esto nunca lo vas a ver en el ejecutable ajsdjasdasjdnasjdasd";
 render::AxisInfo axis_info(origen, 8);
 ImVec2 edit_size = {0, 0};
 bool menu_on = false;
 menu::sim seleccion = menu::sim::sistema_solar;
+
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
@@ -136,6 +138,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         switch(seleccion) {
             case menu::sim::graficadora_2D:
                 begin_name = "Graficadora 2D!";
+                
 
                 // Renderiza los ejes coordenados del plano cartesiano
                 render::renderAxis(GW_Window, axis_info);
