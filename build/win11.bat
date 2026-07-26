@@ -21,7 +21,7 @@ echo.
 :: 2. Recolectar archivos fuente (YA estando en la raíz)
 :: ------------------------------------------------------------------
 set "CPP_FILES="
-for %%f in (src\*.cpp src\physics\*.cpp) do (
+for %%f in (src\*.cpp src\physics\*.cpp src\graphing_calculator\*.cpp) do (
     if exist %%f set "CPP_FILES=!CPP_FILES! %%f"
 )
 

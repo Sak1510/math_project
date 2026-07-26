@@ -20,21 +20,24 @@ static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 SDL_Event *globalEvent = NULL;
 
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 900
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 700
 
 // Variables y objetos globales de los menus y funciones.
-SDL_FPoint origen = {
-    WINDOW_WIDTH / 2,
-    WINDOW_HEIGHT / 2
+render::Axis_Coord_System coord_system = render::Axis_Coord_System();
+ImVec2 edit_size[10] = {
+    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
 };
 
+ImVec2 edit_pos[10] = {
+    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
+};
 
 std::string begin_name = "Esto nunca lo vas a ver en el ejecutable ajsdjasdasjdnasjdasd";
-render::AxisInfo axis_info(origen, 8);
-ImVec2 edit_size = {0, 0};
-bool menu_on = false;
-menu::sim seleccion = menu::sim::sistema_solar;
+menu::sim seleccion = menu::sim::graficadora_2D;
+bool menu_on = true;
 
 
 /* This function runs once at startup. */
@@ -72,7 +75,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
 
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
@@ -82,6 +84,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
+
+    int iWidth, iHeight; 
+    SDL_GetWindowSize(window, &iWidth, &iHeight);
+    SDL_FPoint origin = {(float)(iWidth / 2), (float)(iHeight / 2)};
+    coord_system.setOrigin(origin);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -95,143 +102,101 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     globalEvent = event;
     ImGui_ImplSDL3_ProcessEvent(globalEvent);
 
-    if(menu_on) {
+    if(!menu_on)
+        switch(seleccion) {
+            case menu::sim::graficadora_2D:
+                render::Graph_Window GW_Window(window, renderer);
+                render::MouseEvents mouseEvents(event->button, event->motion, event->wheel);
+                coord_system.setGraph_Window(GW_Window);
 
-    } else switch(seleccion) {
-        case menu::sim::graficadora_2D:
-            render::Graph_Window GW_Window(window, renderer);
-            render::MouseEvents mouseEvents(event->button, event->motion, event->wheel);
+                bool in_edit[10];
+                for(int i = 0; i < 10; i++) {
+                    bool in_x = event->motion.x > edit_pos[i].x && event->motion.x < edit_pos[i].x + edit_size[i].x; 
+                    bool in_y = event->motion.y > edit_pos[i].y && event->motion.y < edit_pos[i].y + edit_size[i].y; 
+                    in_edit[i] = in_x && in_y;
+                }
 
-            std::cout << "Rueda del ratón: " << event->wheel.y << "\n";
-
-            bool in_edit = event->motion.x < edit_size.x && event->motion.y < edit_size.y;
-            if(!in_edit)
-                render::modificarEjes(GW_Window, mouseEvents, axis_info);
-            else SDL_SetCursor(SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT));            
-            break;
-    }
-    
+                if(!in_edit[0] && !in_edit[1])
+                    coord_system.axisModified(mouseEvents);
+                else SDL_SetCursor(SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT));            
+                break;
+        }
+        
     return SDL_APP_CONTINUE;  /* carry on with the program! */
+}
+
+const float f(float x) {
+    return - std::sqrtf(x + 6.0f) / 2.0f;
+}
+
+const float g(float x) {
+    return - x * x / 4.0f + 5.0f;
 }
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
-    render::Graph_Window GW_Window(window, renderer);
-
-    // Esto la verdad no se que hace lol
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
-    
+
+    render::Graph_Window GW_Window(window, renderer);
+
     if(menu_on) {
-        SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
+        SDL_Color bg_menu = {26, 60, 195, SDL_ALPHA_OPAQUE};
+        SDL_SetRenderDrawColor(GW_Window.renderer, bg_menu.r, bg_menu.g, bg_menu.b, bg_menu.a);
+        menu::main_menu(seleccion, menu_on, begin_name);
+    } else switch(seleccion) {
+        case menu::sim::graficadora_2D:
+            coord_system.render();
+            coord_system.graphFunction(f);
+            coord_system.graphFunction(g);
 
-        menu::main_menu(seleccion, menu_on);
-    } else {
-        ImGui::SetNextWindowPos({0, 0});
-        ImGui::SetNextWindowSize({350, 0});
-        ImGui::Begin(begin_name.c_str(), nullptr, ImGuiWindowFlags_NoMove);
-        if(ImGui::Button("Volver al menu principal."))
-            menu_on = !menu_on;
+            SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-        // Selección a partir del menu principal
-        switch(seleccion) {
-            case menu::sim::graficadora_2D:
-                begin_name = "Graficadora 2D!";
-                
+            ImGui::Begin(begin_name.c_str(), nullptr, ImGuiWindowFlags_NoMove);
+            if(ImGui::Button("Volver al menu principal."))
+                menu_on = !menu_on;
 
-                // Renderiza los ejes coordenados del plano cartesiano
-                render::renderAxis(GW_Window, axis_info);
-                demo_graph(GW_Window, axis_info);
+            coord_system.debug(true);
+            edit_size[0] = ImGui::GetWindowSize();
+            edit_pos[0] = ImGui::GetWindowPos();
+            ImGui::End();
 
-                std::cout << "Tamano de ventana de edicion\n";
-                std::cout << "    size_x : " << edit_size.x << "\n";
-                std::cout << "    size_y : " << edit_size.y << "\n\n";
+            ImGui::Begin("Demo Graph.");
+            defgraph::ImGui_demo_graph();
+            edit_size[1] = ImGui::GetWindowSize();
+            edit_pos[1] = ImGui::GetWindowPos();
+            ImGui::End();
+            break;
 
-                ImGui_demo_graph();
-                break;
+        case menu::sim::cono_3D:
+            pmain::false_3d_cone(GW_Window, begin_name.c_str(), menu_on);
+            break;
 
-            case menu::sim::graficadora_3D:
-                begin_name = "Graficadora 3D";
-                break;
+        case menu::sim::movimiento_rotacional:
+            pmain::mov_rotacional(GW_Window, begin_name.c_str(), menu_on);
+            break;
 
-            case menu::sim::LaTeX:
-                begin_name = "Visualizador LaTeX :3";
-                SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderDebugText(GW_Window.renderer, GW_Window.width / 2, GW_Window.height / 2, "ESTO SE ESTA VOLVIENDO MÁS AMBICIOSO");
-                SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
-                break;
+        case menu::sim::vectores:
+            pmain::fvectors(GW_Window, begin_name.c_str(), menu_on);
+            break;
 
-            // Temas Selectos
-            case menu::sim::electrocardiogramas:
-                begin_name = "Temas Selectos - Electrocardiogramas";
-                break;
+        case menu::sim::units:
+            pmain::units(GW_Window, begin_name.c_str(), menu_on);
+            break;
 
-            case menu::sim::pendulos:
-                begin_name = "Temas Selectos - Pendulos";
-                break;
+        case menu::sim::sistema_solar:
+            pmain::solar_system(GW_Window, begin_name.c_str(), menu_on);
+            break;
 
-            case menu::sim::gravedad:
-                begin_name = "Temas Selectos - Gravedad";
-                break;
+        default:
+            ImGui::Begin(begin_name.c_str());
+            if(ImGui::Button("Volver al menu principal."))
+                menu_on = !menu_on;
 
-            case menu::sim::poblaciones:
-                begin_name = "Temas Selectos - Poblaciones";
-                break;
-
-            case menu::sim::conjetura_de_collatz:
-                begin_name = "Temas Selectos - Conjetura de Collatz";
-                break;
-
-            case menu::sim::geometria_esferica:
-                begin_name = "Temas Selectos - Geometria Esferica";
-                break;
-
-            case menu::sim::geometria_fractal:
-                begin_name = "Temas Selectos - Geometria Fractal";
-                break;
-
-            case menu::sim::escala_logaritmica:
-                begin_name = "Temas Selectos - Escala Logaritmica";
-                break;
-                
-            case menu::sim::regresiones_lineales:
-                begin_name = "Temas Selectos - Regresiones Lineales";
-                break;
-
-            case menu::sim::criptografia:
-                begin_name = "Temas Selectos - Criptografia";
-                break;
-
-            case menu::sim::movimiento_rotacional:
-                begin_name = "Física - Movimiento Rotacional";
-                physics::pmain::mov_rotacional(GW_Window);
-                break;
-
-            case menu::sim::vectores:
-                begin_name = "Física - Manejo de Vectores";
-                physics::pmain::fvectors(GW_Window);
-                break;
-
-            case menu::sim::units:
-                begin_name = "Física - Conversión de Unidades";
-                physics::pmain::units(GW_Window);
-                break;
-
-            case menu::sim::sistema_solar:
-                begin_name = "Física - Simulación del Sistema solar";
-                physics::pmain::solar_system(GW_Window);
-                break;
-
-            default:
-                break;
-        }
-
-        // Final del menu
-        ImGui::End();
+            ImGui::End();
+            break;
     }
-
-    edit_size = ImGui::GetWindowSize();
 
     // Renderizar todo en pantalla
     ImGui::Render();

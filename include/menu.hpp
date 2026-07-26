@@ -1,3 +1,4 @@
+#pragma once
 #include <cpp_libs.hpp>
 #include <graphics.hpp>
 
@@ -5,11 +6,15 @@
 #include <imgui_impl_sdl3.h>
 #include <imgui_impl_sdlrenderer3.h>
 
+#ifndef MENU
+#define MENU
+
 namespace menu {
     enum sim {
         // Funcion principal de todo el programa 
         graficadora_2D,
         graficadora_3D,
+        cono_3D,
         LaTeX,
 
         // Calculo Diferencia e Integral
@@ -55,6 +60,16 @@ namespace menu {
         CategoryMenu(const std::string category_name, const std::vector<std::string> sub_categories, const std::vector<sim> simulator_category);
     };
 
-    void main_menu(sim &selec, bool &on);
+    void main_menu(sim &selec, bool &on, std::string &selection_name);
 };
 
+// Funciones principales de uso en main.cpp
+namespace pmain {
+    void mov_rotacional(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void fvectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void units(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void solar_system(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void false_3d_cone(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+};
+
+#endif /* MENU */

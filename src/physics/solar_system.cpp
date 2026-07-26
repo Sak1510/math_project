@@ -1,3 +1,4 @@
+#include <menu.hpp>
 #include <physics.hpp>
 #include <graphics.hpp>
 
@@ -18,11 +19,10 @@ float sun_earth_distance_cuadratic;
 physics::Vector earth_vel = physics::Vector(0.0f, 110.0f, render::CoordSystem::cartesian);
 physics::Vector earth_aceleration;
 
-
-void solar_system_ImGuiParam(void);
-void physics::pmain::solar_system(render::Graph_Window &GW_Window) {
+void solar_system_ImGuiParam(const char *str_name, bool &menu_on);
+void pmain::solar_system(render::Graph_Window &GW_Window, const char* str_name, bool &menu_on) {
     SDL_FPoint origin_point = {GW_Window.width/2, GW_Window.height/2};          // Punto de referencia de coordenadas
-    render::AxisInfo origin = render::AxisInfo(origin_point, 2);                // Eje de referencia
+    render::Axis_Coord_System axis_reference(origin_point, GW_Window);
 
     // Planeta tierra
     if(listo) {
@@ -30,9 +30,9 @@ void physics::pmain::solar_system(render::Graph_Window &GW_Window) {
         listo = false;
     }
     
-    render::renderAxis(GW_Window, origin, {255, 255, 255, SDL_ALPHA_OPAQUE});   
-    render::drawBigPoint(GW_Window.renderer, origin_point.x, origin_point.y, sun_radius, 50, sun_color);
-    render::drawBigPoint(GW_Window.renderer, earth_position.x, earth_position.y, earth_radius, 25, earth_color);
+    axis_reference.render();
+    render::circle(GW_Window.renderer, origin_point, sun_radius, sun_color);
+    render::circle(GW_Window.renderer, earth_position, earth_radius, earth_color);
     //earth_vel.drawVector(GW_Window.renderer, earth_position, false);
     //earth_aceleration.drawVector(GW_Window.renderer, earth_position, false);
 
@@ -54,10 +54,15 @@ void physics::pmain::solar_system(render::Graph_Window &GW_Window) {
     earth_position.x += earth_vel.getCartesian().x / FPS_TIMES;
     earth_position.y += earth_vel.getCartesian().y / FPS_TIMES;
 
-    solar_system_ImGuiParam();
+    solar_system_ImGuiParam(str_name, menu_on);
 }
 
-void solar_system_ImGuiParam(void) {
+void solar_system_ImGuiParam(const char *str_name, bool &menu_on) {
+    ImGui::Begin(str_name);
+    if(ImGui::Button("Volver al menu principal."))
+        menu_on = !menu_on;
+
+
     ImGui::Text("Distancia entre el Sol y la Tierra (en px):\n%.6f px", std::sqrt(sun_earth_distance_cuadratic));
     ImGui::Text(
         "Aceleracion Gravitacional: %.6f px/s^2\n"
@@ -80,5 +85,5 @@ void solar_system_ImGuiParam(void) {
     );
     
     ImGui::SeparatorText("Sol:");
-
+    ImGui::End();
 }

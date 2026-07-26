@@ -1,3 +1,4 @@
+#include <menu.hpp>
 #include <physics.hpp>
 
 // Variables y objetos globales 
@@ -14,6 +15,7 @@ physics::Vector vector_parallel2;
 physics::Vector vector_negative;
 
 SDL_FPoint window_center;
+SDL_Color c_black = {0, 0, 0, SDL_ALPHA_OPAQUE};
 
 // ImGui Params
 int vector_count = 3;
@@ -27,10 +29,8 @@ bool radianes = true;
 
 
 // Funciones de uso interno
-void fvetors_ImGuiParam(void);
-void physics::pmain::fvectors(render::Graph_Window &GW_Window) {
-    //Renderizado del menu
-    fvetors_ImGuiParam();
+void fvetors_ImGuiParam(const char *str_name, bool &menu);
+void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu) {
     window_center = {GW_Window.width / 2, GW_Window.height / 2};
 
     // Dibujado de las operaciones con vectors
@@ -95,10 +95,17 @@ void physics::pmain::fvectors(render::Graph_Window &GW_Window) {
     }
 
     SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
-    render::drawBigPoint(GW_Window.renderer, window_center.x, window_center.y, 4.0f, 20, {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT});
+    render::circle(GW_Window.renderer, window_center, 4.0f, c_black);
+
+    //Renderizado del menu
+    fvetors_ImGuiParam(str_name, menu);
 }
 
-void fvetors_ImGuiParam(void) {
+void fvetors_ImGuiParam(const char *str_name, bool &menu) {
+    ImGui::Begin(str_name);
+    if(ImGui::Button("Volver al menu principal."))
+        menu = !menu;
+
     if(ImGui::CollapsingHeader("Configuraciones Generales")) {
         ImGui::SeparatorText("Configuraciones");
         ImGui::Checkbox("Coordenadas Polares", &polar_coords);
@@ -215,6 +222,7 @@ void fvetors_ImGuiParam(void) {
                 vector_sub.getPolar().r, vector_sub.getPolar().a * (360.0 / (2 * PI)), vector_sub.getCartesian().x, vector_sub.getCartesian().y
             );
         }
-
     }
+
+    ImGui::End();
 }

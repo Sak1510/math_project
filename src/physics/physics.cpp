@@ -153,29 +153,6 @@ double physics::US_Length_toSI(double value, US_length US, SI_length SI) {
 
 
 
-
-// physics::Velocity::Velocity() {
-//     this->vel_ms = 0.0;
-//     this->v = 0.0;
-//     this->si_length = SI_length::SI_m;
-//     this->si_time = SI_time::SI_s;
-// }
-
-// physics::Velocity::Velocity(double v, SI_length length, SI_time time) {
-
-// }
-
-// physics::Velocity::Velocity(double d, SI_length length, double t, SI_time time) {
-//     // v = d / t
-//     this->vel_ms = physics::SI_Length_ToMeters(d, length) / physics::SI_Time_ToSeconds(t, time);
-//     this->vel_fs = 0.0;
-
-//     this->v = d / t;
-//     this->si_length = length;
-//     this->si_time = time;
-// }
-
-
 /* ---- Constructors() of Vector ---- */
 physics::Vector::Vector(void) {
     this->module = 0.0f;
@@ -234,8 +211,7 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, bool
     SDL_GetRenderDrawColorFloat(renderer, &render_color.r, &render_color.g, &render_color.b, &render_color.a);
 
     // Dibujado de la linea de la flecha
-
-    draw_line(renderer, origin, vector_point);
+    render::thickLine(renderer, origin, vector_point, 3);
 
     // Dibujado del nombre del vector
     int font_size = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
@@ -272,6 +248,12 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, bool
     SDL_RenderGeometry(renderer, NULL, triangle, 3, NULL, 0);
 }
 
+void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, bool draw_name) {
+    const float scaler_x = coord_system.getAxisScaler(render::CoordType::X);
+    const float scaler_y = coord_system.getAxisScaler(render::CoordType::Y);
+
+    
+}
 
 
 /* ---- Setters() of Vector ---- */
@@ -338,21 +320,6 @@ physics::Vector physics::Vector::operator-(const Vector &v_res) const {
 physics::Vector physics::Vector::operator*(const double mult) const {
     return Vector(module * mult, direction, render::CoordSystem::polar);
 }
-
-// Vector v1 = Vector(12, 15, cartesian);
-// Vector v2 = Vector(15, 12, cartesian);
-// v1 += v2     =>  v1.operator+=(v2); 
-// physics::Vector& physics::Vector::operator+=(const Vector &v_sum) const {
-
-// }
-
-// physics::Vector& physics::Vector::operator-=(const Vector &v_res) const {
-
-// }
-
-// physics::Vector& physics::Vector::operator*=(const double mult) const {
-
-// }
 
 
 /* ---- Private Functions of Velocity Vector */
@@ -422,31 +389,3 @@ float physics::ang_v_angular(float f_t, char *type);
 float physics::ang_v_tangencial(float omega, float radio);
 float physics::ang_a_tangencial(float alpha, float radio);
 float physics::ang_a_centripeta(float v_tan, float radio);
-
-
-void draw_line(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2) {
-    SDL_RenderLine(renderer, p1.x, p1.y, p2.x, p2.y);
-
-    float pendiente = std::atan2f(p2.y - p1.y, p2.x - p1.x);
-    if(pendiente < 7 * PI / 4) {
-        SDL_RenderLine(renderer, p1.x + 1, p1.y, p2.x + 1, p2.y);
-        SDL_RenderLine(renderer, p1.x - 1, p1.y, p2.x - 1, p2.y);
-    }
-
-    if((pendiente > PI / 4 && pendiente < 3 * PI / 4) || (pendiente > 5 * PI / 4 && pendiente < 7 * PI / 4)) {
-        SDL_RenderLine(renderer, p1.x + 1, p1.y, p2.x + 1, p2.y);
-        SDL_RenderLine(renderer, p1.x - 1, p1.y, p2.x - 1, p2.y);
-    } else {
-        SDL_RenderLine(renderer, p1.x, p1.y + 1, p2.x, p2.y + 1);
-        SDL_RenderLine(renderer, p1.x, p1.y - 1, p2.x, p2.y - 1);
-    }
-
-    
-    // if(pendiente < 3 * PI / 4 || pendiente < 7 * PI / 4) {
-    //     SDL_RenderLine(renderer, p1.x + 1, p1.y, p2.x + 1, p2.y);
-    //     SDL_RenderLine(renderer, p1.x - 1, p1.y, p2.x - 1, p2.y);
-    // } else {
-    //     SDL_RenderLine(renderer, p1.x, p1.y + 1, p2.x, p2.y + 1);
-    //     SDL_RenderLine(renderer, p1.x, p1.y - 1, p2.x, p2.y - 1);
-    // }
-}

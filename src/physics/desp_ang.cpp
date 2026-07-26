@@ -1,10 +1,11 @@
+#include <menu.hpp>
 #include <physics.hpp>
 #define DEBUG 1
 
 // Constantes globales
 const SDL_FColor color_black = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};
 const ImVec4 c_purple = {0.739f, 0.108f, 0.725f, SDL_ALPHA_OPAQUE_FLOAT};
-float c[4] = {0.739f, 0.108f, 0.725f, SDL_ALPHA_OPAQUE_FLOAT};
+SDL_FColor c = {0.739f, 0.108f, 0.725f, SDL_ALPHA_OPAQUE_FLOAT};
 
 
 // ---- Variables globales ----
@@ -31,28 +32,25 @@ float lim_inf = -2.0f;
 float mov_rotacional_timer = 0.0f;
 
 // Funciones alpha usar
-void mov_rotacional_ImGuiParam(void);  // Interfaz de ImGui 
-void physics::pmain::mov_rotacional(render::Graph_Window &GW_Window) {
+void mov_rotacional_ImGuiParam(const char *str_name, bool &menu_on);  // Interfaz de ImGui 
+void pmain::mov_rotacional(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
     SDL_FPoint center = {GW_Window.width / 2, GW_Window.height / 2};
     SDL_FPoint radio_pos = {center.x + radio * SDL_cosf(theta), center.y - radio * SDL_sinf(theta)};
 
-    // Renderizado del menú
-    mov_rotacional_ImGuiParam();
-
     // Renderizado de todo lo rotacional
     // Renderizado de la circunferencia
-    render::drawBigPoint(GW_Window.renderer, center.x, center.y, radio, 50, {c[0], c[1], c[2], c[3]});
+    render::circle(GW_Window.renderer, center, radio, c);
 
     // Renderizado del radio vectors
     SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderLine(GW_Window.renderer, center.x, center.y, radio_pos.x, radio_pos.y);
-    draw_line(GW_Window.renderer, center, radio_pos);
+    render::thickLine(GW_Window.renderer, center, radio_pos, 3);
 
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
     // Renderizado del circulo y del radio vector.
-    render::drawBigPoint(GW_Window.renderer, radio_pos.x, radio_pos.y, 5.0f, 15, color_black);
-    render::drawBigPoint(GW_Window.renderer, center.x, center.y, 5.0f, 15, color_black);
+    render::circle(GW_Window.renderer, radio_pos, 5.0f, color_black);
+    render::circle(GW_Window.renderer, center, 5.0f, color_black);
 
 
     // Logica Fisica 
@@ -81,19 +79,28 @@ void physics::pmain::mov_rotacional(render::Graph_Window &GW_Window) {
     mov_rotacional_timer += FPS_MICROSECONDS;
 
     SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
+
+    // Renderizado del menú
+    mov_rotacional_ImGuiParam(str_name, menu_on);
 };
 
-void mov_rotacional_ImGuiParam() {
+void mov_rotacional_ImGuiParam(const char *str_name, bool &menu_on) {
+    ImGui::Begin(str_name);
+    if(ImGui::Button("Volver al menu principal."))
+        menu_on = !menu_on;
+
     ImGui::TextColored({255, 0, 0, 255}, "Timer: %d s", (int)std::floor(mov_rotacional_timer / 1000.0f));
     ImGui::TextColored({255, 0, 0, 255}, "Timer: %.0f ms", mov_rotacional_timer);
 
     if(ImGui::CollapsingHeader("Circunferencia")) {
         ImGui::SliderFloat("Radio", &metros, 1.0f, 10.0f);
         if(ImGui::TreeNode("Color de la Circunferencia")) {
-            ImGui::ColorPicker4("Color", c);
+            // ImGui::ColorPicker4("Color", c);
             ImGui::TreePop();
         }
 
         ImGui::TreePop();
     }
+
+    ImGui::End();
 }

@@ -1,19 +1,8 @@
+#include <menu.hpp>
 #include <physics.hpp>
 
 double seconds = 1.0;
 double units_timer = 0.0;
-
-physics::Velocity velocity = physics::Velocity(10, physics::SI_length::SI_m, physics::SI_time::SI_s);
-
-void units_ImGuiParam(void);
-void physics::pmain::units(render::Graph_Window &GW_Window) {
-    units_ImGuiParam();
-
-    units_timer += FPS_MICROSECONDS;
-    SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
-}
-
-
 
 /* ---- ImGui Parameters ---- */
 bool SI_velocity = true;
@@ -41,7 +30,24 @@ const char* const US_length_units[] = {
     "yards",    "miles"
 };
 
-void units_ImGuiParam(void) {
+
+physics::Velocity velocity = physics::Velocity(10, physics::SI_length::SI_m, physics::SI_time::SI_s);
+
+void units_ImGuiParam(const char *str_name, bool &menu_on);
+void pmain::units(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
+    units_ImGuiParam(str_name, menu_on);
+
+    units_timer += FPS_MICROSECONDS;
+    SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
+}
+
+
+void units_ImGuiParam(const char *str_name, bool &menu_on) {
+    ImGui::Begin(str_name);
+    if(ImGui::Button("Volver al menu principal."))
+        menu_on = !menu_on;
+
+
     if(ImGui::CollapsingHeader("SI Time Units")) {
         ImGui::InputDouble("Secods", &seconds, 0.0, 0.0, "%.12f");
         ImGui::SeparatorText("Converted in:");
@@ -102,4 +108,5 @@ void units_ImGuiParam(void) {
         ImGui::TextColored({0, 255, 0, 255}, "v = %.9f m/s", velocity_ms);
         ImGui::TextColored({0, 255, 0, 255}, "v = %.9f ft/s", velocity_fs);
     }
+    ImGui::End();
 }

@@ -121,6 +121,7 @@ namespace physics {
         SDL_FPoint getVectorPoint(SDL_FPoint origin);
 
         void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, bool draw_name = true);
+        void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, bool draw_name = true);
 
         Vector operator+(const Vector &v_sum) const;
         Vector operator-(const Vector &v_res) const;
@@ -177,17 +178,6 @@ namespace physics {
     float ang_v_tangencial(float omega, float radio);
     float ang_a_tangencial(float alpha, float radio);
     float ang_a_centripeta(float v_tan, float radio);
-
-    // Funciones principales de uso en main.cpp
-    namespace pmain {
-        void mov_rotacional(render::Graph_Window &GW_Window);
-        void fvectors(render::Graph_Window &GW_Window);
-        void units(render::Graph_Window &GW_Window);
-
-        void solar_system(render::Graph_Window &GW_Window);
-    };
 };
 
-void draw_line(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2);   // Linea de grosor 3px
-
-#endif  // PHYSICS 
+#endif  // PHYSICS

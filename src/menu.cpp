@@ -10,10 +10,12 @@ menu::CategoryMenu graphics = menu::CategoryMenu(
     "Gráficadoras Estandar.", {
         "Gráficadora 2D",
         "Gráficadora 3D",
+        "Simulacion de cono 3D",
         "LaTeX"
     }, {
         menu::sim::graficadora_2D,
         menu::sim::graficadora_3D,
+        menu::sim::cono_3D,
         menu::sim::LaTeX
 });
 
@@ -75,12 +77,13 @@ std::vector<menu::CategoryMenu> categories = {
     graphics, physics, selects, calcule
 };
 
-void menu::main_menu(menu::sim &menu_selected, bool &menu_on) {
-    ImGui::Begin("Menu de pruebas!", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+void menu::main_menu(menu::sim &menu_selected, bool &menu_on, std::string &selection_name) {
+    ImGui::SetNextWindowSize({1200 * 0.80f, 700 * 0.80f});
+    ImGui::Begin("Menu de pruebas!", nullptr, ImGuiWindowFlags_NoResize);
     const ImVec2 size_button = {200.0f, 50.0f};
     int button_count = 1;
     const int button_times = 4; 
-    
+
     for(int i = 0; i < categories.size(); i++) {
         menu::CategoryMenu actual_category = categories[i];
         ImGui::SeparatorText(actual_category.name.c_str());
@@ -96,12 +99,11 @@ void menu::main_menu(menu::sim &menu_selected, bool &menu_on) {
 
             if(ImGui::Button(actual_category.sub_categories[j].c_str(), size_button)) {
                 menu_selected = actual_category.simulator_category[j];
+                selection_name = actual_category.name + " " + actual_category.sub_categories[j];
                 menu_on = !menu_on;
             }
         }
 
         button_count = 0;
-    }
-
-    ImGui::End();
+    } ImGui::End();
 }

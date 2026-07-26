@@ -29,7 +29,7 @@ set "LIB_SDL3=-I libs\SDL\include -L libs\SDL\lib -l SDL3"
 
 :: Compilado optimizado para la librería de "Dear ImGui"
 set "LIB_IMGUI=-I libs\ImGui\include"
-set "SRC=src\*.cpp src\physics\*.cpp build\ImGui\*.o"
+set "SRC=src\*.cpp src\physics\*.cpp src\graphing_calculator\*.cpp build\ImGui\*.o"
 
 :: MicroTeX y sus dependencias
 :: set "LIB_MICROTEX=-I libs\MicroTeX\lib\include libs\MicroTeX\lib\windows\libLaTeX.a -ltinyxml2 -lgdi32"
