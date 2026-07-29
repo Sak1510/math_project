@@ -30,6 +30,9 @@ La razón de crear mi propia calculadora gráfica para matematicas y física, vi
 
 Busco realizar simulaciones físicas, aprender grafícos 2D y 3D, y entender con mayor clarídad, objetos matematicos abstractos. A continuación, se detalla cada area en específico:
 
+> [!NOTE]
+> Muchas de estas características siguen en desarrollo, o no estan implementadas directamente.
+
 ### 2.1) **Gráficos 2D y 3D** 
 Busco entender a más detalle algoritmos de renderizado 2D, y poder representar curvas matematicas, como lo sería una gráficadora tipo [Geogebra](https://www.geogebra.org/). Aprendiendo a rotar y trasladar correctamente las cosas en el plano cartesiando usando las matematicas neesarias directamente en el código.
 
@@ -50,17 +53,23 @@ Busco entender simulando en tiempo real, como funcionan fenomenos fisicos entend
 
 Desde física clásica, trabajando con los clásicos vectores, entendiendo fuerzas, aceleración y velocidad, rotaciónes de cuerpos, gravitación universal... hasta también incluir física moderna, llendonos a campos más complejos como modelos atomicos más allá del de Bohr y adentrandonos al de Schrodinger, relatividad especial, agujeros negros... no lo sé realmente ahora mismo que escribo esto, pero espero entenderlos proximamente y verlos funcionar en código. 
 
-![Operaciones con vectores dentro de la calculadora](resources/img/readme/graficadora_vectores.png)
+- - - 
+Ejemplos de funcionalidades ya implementadas (puede que sigan en desarrollo).
 
-> [!NOTE]
-> Muchas de estas características siguen en desarrollo, o no estan implementadas directamente.
+**Operaciones con vectores dentro de la calculadora:**
+![Operaciones con vectores dentro de la calculadora](resources/img/readme/graficadora_vectores.png) 
 
+**Simulación de un sistema de orbitas:**
+![Simulación de un sistema de orbitas](resources/img/readme/graficadora_sistema_solar.png)
+
+**Conversión de Unidades**
+![Conversión de Unidades](resources/img/readme/graficadora_conversion_unidades.png)
 
 ## 3.0) Librerías que utiliza 
-El proyecto esta estructurado gracias a librerías externas que facilitan mucho el uso de funciones ya optimizadas para agilizar las cosas. Aquí estan las que se utilizan dentro del proyecto.
-
 > [!IMPORTANT]
 > Hay funciones que ya poseen estas librerías que se pueden implementar de forma eficaz, solo que aveces puede que las omita debido a que quiero experimentar como funciona realmente el algoritmo detrás de esas funciones, o aveces, simplemente desconozco (cuando sucede asi, duele.)
+
+El proyecto esta estructurado gracias a librerías externas que facilitan mucho el uso de funciones ya optimizadas para agilizar las cosas. Aquí estan las que se utilizan dentro del proyecto.
 
 ### 3.1) **SDL3**
 "Simple DirectMedia Layer es una biblioteca de desarrollo multiplataforma diseñada para proporcionar acceso de bajo nivel a hardware de audio, teclado, mouse, joystick y gráficos a través de OpenGL/Direct3D/Metal/Vulkan. Lo utilizan software de reproducción de vídeo, emuladores y juegos populares, incluido el galardonado catálogo de Valve y muchos juegos de Humble Bundle."
