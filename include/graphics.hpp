@@ -210,17 +210,45 @@ namespace render {
          * 
          *  \returns Punto con las coordenadas a nivel sub-pixel.
          */
-        const SDL_FPoint cartesianToSubPixel(float x, float y);
+        const SDL_FPoint cartesianToSubPixel(float x, float y); 
 
         /**
-         *  Convierte las coordenadas respecto a la ventana a nivel subpixel, a coordenadas respecto al eje coordenado.
+         *  Convierte las coordenadas respecto a los ejes dibujados a coordenadas de ventana a nivel subpixel.
+         *  
+         *  \param p Punto cartesiano del eje coordenado.
+         * 
+         *  \returns Punto con las coordenadas a nivel sub-pixel.
+         */
+        const SDL_FPoint cartesianToSubPixel(cartesian_point_2d p);
+
+        /**
+         *  Convierte las coordenadas respecto a la ventana a nivel sub-pixel, a coordenadas respecto al eje coordenado.
          * 
          *  \param x Coordenada X a nivel subpixel de la ventana.
          *  \param y Coordenada Y a nivel subpixel de la ventana.
          * 
          *  \returns Punto con las coordenadas respecto a `axis_info`.
          */
-        const SDL_FPoint subPixeToCartesian(float x, float y);
+        const cartesian_point_2d subPixeToCartesian(float x, float y);
+
+        /**
+         *  Convierte las coordenadas respecto a la ventana a nivel sub-pixel, a coordenadas respecto al eje coordenado.
+         * 
+         *  \param x Coordenada X a nivel subpixel de la ventana.
+         *  \param y Coordenada Y a nivel subpixel de la ventana.
+         * 
+         *  \returns Punto con las coordenadas respecto a `axis_info`.
+         */
+        const cartesian_point_2d subPixeToCartesian(SDL_FPoint p);
+
+        /**
+         *  Muestra las coordenadas del mouse sobre el plano cartesiano. Dependiendo como se le indique, puede mostrar 
+         *  las coordendas cartesinas, las coordenadas en pixeles, o ambas al mismo tiempo.
+         * 
+         *  \param on Muestra las coordenadas cartesianas del mouse.
+         *  \param pixel_coords Muestra las coordenadas en pixeles de la ventana.
+         */
+        void showCoords(bool on = true, bool pixel_coords = false);
 
         /**
          *  Dibuja ambos ejes de coordenadas X y Y. Dependiendo las variables de cada eje, se renderizarán con
@@ -256,12 +284,4 @@ namespace render {
         void debug(bool on);
         
     };
-
-
-    //  void renderAxis(Graph_Window GW_Window, const Axis_Coord_System coord_system, SDL_Color c = {255, 255, 255, SDL_ALPHA_OPAQUE});
-    //  void graficadora(Graph_Window GW_Window, Axis_Coord_System coord_system, const float (* f)(float));
-    //  int modificarEjes(Graph_Window GW_Window, MouseEvents &mouse_events, AxisInfo &axisInfo);
-    //  SDL_FPoint axiscoordToSubPixel(Axis_Coord_System coord_system, float x, float y);
-    //  SDL_FPoint axiscoordToSubPixel(Axis_Coord_System coord_system, SDL_FPoint p);
-    //  SDL_FPoint subpixelToAxisCoord(Axis_Coord_System coord_system, float x, float y);
 };

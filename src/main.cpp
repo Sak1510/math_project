@@ -94,6 +94,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
 }
 
 /* This function runs when a new event (mouse input, keypresses, etc) occurs. */
+bool in_edit[10];
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     if(event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
@@ -109,7 +110,6 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
                 render::MouseEvents mouseEvents(event->button, event->motion, event->wheel);
                 coord_system.setGraph_Window(GW_Window);
 
-                bool in_edit[10];
                 for(int i = 0; i < 10; i++) {
                     bool in_x = event->motion.x > edit_pos[i].x && event->motion.x < edit_pos[i].x + edit_size[i].x; 
                     bool in_y = event->motion.y > edit_pos[i].y && event->motion.y < edit_pos[i].y + edit_size[i].y; 
@@ -151,6 +151,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
             coord_system.graphFunction(f);
             coord_system.graphFunction(g);
 
+            coord_system.showCoords();
+
             SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
             ImGui::Begin(begin_name.c_str(), nullptr, ImGuiWindowFlags_NoMove);
@@ -160,12 +162,40 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
             coord_system.debug(true);
             edit_size[0] = ImGui::GetWindowSize();
             edit_pos[0] = ImGui::GetWindowPos();
+
+            if(ImGui::TreeNode("Axis Modified ##1")) {
+                ImGui::Text(
+                    "edit_size: (%.3f, %.3f)\n"
+                    "edit_pos:  (%.3f, %.3f)\n"
+                    "InsideWindow? %s\n"
+                    "CanMoveAxis? %s",
+                    edit_size[0].x, edit_size[0].y,
+                    edit_pos[0].x, edit_pos[0].y,
+                    (in_edit[0] == true) ? "Sip." : "Nop.",
+                    (!in_edit[0] && !in_edit[1]) ? "Sip." : "Nop" 
+                );
+                ImGui::TreePop();
+            }
             ImGui::End();
 
             ImGui::Begin("Demo Graph.");
             defgraph::ImGui_demo_graph();
             edit_size[1] = ImGui::GetWindowSize();
             edit_pos[1] = ImGui::GetWindowPos();
+
+            if(ImGui::TreeNode("Axis Modified ##2")) {
+                ImGui::Text(
+                    "edit_size: (%.3f, %.3f)\n"
+                    "edit_pos:  (%.3f, %.3f)\n"
+                    "InsideWindow? %s\n"
+                    "CanMoveAxis? %s",
+                    edit_size[1].x, edit_size[1].y,
+                    edit_pos[1].x, edit_pos[1].y,
+                    (in_edit[1] == true) ? "Sip." : "Nop.",
+                    (!in_edit[0] && !in_edit[1]) ? "Sip." : "Nop"
+                );
+                ImGui::TreePop();
+            }
             ImGui::End();
             break;
 

@@ -633,6 +633,47 @@ const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(float x, float y
         origin.y - y * getAxisScaler(CoordType::Y)
     };
 }
+
+const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(render::cartesian_point_2d p) {
+    return cartesianToSubPixel(p.x, p.y);
+}
+
+const render::cartesian_point_2d render::Axis_Coord_System::subPixeToCartesian(float x, float y) {
+    return {
+        (x - origin.x) / getAxisScaler(CoordType::X),
+        - (y - origin.y) / getAxisScaler(CoordType::Y)
+    };
+}
+
+const render::cartesian_point_2d render::Axis_Coord_System::subPixeToCartesian(SDL_FPoint p) {
+    return subPixeToCartesian(p.x, p.y);
+}
+
+// Será mejor utilizar la librería de ImGui para obtener el input del mouse y keyboard?
+void render::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
+    if(!on)
+        return;
+
+    ImVec2 mouse_pos = ImGui::GetMousePos();
+    cartesian_point_2d cartesian_coords = subPixeToCartesian(mouse_pos.x, mouse_pos.y);
+    
+    SDL_RenderDebugTextFormat(
+        GW_Window.renderer, 
+        mouse_pos.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
+        mouse_pos.y,
+        "(%.3f, %.3f)",
+        cartesian_coords.x, cartesian_coords.y
+    );
+
+    if(pixel_coords)
+        SDL_RenderDebugTextFormat(
+            GW_Window.renderer, 
+            mouse_pos.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
+            mouse_pos.y + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE,
+            "(%.3f, %.3f)",
+            mouse_pos.x, mouse_pos.y
+        );
+}
 #pragma endregion /* Axis_Coord_System */
 
 
