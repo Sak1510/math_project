@@ -8,5 +8,8 @@ EXECUTABLE_NAME = executable\math_alpha_demo
 all: 
 	g++ $(GNU_COMPILER) -o $(EXECUTABLE_NAME)
 
+run:
+	.\executable\math_alpha_demo.exe
+
 hello:
 	echo "Hola :3"
