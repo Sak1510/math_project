@@ -19,7 +19,7 @@ const SDL_FColor render::ColorToFColor(SDL_Color color) {
     };
 }
 
-#define RAD 2.0f * 3.14159
+#define RAD 2.0f * 3.14159f
 void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_FColor color) {
     const size_t num_triangles = 64;
     const float fnum_triangles = (float)num_triangles;
