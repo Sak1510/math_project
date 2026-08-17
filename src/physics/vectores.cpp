@@ -95,8 +95,9 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
         vectors[i].drawVector(GW_Window.renderer, window_center, vector_grosor);
     }
 
+    // Renderizar circulo como origne de vectores
     SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
-    render::circle(GW_Window.renderer, window_center, 4.0f, c_black);
+    render::circle(GW_Window.renderer, window_center, vector_grosor / 2.0f, c_black);
 
     //Renderizado del menu
     fvetors_ImGuiParam(str_name, menu);

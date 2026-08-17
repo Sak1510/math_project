@@ -65,8 +65,63 @@ void render::debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::stri
     SDL_SetRenderDrawColor(renderer, pre_color.r, pre_color.g, pre_color.b, pre_color.a);    
 }
 
+void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float b) {
+    const float a = std::atan2f(p2.y - p1.y, p2.x - p1.x);
+    const float d = std::sqrtf((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+    SDL_FColor c;
+    SDL_FPoint points[3] = {
+        {
+            p1.x + b * std::cosf(a + M_PI_2) / 2.0f,
+            p1.y + b * std::sinf(a + M_PI_2) / 2.0f
+        }, {
+            p1.x + b * std::cosf(a - M_PI_2) / 2.0f,
+            p1.y + b * std::sinf(a - M_PI_2) / 2.0f
+        }, {
+            p1.x + d * std::cosf(a),
+            p1.y + d * std::sinf(a)
+        }
+    };
+
+    SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
+    SDL_Vertex vertex[3] = {
+        {points[0], c, {0.0f, 0.0f}},
+        {points[1], c, {0.0f, 0.0f}},
+        {points[2], c, {0.0f, 0.0f}}
+    };
+
+    SDL_RenderGeometry(renderer, NULL, vertex, 3, NULL, 0);
+}
+
+
+void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, float h, float angle) {
+    SDL_FColor c;
+    SDL_FPoint points[3] = {
+        {
+            o.x + b * std::cosf(angle + M_PI_2) / 2.0f,
+            o.y + b * std::sinf(angle + M_PI_2) / 2.0f
+        }, {
+            o.x + b * std::cosf(angle - M_PI_2) / 2.0f,
+            o.y + b * std::sinf(angle - M_PI_2) / 2.0f
+        }, {
+            o.x + h * std::cosf(angle),
+            o.y + h * std::sinf(angle)
+        }
+    };
+
+    SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
+    SDL_Vertex vertex[3] = {
+        {points[0], c, {0.0f, 0.0f}},
+        {points[1], c, {0.0f, 0.0f}},
+        {points[2], c, {0.0f, 0.0f}}
+    };
+
+    SDL_RenderGeometry(renderer, NULL, vertex, 3, NULL, 0);
+}
+
+
 void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float grosor) {
     const float angle = std::atan2f(p2.y - p1.y, p2.x - p1.x);
+    SDL_FColor c;
     SDL_FPoint points[4] = {
         {
             p1.x + grosor * std::cosf(angle + M_PI_2) / 2.0f,
@@ -83,25 +138,17 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
         }
     };
 
-    SDL_Color c;
-    SDL_GetRenderDrawColor(renderer, &c.r, &c.g, &c.b, &c.a);
-
-
-    const SDL_FColor fc = ColorToFColor(c);
-    SDL_Vertex vertex[2][3] = {
-        {
-            {points[0], fc, {0.0f, 0.0f}},
-            {points[1], fc, {0.0f, 0.0f}},
-            {points[2], fc, {0.0f, 0.0f}}
-        }, {
-            {points[0], fc, {0.0f, 0.0f}},
-            {points[3], fc, {0.0f, 0.0f}},
-            {points[2], fc, {0.0f, 0.0f}}
-        }
+    SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
+    SDL_Vertex vertex[6] = {
+        {points[0], c, {0.0f, 0.0f}},
+        {points[1], c, {0.0f, 0.0f}},
+        {points[2], c, {0.0f, 0.0f}},
+        {points[0], c, {0.0f, 0.0f}},
+        {points[3], c, {0.0f, 0.0f}},
+        {points[2], c, {0.0f, 0.0f}}
     };
 
-    SDL_RenderGeometry(renderer, NULL, vertex[0], 3, NULL, 0);
-    SDL_RenderGeometry(renderer, NULL, vertex[1], 3, NULL, 0);
+    SDL_RenderGeometry(renderer, NULL, vertex, 6, NULL, 0);
 }
 
 #pragma region Graph_Window

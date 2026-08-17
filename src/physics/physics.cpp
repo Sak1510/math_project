@@ -205,13 +205,26 @@ physics::Vector::Vector(std::string name)
     this->name = name;
 }
 
+// TODO: LA DIRECCIÓN DE LA FLECHA ES INCORRECTA CUANDO EL MODULO DEL VECTOR ES NEGATIVO
 void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name) {
+    if(std::abs(this->module) <= 1E-6f)
+        return;
+
     SDL_FColor render_color = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};
     SDL_FPoint vector_point = this->getVectorPoint(origin);
-    SDL_GetRenderDrawColorFloat(renderer, &render_color.r, &render_color.g, &render_color.b, &render_color.a);
+    SDL_FPoint limit_point = {
+        origin.x + (this->component_x - grosor * std::cosf(this->direction)),
+        origin.y - (this->component_y - grosor * std::sinf(this->direction)) 
+    };
 
     // Dibujado de la linea de la flecha
-    render::thickLine(renderer, origin, vector_point, grosor);
+    render::thickLine(renderer, origin, limit_point, grosor);
+
+    // Dibujado de la flecha del vector
+    if(this->module > 0)
+        render::triangleDirection(renderer, limit_point, vector_point, 2.0f * grosor);
+    else 
+        render::triangleDirection(renderer, vector_point, limit_point, 2.0f * grosor);
 
     // Dibujado del nombre del vector
     int font_size = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
@@ -221,31 +234,6 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
     
     if(draw_name)
         SDL_RenderDebugText(renderer, vector_point.x + font_size, vector_point.y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE / 2, this->name.c_str());
-
-    // Dibujado del triangulo en la punta de la flecha
-    const float triangle_width = 6.0f;
-    const float sub_module = this->module - triangle_width;
-    const float sub_alpha = std::asin(triangle_width / sub_module);
-    SDL_FPoint vertex[3] = {
-        {
-            vector_point.x,
-            vector_point.y
-        }, {
-            (float)(origin.x + sub_module * std::cos(this->direction + sub_alpha)),
-            (float)(origin.y - sub_module * std::sin(this->direction + sub_alpha))
-        }, {
-            (float)(origin.x + sub_module * std::cos(this->direction - sub_alpha)),
-            (float)(origin.y - sub_module * std::sin(this->direction - sub_alpha))
-        },
-    };
-
-    SDL_Vertex triangle[3] = {
-        {vertex[0], render_color, {0.0f}},
-        {vertex[1], render_color, {0.0f}},
-        {vertex[2], render_color, {0.0f}}
-    };
-
-    SDL_RenderGeometry(renderer, NULL, triangle, 3, NULL, 0);
 }
 
 void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, bool draw_name) {

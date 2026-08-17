@@ -120,10 +120,31 @@ namespace render {
      */
     void circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_Color color);
 
-    void triangle_direction();
+    /**
+     *  Dibuja un triangulo con base y altura dirijido desde un punto de origen, situado en el punto 
+     *  medio de la base `b` y dirigido al angulo dado.
+     * 
+     *  \param renderer El puntero de renderizado donde será dibujado el triangulo.
+     *  \param o Punto de origen donde se empieza a dibujar el triangulo.
+     *  \param b Base del triangulo.
+     *  \param h Altura del triangulo.
+     *  \param angle Angulo de dibujado.
+     */
+    void triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, float h, float angle);
 
     /**
-     *  Dibuja una linea con un grosor específico en un eje determinado.
+     *  Dibuja un triangulo con una base dada, dibujado de un un punto p1 a un punto p2.
+     * 
+     *  \param renderer El puntero de renderizado donde será dibujado el triangulo.
+     *  \param p1 Punto de inicio.
+     *  \param p2 Punto final.  
+     *  \param b Base del triangulo.
+     *  \param angle Angulo de dibujado.
+     */
+    void triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float b);
+
+    /**
+     *  Dibuja una linea con un grosor específico entre dos puntos dados
      * 
      *  \param renderer Renderizador donde será dibujada la linea.
      *  \param p1 Punto de inicio
@@ -131,7 +152,6 @@ namespace render {
      *  \param grosor Grosor de la linea (preferentemente un número impar)
      */
     void thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float grosor);
-
 
     /**
      *  Dibuja un texto con un fondo de color definido usando las funciones `SDL_RenderDebugText()` y `SDL_RenderFillRect()`.

@@ -5,11 +5,13 @@ GNU_COMPILER = -static-libgcc -static-libstdc++ $(SRC) -Iinclude $(LIB_IMGUI) $(
 
 EXECUTABLE_NAME = bin\math_alpha_demo
 
-all: 
+all: $(SRC) 
 	g++ $(GNU_COMPILER) -o $(EXECUTABLE_NAME)
 
 run:
 	.\$(EXECUTABLE_NAME).exe
+
+build_and_run: all run
 
 hello:
 	echo "Hola :3"
