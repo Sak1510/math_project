@@ -102,35 +102,6 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
 
     SDL_RenderGeometry(renderer, NULL, vertex[0], 3, NULL, 0);
     SDL_RenderGeometry(renderer, NULL, vertex[1], 3, NULL, 0);
-
-
-    // ----     DEBUG       ----
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    // SDL_RenderLine(
-    //     renderer, 
-    //     points[0].x, points[0].y,
-    //     points[2].x, points[2].y
-    // );
-
-    // for(int i = 0; i < 4; i++) {
-    //     if(i == 3) {
-    //         SDL_RenderLine(
-    //             renderer,
-    //             points[i].x, points[i].y,
-    //             points[0].x, points[0].y
-    //         );
-
-    //         break;
-    //     }
-
-    //     SDL_RenderLine(
-    //         renderer, 
-    //         points[i].x, points[i].y, 
-    //         points[i + 1].x, points[i + 1].y
-    //     );
-    // }
-
-    // SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 }
 
 #pragma region Graph_Window
