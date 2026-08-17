@@ -1,6 +1,5 @@
 #include <menu.hpp>
 #include <physics.hpp>
-#define DEBUG 1
 
 // Constantes globales
 const SDL_FColor color_black = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};

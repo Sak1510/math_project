@@ -82,6 +82,7 @@ void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint
         }
     };
 
+    #ifndef DEBUG
     SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
     SDL_Vertex vertex[3] = {
         {points[0], c, {0.0f, 0.0f}},
@@ -90,6 +91,19 @@ void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint
     };
 
     SDL_RenderGeometry(renderer, NULL, vertex, 3, NULL, 0);
+    #else   //  ----    DEBUG   ----
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderLine(renderer, p1.x, p1.y, p2.x, p2.y);
+
+    SDL_FColor c_red = {1.0f, 0.0f, 0.0f, 1.0f}, c_blue = {0.0f, 1.0f, 0.0f, 1.0f}; 
+    circle(renderer, p1, 3, c_red);
+    circle(renderer, p2, 3, c_blue);
+
+    SDL_RenderLine(renderer, points[0].x, points[0].y, points[1].x, points[1].y);
+    SDL_RenderLine(renderer, points[1].x, points[1].y, points[2].x, points[2].y);
+    SDL_RenderLine(renderer, points[2].x, points[2].y, points[0].x, points[0].y);
+    SDL_SetRenderDrawColorFloat(renderer, c.r, c.g, c.b, c.a);
+    #endif
 }
 
 
@@ -109,6 +123,8 @@ void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, fl
     };
 
     SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
+
+    #ifndef DEBUG
     SDL_Vertex vertex[3] = {
         {points[0], c, {0.0f, 0.0f}},
         {points[1], c, {0.0f, 0.0f}},
@@ -116,6 +132,14 @@ void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, fl
     };
 
     SDL_RenderGeometry(renderer, NULL, vertex, 3, NULL, 0);
+    #else       //  ----    DEBUG   ----
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderLine(renderer, points[0].x, points[0].y, points[1].x, points[1].y);
+    SDL_RenderLine(renderer, points[1].x, points[1].y, points[2].x, points[2].y);
+    SDL_RenderLine(renderer, points[2].x, points[2].y, points[0].x, points[0].y);
+    SDL_SetRenderDrawColorFloat(renderer, c.r, c.g, c.b, c.a);
+    #endif
+
 }
 
 
@@ -138,7 +162,10 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
         }
     };
 
+
     SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
+
+    #ifndef DEBUG
     SDL_Vertex vertex[6] = {
         {points[0], c, {0.0f, 0.0f}},
         {points[1], c, {0.0f, 0.0f}},
@@ -149,6 +176,32 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
     };
 
     SDL_RenderGeometry(renderer, NULL, vertex, 6, NULL, 0);
+    #else   //----     DEBUG       ----
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderLine(
+        renderer, 
+        points[0].x, points[0].y,
+        points[2].x, points[2].y
+    );
+
+    for(int i = 0; i < 4; i++) {
+        if(i == 3) {
+            SDL_RenderLine(
+                renderer,
+                points[i].x, points[i].y,
+                points[0].x, points[0].y
+            ); break;
+        }
+
+        SDL_RenderLine(
+            renderer, 
+            points[i].x, points[i].y, 
+            points[i + 1].x, points[i + 1].y
+        );
+    }
+
+    SDL_SetRenderDrawColorFloat(renderer, c.r, c.g, c.b, c.a);
+    #endif
 }
 
 #pragma region Graph_Window
