@@ -3,8 +3,8 @@
 
 // Variables y objetos globales 
 std::vector<physics::Vector> vectors = {
-    physics::Vector(100.0, 0.0, render::CoordSystem::polar, "V1"),
-    physics::Vector(100.0, PI / 2, render::CoordSystem::polar, "V2")
+    physics::Vector(200.0, 0.0, render::CoordSystem::polar, "V1"),
+    physics::Vector(200.0, PI / 2, render::CoordSystem::polar, "V2")
 };
 
 physics::Vector vector_sum;
@@ -61,14 +61,6 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
                 last_vector_sum.drawVector(GW_Window.renderer, last_vector_point, vector_grosor);
                 last_vector_point = vectors[i].getVectorPoint(last_vector_point);
             }
-
-
-            for(int i = 0; i < vectors.size(); i++) {
-                std::cout << "Vector[" << i << "]:\n";
-                std::cout << "\tx = " << vectors[i].getCartesian().x;
-                std::cout << "\n\ty = " << vectors[i].getCartesian().y << "\n";
-            } system("cls");
-
 
             vector_sum.setCartesian(sum_x, sum_y);
         }

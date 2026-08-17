@@ -212,19 +212,17 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
 
     SDL_FColor render_color = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};
     SDL_FPoint vector_point = this->getVectorPoint(origin);
+    const float k = (this->module > 0) ? 1.0f : -1.0f; 
     SDL_FPoint limit_point = {
-        origin.x + (this->component_x - grosor * std::cosf(this->direction)),
-        origin.y - (this->component_y - grosor * std::sinf(this->direction)) 
+        origin.x + (this->component_x - k * grosor * std::cosf(this->direction)),
+        origin.y - (this->component_y - k * grosor * std::sinf(this->direction))
     };
 
     // Dibujado de la linea de la flecha
     render::thickLine(renderer, origin, limit_point, grosor);
 
     // Dibujado de la flecha del vector
-    if(this->module > 0)
-        render::triangleDirection(renderer, limit_point, vector_point, 2.0f * grosor);
-    else 
-        render::triangleDirection(renderer, vector_point, limit_point, 2.0f * grosor);
+    render::triangleDirection(renderer, limit_point, vector_point, 2.0f * grosor);
 
     // Dibujado del nombre del vector
     int font_size = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;

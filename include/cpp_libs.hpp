@@ -1,6 +1,9 @@
 // Librerias usadas en general de todo el proyecto
 #pragma once
 
+// ----     DEBUG COMPILER MODE     ----
+// #define DEBUG
+
 #define FPS_MICROSECONDS 16     // 16 ms => 60 fps
 #define FPS_TIMES 60            // 60 fps
 
