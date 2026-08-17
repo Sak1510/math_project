@@ -120,7 +120,7 @@ namespace physics {
         DoubleCartesian getCartesian();
         SDL_FPoint getVectorPoint(SDL_FPoint origin);
 
-        void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, bool draw_name = true);
+        void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name = true);
         void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, bool draw_name = true);
 
         Vector operator+(const Vector &v_sum) const;

@@ -19,6 +19,7 @@ SDL_Color c_black = {0, 0, 0, SDL_ALPHA_OPAQUE};
 
 // ImGui Params
 int vector_count = 3;
+float vector_grosor = 3.0f;
 
 bool polar_coords = true;
 bool slider_components = false;
@@ -57,7 +58,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
             SDL_FPoint last_vector_point = vectors[0].getVectorPoint(window_center);
             for(int i = 1; i < vectors.size(); i++) {
                 physics::Vector last_vector_sum = vectors[i];
-                last_vector_sum.drawVector(GW_Window.renderer, last_vector_point);
+                last_vector_sum.drawVector(GW_Window.renderer, last_vector_point, vector_grosor);
                 last_vector_point = vectors[i].getVectorPoint(last_vector_point);
             }
 
@@ -73,25 +74,25 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
         }
   
         SDL_SetRenderDrawColor(GW_Window.renderer, 0, 255, 0, 255);
-        vector_sum.drawVector(GW_Window.renderer, window_center);   
+        vector_sum.drawVector(GW_Window.renderer, window_center, vector_grosor);   
     }
 
     if(sub_vectors) {
         SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
         vector_negative = vectors[1] * -1.0;
-        vector_negative.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center));
+        vector_negative.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), vector_grosor);
 
         vector_sub = vectors[0] - vectors[1];
         vector_sub.name = "v_sub";
         
         SDL_SetRenderDrawColor(GW_Window.renderer, 255, 0, 0, 255);
-        vector_sub.drawVector(GW_Window.renderer, window_center);
+        vector_sub.drawVector(GW_Window.renderer, window_center, vector_grosor);
     }
 
     // Vector Unitario
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
     for(int i = 0; i < vectors.size(); i++) {
-        vectors[i].drawVector(GW_Window.renderer, window_center);
+        vectors[i].drawVector(GW_Window.renderer, window_center, vector_grosor);
     }
 
     SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
@@ -111,6 +112,7 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
         ImGui::Checkbox("Coordenadas Polares", &polar_coords);
         ImGui::Checkbox("Radianes", &radianes);
         ImGui::Checkbox("Sliders", &slider_components);
+        ImGui::SliderFloat("Vector Grosor", &vector_grosor, 1.0f, 20.0f);
 
         ImGui::SeparatorText("Información General");
         ImGui::TextColored({0, 0, 205, 255}, "Número de Vectores: %d", (int)vectors.size());

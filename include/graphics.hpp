@@ -130,7 +130,7 @@ namespace render {
      *  \param p2 Punto final
      *  \param grosor Grosor de la linea (preferentemente un número impar)
      */
-    void thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, int grosor);
+    void thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float grosor);
 
 
     /**

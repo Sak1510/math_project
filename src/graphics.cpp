@@ -65,33 +65,72 @@ void render::debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::stri
     SDL_SetRenderDrawColor(renderer, pre_color.r, pre_color.g, pre_color.b, pre_color.a);    
 }
 
-void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, int grosor) {
-    SDL_RenderLine(renderer, p1.x, p1.y, p2.x, p2.y);
-
-    float pendiente = std::atan2f(p2.y - p1.y, p2.x - p1.x);
-    for(int i = 0; i < grosor - 1; i++) {
-        // m < 315°
-        if(pendiente < 7 * M_PI / 4) {
-            if(i % 2 == 0)
-                SDL_RenderLine(renderer, p1.x + i, p1.y, p2.x + i, p2.y);
-            else 
-                SDL_RenderLine(renderer, p1.x - i, p1.y, p2.x - i, p2.y);
+void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float grosor) {
+    const float angle = std::atan2f(p2.y - p1.y, p2.x - p1.x);
+    SDL_FPoint points[4] = {
+        {
+            p1.x + grosor * std::cosf(angle + M_PI_2) / 2.0f,
+            p1.y + grosor * std::sinf(angle + M_PI_2) / 2.0f
+        }, {
+            p1.x + grosor * std::cosf(angle - M_PI_2) / 2.0f,
+            p1.y + grosor * std::sinf(angle - M_PI_2) / 2.0f
+        }, {
+            p2.x + grosor * std::cosf(angle - M_PI_2) / 2.0f,
+            p2.y + grosor * std::sinf(angle - M_PI_2) / 2.0f
+        }, {
+            p2.x + grosor * std::cosf(angle + M_PI_2) / 2.0f,
+            p2.y + grosor * std::sinf(angle + M_PI_2) / 2.0f
         }
+    };
 
-        //  45° < m < 135° 
-        // 225° < m < 315°
-        if((pendiente > M_PI / 4 && pendiente < 3 * M_PI / 4) || (pendiente > 5 * M_PI / 4 && pendiente < 7 * M_PI / 4)) {
-            if(i % 2 == 0)
-                SDL_RenderLine(renderer, p1.x + i, p1.y, p2.x + i, p2.y);
-            else
-                SDL_RenderLine(renderer, p1.x - i, p1.y, p2.x - i, p2.y);
-        } else {
-            if(i % 2 == 0)
-                SDL_RenderLine(renderer, p1.x, p1.y + 1, p2.x, p2.y + 1);
-            else
-                SDL_RenderLine(renderer, p1.x, p1.y - 1, p2.x, p2.y - 1);
+    SDL_Color c;
+    SDL_GetRenderDrawColor(renderer, &c.r, &c.g, &c.b, &c.a);
+
+
+    const SDL_FColor fc = ColorToFColor(c);
+    SDL_Vertex vertex[2][3] = {
+        {
+            {points[0], fc, {0.0f, 0.0f}},
+            {points[1], fc, {0.0f, 0.0f}},
+            {points[2], fc, {0.0f, 0.0f}}
+        }, {
+            {points[0], fc, {0.0f, 0.0f}},
+            {points[3], fc, {0.0f, 0.0f}},
+            {points[2], fc, {0.0f, 0.0f}}
         }
-    }
+    };
+
+    SDL_RenderGeometry(renderer, NULL, vertex[0], 3, NULL, 0);
+    SDL_RenderGeometry(renderer, NULL, vertex[1], 3, NULL, 0);
+
+
+    // ----     DEBUG       ----
+    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    // SDL_RenderLine(
+    //     renderer, 
+    //     points[0].x, points[0].y,
+    //     points[2].x, points[2].y
+    // );
+
+    // for(int i = 0; i < 4; i++) {
+    //     if(i == 3) {
+    //         SDL_RenderLine(
+    //             renderer,
+    //             points[i].x, points[i].y,
+    //             points[0].x, points[0].y
+    //         );
+
+    //         break;
+    //     }
+
+    //     SDL_RenderLine(
+    //         renderer, 
+    //         points[i].x, points[i].y, 
+    //         points[i + 1].x, points[i + 1].y
+    //     );
+    // }
+
+    // SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 }
 
 #pragma region Graph_Window

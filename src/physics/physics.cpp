@@ -205,13 +205,13 @@ physics::Vector::Vector(std::string name)
     this->name = name;
 }
 
-void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, bool draw_name) {
+void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name) {
     SDL_FColor render_color = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};
     SDL_FPoint vector_point = this->getVectorPoint(origin);
     SDL_GetRenderDrawColorFloat(renderer, &render_color.r, &render_color.g, &render_color.b, &render_color.a);
 
     // Dibujado de la linea de la flecha
-    render::thickLine(renderer, origin, vector_point, 3);
+    render::thickLine(renderer, origin, vector_point, grosor);
 
     // Dibujado del nombre del vector
     int font_size = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
