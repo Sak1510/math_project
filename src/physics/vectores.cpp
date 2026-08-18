@@ -3,9 +3,11 @@
 
 // Variables y objetos globales 
 std::vector<physics::Vector> vectors = {
-    physics::Vector(200.0, 0.0, render::CoordSystem::polar, "V1"),
-    physics::Vector(200.0, PI / 2, render::CoordSystem::polar, "V2")
+    physics::Vector(5.0, 0.0, render::CoordSystem::polar, "V1"),
+    physics::Vector(5.0, PI / 2, render::CoordSystem::polar, "V2")
 };
+
+render::Axis_Coord_System coord_system_vector;
 
 physics::Vector vector_sum;
 physics::Vector vector_sub;
@@ -32,11 +34,15 @@ bool radianes = true;
 // Funciones de uso interno
 void fvetors_ImGuiParam(const char *str_name, bool &menu);
 void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu) {
+    SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, 255);
     window_center = {GW_Window.width / 2, GW_Window.height / 2};
+
+    coord_system_vector.setGraph_Window(GW_Window);
+    coord_system_vector.setOrigin(window_center);
+    coord_system_vector.render();
 
     // Dibujado de las operaciones con vectors
     if(sum_vectors) {
-        SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
         if(sum_between_vectors) {
             vector_parallel1 = vectors[1];
             vector_parallel2 = vectors[0];
@@ -72,19 +78,22 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     if(sub_vectors) {
         SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
         vector_negative = vectors[1] * -1.0;
-        vector_negative.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), vector_grosor);
+        render::cartesian_point_2d vector_negative_point = coord_system_vector.subPixeToCartesian(vectors[0].getVectorPoint(window_center));
+        vector_negative.drawOnAxisCoordSystem(coord_system_vector, vector_negative_point, vector_grosor);
+        //vector_negative.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), vector_grosor);
 
         vector_sub = vectors[0] - vectors[1];
         vector_sub.name = "v_sub";
         
         SDL_SetRenderDrawColor(GW_Window.renderer, 255, 0, 0, 255);
-        vector_sub.drawVector(GW_Window.renderer, window_center, vector_grosor);
+        vector_sub.drawOnAxisCoordSystem(coord_system_vector, {0.0f, 0.0f}, vector_grosor);
+        //vector_sub.drawVector(GW_Window.renderer, window_center, vector_grosor);
     }
 
     // Vector Unitario
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
     for(int i = 0; i < vectors.size(); i++) {
-        vectors[i].drawVector(GW_Window.renderer, window_center, vector_grosor);
+        vectors[i].drawOnAxisCoordSystem(coord_system_vector, {0.0f, 0.0f}, vector_grosor);
     }
 
     // Renderizar circulo como origne de vectores

@@ -1,3 +1,5 @@
 executable/
-math.code-workspace
 .vscode/
+
+math.code-workspace
+*.ini

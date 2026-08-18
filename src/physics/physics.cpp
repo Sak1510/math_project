@@ -222,7 +222,7 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
     render::thickLine(renderer, origin, limit_point, grosor);
 
     // Dibujado de la flecha del vector
-    render::triangleDirection(renderer, limit_point, vector_point, 2.0f * grosor);
+    render::triangleDirection(renderer, limit_point, vector_point, 2.5f * grosor);
 
     // Dibujado del nombre del vector
     int font_size = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
@@ -234,13 +234,14 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
         SDL_RenderDebugText(renderer, vector_point.x + font_size, vector_point.y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE / 2, this->name.c_str());
 }
 
-void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, bool draw_name) {
+void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name) {
     const float scaler_x = coord_system.getAxisScaler(render::CoordType::X);
     const float scaler_y = coord_system.getAxisScaler(render::CoordType::Y);
 
-    
+    SDL_FPoint window_origin = coord_system.cartesianToSubPixel(origin);
+    Vector vector_copy(this->component_x * scaler_x, this->component_y * scaler_y, render::CoordSystem::cartesian);
+    vector_copy.drawVector(coord_system.GW_Window.renderer, window_origin, grosor, draw_name);
 }
-
 
 /* ---- Setters() of Vector ---- */
 void physics::Vector::setPolar(double r, double theta) {
@@ -285,6 +286,7 @@ SDL_FPoint physics::Vector::getVectorPoint(SDL_FPoint origin) {
         (float)(origin.y - this->module * std::sin(this->direction))
     };
 }
+
 
 
 

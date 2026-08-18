@@ -119,9 +119,11 @@ namespace physics {
         DoublePolar getPolar();
         DoubleCartesian getCartesian();
         SDL_FPoint getVectorPoint(SDL_FPoint origin);
-
         void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name = true);
-        void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, bool draw_name = true);
+
+        // Implementaciones con Axis_Coord_System
+        void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name = true);
+        render::cartesian_point_2d getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin);
 
         Vector operator+(const Vector &v_sum) const;
         Vector operator-(const Vector &v_res) const;
