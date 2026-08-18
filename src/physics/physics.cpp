@@ -234,14 +234,27 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
         SDL_RenderDebugText(renderer, vector_point.x + font_size, vector_point.y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE / 2, this->name.c_str());
 }
 
-void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name) {
+physics::Vector physics::Vector::getCopyVectorOnAxisCoordSystem(render::Axis_Coord_System coord_system) {
     const float scaler_x = coord_system.getAxisScaler(render::CoordType::X);
     const float scaler_y = coord_system.getAxisScaler(render::CoordType::Y);
 
-    SDL_FPoint window_origin = coord_system.cartesianToSubPixel(origin);
     Vector vector_copy(this->component_x * scaler_x, this->component_y * scaler_y, render::CoordSystem::cartesian);
+    return vector_copy;
+}
+
+void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name) {
+    Vector vector_copy = this->getCopyVectorOnAxisCoordSystem(coord_system);
+    SDL_FPoint window_origin = coord_system.cartesianToSubPixel(origin);
     vector_copy.drawVector(coord_system.GW_Window.renderer, window_origin, grosor, draw_name);
 }
+
+render::cartesian_point_2d physics::Vector::getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin) {
+    Vector vector_copy = this->getCopyVectorOnAxisCoordSystem(coord_system);
+    SDL_FPoint origin_axis_coord = coord_system.cartesianToSubPixel(origin);
+    render::cartesian_point_2d vector_point_coord_system = coord_system.subPixeToCartesian(vector_copy.getVectorPoint(origin_axis_coord));
+    return vector_point_coord_system;
+}
+
 
 /* ---- Setters() of Vector ---- */
 void physics::Vector::setPolar(double r, double theta) {

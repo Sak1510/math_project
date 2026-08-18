@@ -8,6 +8,7 @@ std::vector<physics::Vector> vectors = {
 };
 
 render::Axis_Coord_System coord_system_vector;
+render::cartesian_point_2d coord_system_origin = {0.0f, 0.0f}; 
 
 physics::Vector vector_sum;
 physics::Vector vector_sub;
@@ -21,7 +22,7 @@ SDL_Color c_black = {0, 0, 0, SDL_ALPHA_OPAQUE};
 
 // ImGui Params
 int vector_count = 3;
-float vector_grosor = 3.0f;
+float vector_grosor = 8.5f;
 
 bool polar_coords = true;
 bool slider_components = false;
@@ -47,8 +48,15 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
             vector_parallel1 = vectors[1];
             vector_parallel2 = vectors[0];
 
-            vector_parallel1.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), false);
-            vector_parallel2.drawVector(GW_Window.renderer, vectors[1].getVectorPoint(window_center), false);
+            // vector_parallel1.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), false);
+            // vector_parallel2.drawVector(GW_Window.renderer, vectors[1].getVectorPoint(window_center), false);
+
+            render::cartesian_point_2d p;
+            p = coord_system_vector.subPixeToCartesian(vectors[0].getVectorPoint(window_center));
+            vector_parallel1.drawOnAxisCoordSystem(coord_system_vector, p, vector_grosor);
+
+            p = coord_system_vector.subPixeToCartesian(vectors[1].getVectorPoint(window_center));
+            vector_parallel2.drawOnAxisCoordSystem(coord_system_vector, p, vector_grosor);
 
             vector_sum = vectors[0] + vectors[1];
             vector_sum.name = "v_sum";
@@ -61,26 +69,27 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
                 sum_y += vect_s.getCartesian().y;
             }
 
-            SDL_FPoint last_vector_point = vectors[0].getVectorPoint(window_center);
+            render::cartesian_point_2d last_vector_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
             for(int i = 1; i < vectors.size(); i++) {
                 physics::Vector last_vector_sum = vectors[i];
-                last_vector_sum.drawVector(GW_Window.renderer, last_vector_point, vector_grosor);
-                last_vector_point = vectors[i].getVectorPoint(last_vector_point);
+                SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
+                last_vector_sum.drawOnAxisCoordSystem(coord_system_vector, last_vector_point, vector_grosor);
+                last_vector_point = vectors[i].getVectorPointOnAxisCoordSystem(coord_system_vector, last_vector_point);
             }
 
             vector_sum.setCartesian(sum_x, sum_y);
         }
   
         SDL_SetRenderDrawColor(GW_Window.renderer, 0, 255, 0, 255);
-        vector_sum.drawVector(GW_Window.renderer, window_center, vector_grosor);   
+        // vector_sum.drawVector(GW_Window.renderer, window_center, vector_grosor);
+        vector_sum.drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor);   
     }
 
     if(sub_vectors) {
         SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
         vector_negative = vectors[1] * -1.0;
-        render::cartesian_point_2d vector_negative_point = coord_system_vector.subPixeToCartesian(vectors[0].getVectorPoint(window_center));
+        render::cartesian_point_2d vector_negative_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
         vector_negative.drawOnAxisCoordSystem(coord_system_vector, vector_negative_point, vector_grosor);
-        //vector_negative.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), vector_grosor);
 
         vector_sub = vectors[0] - vectors[1];
         vector_sub.name = "v_sub";
@@ -93,7 +102,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     // Vector Unitario
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
     for(int i = 0; i < vectors.size(); i++) {
-        vectors[i].drawOnAxisCoordSystem(coord_system_vector, {0.0f, 0.0f}, vector_grosor);
+        vectors[i].drawOnAxisCoordSystem(coord_system_vector, {0.0f, 0.0f}, vector_grosor, true);
     }
 
     // Renderizar circulo como origne de vectores
@@ -158,7 +167,7 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
                         ImGui::SliderDouble("Modulo", &polar_coords.r, 0.0, 100.0, "%.6f");
                         ImGui::SliderAngle("Direccion", &polar_coords.a, -360.0, +360.0, "%.2f");
                     } else {
-                        ImGui::InputDouble("Modulo", &polar_coords.r, 10.0, 100.0);
+                        ImGui::InputDouble("Modulo", &polar_coords.r, 1.0, 2.0);
                         ImGui::SliderAngle("Direction", &polar_coords.a, -360.0, +360.0, "%.2f");
                     }
 

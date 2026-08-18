@@ -122,6 +122,7 @@ namespace physics {
         void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name = true);
 
         // Implementaciones con Axis_Coord_System
+        Vector getCopyVectorOnAxisCoordSystem(render::Axis_Coord_System coord_system);
         void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name = true);
         render::cartesian_point_2d getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin);
 
