@@ -15,17 +15,7 @@ const float SPACE_AXIS_MEDIA_SPACE = (SPACE_AXIS_MIN_SPACE + SPACE_AXIS_MAX_SPAC
 #define LINE_GROSOR 3
 
 namespace render {
-    // --- Typedef Structure ---
-    typedef struct FloatCartesian2 {
-        float x;
-        float y;
-    } FloatCartesian2;
-
-    typedef struct FloatPolar2 {
-        float r;
-        float a;
-    } FloatPolar2;
-
+    // --- Enums define ---
     enum AxisSigne {
         neg = -1,
         pos = 1
@@ -40,6 +30,17 @@ namespace render {
         cartesian,
         polar
     };
+
+    // --- Typedef Structure ---
+    typedef struct FloatCartesian2 {
+        float x;
+        float y;
+    } FloatCartesian2;
+
+    typedef struct FloatPolar2 {
+        float r;
+        float a;
+    } FloatPolar2;
 
     typedef struct cartesian_axis_info {
         //          ---- Variables del eje principal ----
