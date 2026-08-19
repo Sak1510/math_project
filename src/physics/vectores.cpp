@@ -8,7 +8,7 @@ std::vector<physics::Vector> vectors = {
 };
 
 render::Axis_Coord_System coord_system_vector;
-render::cartesian_point_2d coord_system_origin = {0.0f, 0.0f}; 
+render::FloatCartesian2 coord_system_origin = {0.0f, 0.0f}; 
 
 physics::Vector vector_sum;
 physics::Vector vector_sub;
@@ -51,7 +51,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
             // vector_parallel1.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), false);
             // vector_parallel2.drawVector(GW_Window.renderer, vectors[1].getVectorPoint(window_center), false);
 
-            render::cartesian_point_2d p;
+            render::FloatCartesian2 p;
             p = coord_system_vector.subPixeToCartesian(vectors[0].getVectorPoint(window_center));
             vector_parallel1.drawOnAxisCoordSystem(coord_system_vector, p, vector_grosor);
 
@@ -69,7 +69,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
                 sum_y += vect_s.getCartesian().y;
             }
 
-            render::cartesian_point_2d last_vector_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
+            render::FloatCartesian2 last_vector_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
             for(int i = 1; i < vectors.size(); i++) {
                 physics::Vector last_vector_sum = vectors[i];
                 SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
@@ -88,7 +88,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     if(sub_vectors) {
         SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
         vector_negative = vectors[1] * -1.0;
-        render::cartesian_point_2d vector_negative_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
+        render::FloatCartesian2 vector_negative_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
         vector_negative.drawOnAxisCoordSystem(coord_system_vector, vector_negative_point, vector_grosor);
 
         vector_sub = vectors[0] - vectors[1];
@@ -161,26 +161,26 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
                 ImGui::InputText("Nombre", &vectors[i].name);
 
                 if(polar_coords) {
-                    physics::DoublePolar polar_coords = vectors[i].getPolar();
+                    render::FloatPolar2 v_polar_coords = vectors[i].getPolar();
 
                     if(slider_components) {
-                        ImGui::SliderDouble("Modulo", &polar_coords.r, 0.0, 100.0, "%.6f");
-                        ImGui::SliderAngle("Direccion", &polar_coords.a, -360.0, +360.0, "%.2f");
+                        ImGui::SliderFloat("Modulo", &v_polar_coords.r, 0.0, 100.0, "%.6f");
+                        ImGui::SliderAngle("Direccion", &v_polar_coords.a, -360.0, +360.0, "%.2f");
                     } else {
-                        ImGui::InputDouble("Modulo", &polar_coords.r, 1.0, 2.0);
-                        ImGui::SliderAngle("Direction", &polar_coords.a, -360.0, +360.0, "%.2f");
+                        ImGui::InputFloat("Modulo", &v_polar_coords.r, 1.0, 2.0);
+                        ImGui::SliderAngle("Direction", &v_polar_coords.a, -360.0, +360.0, "%.2f");
                     }
 
-                    vectors[i].setPolar(polar_coords);
+                    vectors[i].setPolar(v_polar_coords);
                 } else {
-                    physics::DoubleCartesian cartesian_coords = vectors[i].getCartesian();
+                    render::FloatCartesian2 cartesian_coords = vectors[i].getCartesian();
 
                     if(slider_components) {
-                        ImGui::SliderDouble("Fx", &cartesian_coords.x, -100.0, 100.0, "%.6f");
-                        ImGui::SliderDouble("Fy", &cartesian_coords.y, -100.0, 100.0, "%.6f");
+                        ImGui::SliderFloat("Fx", &cartesian_coords.x, -100.0, 100.0, "%.6f");
+                        ImGui::SliderFloat("Fy", &cartesian_coords.y, -100.0, 100.0, "%.6f");
                     } else {
-                        ImGui::InputDouble("Fx", &cartesian_coords.x, 10.0, 100.0);
-                        ImGui::InputDouble("Fy", &cartesian_coords.y, 10.0, 100.0);
+                        ImGui::InputFloat("Fx", &cartesian_coords.x, 10.0, 100.0);
+                        ImGui::InputFloat("Fy", &cartesian_coords.y, 10.0, 100.0);
                     }
 
                     vectors[i].setCartesian(cartesian_coords);

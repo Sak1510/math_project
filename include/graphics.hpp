@@ -15,6 +15,17 @@ const float SPACE_AXIS_MEDIA_SPACE = (SPACE_AXIS_MIN_SPACE + SPACE_AXIS_MAX_SPAC
 #define LINE_GROSOR 3
 
 namespace render {
+    // --- Typedef Structure ---
+    typedef struct FloatCartesian2 {
+        float x;
+        float y;
+    } FloatCartesian2;
+
+    typedef struct FloatPolar2 {
+        float r;
+        float a;
+    } FloatPolar2;
+
     enum AxisSigne {
         neg = -1,
         pos = 1
@@ -53,24 +64,6 @@ namespace render {
         float       line_size = LINE_SIZE;
         float       line_space = SPACE_AXIS_MEDIA_SPACE;
     } cartesian_axis_info;
-
-    typedef struct cartesian_point_2d {
-        float x;
-        float y;
-    } cartesian_point_2d;
-
-    typedef struct cartesian_point_3d {
-        float x;
-        float y;
-        float z;
-    } cartesian_point_3d;
-
-    typedef struct polar_point_2d {
-        float r;
-        float a;
-    } polar_point_2d;
-
-    // void renderTriangle(const SDL_FPoint origin, const float triangle_width, const float triangle_height);
 
     /**
      *  Convierte un struct `SDL_FColor` en uno `SDL_Color`.
@@ -239,7 +232,7 @@ namespace render {
          * 
          *  \returns Punto con las coordenadas a nivel sub-pixel.
          */
-        const SDL_FPoint cartesianToSubPixel(cartesian_point_2d p);
+        const SDL_FPoint cartesianToSubPixel(FloatCartesian2 p);
 
         /**
          *  Convierte las coordenadas respecto a la ventana a nivel sub-pixel, a coordenadas respecto al eje coordenado.
@@ -249,7 +242,7 @@ namespace render {
          * 
          *  \returns Punto con las coordenadas respecto a `axis_info`.
          */
-        const cartesian_point_2d subPixeToCartesian(float x, float y);
+        const FloatCartesian2 subPixeToCartesian(float x, float y);
 
         /**
          *  Convierte las coordenadas respecto a la ventana a nivel sub-pixel, a coordenadas respecto al eje coordenado.
@@ -259,7 +252,7 @@ namespace render {
          * 
          *  \returns Punto con las coordenadas respecto a `axis_info`.
          */
-        const cartesian_point_2d subPixeToCartesian(SDL_FPoint p);
+        const FloatCartesian2 subPixeToCartesian(SDL_FPoint p);
 
         /**
          *  Muestra las coordenadas del mouse sobre el plano cartesiano. Dependiendo como se le indique, puede mostrar 

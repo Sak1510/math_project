@@ -242,16 +242,16 @@ physics::Vector physics::Vector::getCopyVectorOnAxisCoordSystem(render::Axis_Coo
     return vector_copy;
 }
 
-void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name) {
+void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin, float grosor, bool draw_name) {
     Vector vector_copy = this->getCopyVectorOnAxisCoordSystem(coord_system);
     SDL_FPoint window_origin = coord_system.cartesianToSubPixel(origin);
     vector_copy.drawVector(coord_system.GW_Window.renderer, window_origin, grosor, draw_name);
 }
 
-render::cartesian_point_2d physics::Vector::getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin) {
+render::FloatCartesian2 physics::Vector::getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin) {
     Vector vector_copy = this->getCopyVectorOnAxisCoordSystem(coord_system);
     SDL_FPoint origin_axis_coord = coord_system.cartesianToSubPixel(origin);
-    render::cartesian_point_2d vector_point_coord_system = coord_system.subPixeToCartesian(vector_copy.getVectorPoint(origin_axis_coord));
+    render::FloatCartesian2 vector_point_coord_system = coord_system.subPixeToCartesian(vector_copy.getVectorPoint(origin_axis_coord));
     return vector_point_coord_system;
 }
 
@@ -265,8 +265,8 @@ void physics::Vector::setPolar(double r, double theta) {
     this->component_y = r * std::sin(theta);
 }
 
-void physics::Vector::setPolar(DoublePolar polar) {
-    setPolar(polar.r, polar.a);
+void physics::Vector::setPolar(render::FloatPolar2 polar) {
+    this->setPolar(polar.r, polar.a);
 }
 
 void physics::Vector::setCartesian(double x, double y) {
@@ -277,19 +277,19 @@ void physics::Vector::setCartesian(double x, double y) {
     this->direction = std::atan2(this->component_y, this->component_x);
 }
 
-void physics::Vector::setCartesian(DoubleCartesian cartesian) {
+void physics::Vector::setCartesian(render::FloatCartesian2 cartesian) {
     setCartesian(cartesian.x, cartesian.y);
 }
 
 
 
 /* ---- Getters() of Vector ---- */
-physics::DoublePolar physics::Vector::getPolar() {
+render::FloatPolar2 physics::Vector::getPolar() {
     return {this->module, this->direction};
 }
 
 // Return the angle theta and not the coord y bruuuuuhhhh
-physics::DoubleCartesian physics::Vector::getCartesian() {
+render::FloatCartesian2 physics::Vector::getCartesian() {
     return {this->component_x, this->component_y};
 }
 

@@ -604,13 +604,14 @@ int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(
     const float scaler_y = getAxisScaler(CoordType::Y);
     SDL_FPoint p1, p2;
 
-    float i = 0, j, x;
+    float j, x;
+    float i = 0.0f, fsigne = (signe == AxisSigne::pos) ? 1.0f : -1.0f;
     float sum = 0.02f;
     int calculos = 0;
     bool in_screen;
     while(true) {
         for(j = 0; j < 1; j += sum) {
-            x = signe * (i + j);
+            x = fsigne * (i + j);
             p1.x = origin.x + x * scaler_x;
             p1.y = origin.y - f(x) * scaler_y;
 
@@ -744,18 +745,18 @@ const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(float x, float y
     };
 }
 
-const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(render::cartesian_point_2d p) {
+const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(render::FloatCartesian2 p) {
     return cartesianToSubPixel(p.x, p.y);
 }
 
-const render::cartesian_point_2d render::Axis_Coord_System::subPixeToCartesian(float x, float y) {
+const render::FloatCartesian2 render::Axis_Coord_System::subPixeToCartesian(float x, float y) {
     return {
         (x - origin.x) / getAxisScaler(CoordType::X),
         - (y - origin.y) / getAxisScaler(CoordType::Y)
     };
 }
 
-const render::cartesian_point_2d render::Axis_Coord_System::subPixeToCartesian(SDL_FPoint p) {
+const render::FloatCartesian2 render::Axis_Coord_System::subPixeToCartesian(SDL_FPoint p) {
     return subPixeToCartesian(p.x, p.y);
 }
 
@@ -765,7 +766,7 @@ void render::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
         return;
 
     ImVec2 mouse_pos = ImGui::GetMousePos();
-    cartesian_point_2d cartesian_coords = subPixeToCartesian(mouse_pos.x, mouse_pos.y);
+    FloatCartesian2 cartesian_coords = subPixeToCartesian(mouse_pos.x, mouse_pos.y);
     
     SDL_RenderDebugTextFormat(
         GW_Window.renderer, 

@@ -77,17 +77,6 @@ namespace physics {
     double SI_Length_toUS(double value, SI_length SI, US_length US = US_length::US_ft);
     double US_Length_toSI(double value, US_length US, SI_length SI = SI_length::SI_m);
 
-    // --- Typedef Structure ---
-    typedef struct DoubleCartesian {
-        double x;
-        double y;
-    } DoubleCartesian;
-
-    typedef struct DoublePolar {
-        double r;
-        double a;
-    } DoublePolar;
-
     typedef struct SI_velocity {
         double v;
         SI_length si_length;
@@ -103,36 +92,32 @@ namespace physics {
     // --- Physics Vectors ---
     class Vector {
     private:
-        double module;
-        double direction;
-        double component_x;
-        double component_y;
+        float module;
+        float direction;
+        float component_x;
+        float component_y;
 
     public:
         std::string name;
         
         void setPolar(double r, double theta);
         void setCartesian(double x, double y);
-        void setPolar(DoublePolar polar);
-        void setCartesian(DoubleCartesian cartesian);
+        void setPolar(render::FloatPolar2 polar);
+        void setCartesian(render::FloatCartesian2 cartesian);
 
-        DoublePolar getPolar();
-        DoubleCartesian getCartesian();
+        render::FloatPolar2 getPolar();
+        render::FloatCartesian2 getCartesian();
         SDL_FPoint getVectorPoint(SDL_FPoint origin);
         void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name = true);
 
         // Implementaciones con Axis_Coord_System
         Vector getCopyVectorOnAxisCoordSystem(render::Axis_Coord_System coord_system);
-        void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin, float grosor, bool draw_name = true);
-        render::cartesian_point_2d getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::cartesian_point_2d origin);
+        void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin, float grosor, bool draw_name = true);
+        render::FloatCartesian2 getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin);
 
         Vector operator+(const Vector &v_sum) const;
         Vector operator-(const Vector &v_res) const;
         Vector operator*(const double mult) const;
-
-        // Vector& operator+=(const Vector &v_sum) const;
-        // Vector& operator-=(const Vector &v_res) const;
-        // Vector& operator*=(const double mult) const;
 
         Vector(void);
         Vector(std::string name);
