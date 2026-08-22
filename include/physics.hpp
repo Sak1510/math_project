@@ -108,6 +108,7 @@ namespace physics {
         render::FloatPolar2 getPolar();
         render::FloatCartesian2 getCartesian();
         SDL_FPoint getVectorPoint(SDL_FPoint origin);
+
         void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name = true);
 
         // Implementaciones con Axis_Coord_System

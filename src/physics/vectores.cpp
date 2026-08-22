@@ -24,6 +24,7 @@ SDL_Color c_black = {0, 0, 0, SDL_ALPHA_OPAQUE};
 int vector_count = 3;
 float vector_grosor = 8.5f;
 
+bool fvectors_init = false;
 bool polar_coords = true;
 bool slider_components = false;
 bool sum_vectors = true;
@@ -35,9 +36,12 @@ bool radianes = true;
 // Funciones de uso interno
 void fvetors_ImGuiParam(const char *str_name, bool &menu);
 void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu) {
+    if(!fvectors_init) {
+        window_center = {GW_Window.width / 2, GW_Window.height / 2};
+        fvectors_init = !fvectors_init;
+    }
+    
     SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, 255);
-    window_center = {GW_Window.width / 2, GW_Window.height / 2};
-
     coord_system_vector.setGraph_Window(GW_Window);
     coord_system_vector.setOrigin(window_center);
     coord_system_vector.render();
@@ -95,19 +99,19 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
         vector_sub.name = "v_sub";
         
         SDL_SetRenderDrawColor(GW_Window.renderer, 255, 0, 0, 255);
-        vector_sub.drawOnAxisCoordSystem(coord_system_vector, {0.0f, 0.0f}, vector_grosor);
-        //vector_sub.drawVector(GW_Window.renderer, window_center, vector_grosor);
+        vector_sub.drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor);
     }
 
     // Vector Unitario
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
     for(int i = 0; i < vectors.size(); i++) {
-        vectors[i].drawOnAxisCoordSystem(coord_system_vector, {0.0f, 0.0f}, vector_grosor, true);
+        vectors[i].drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor, true);
     }
 
     // Renderizar circulo como origne de vectores
     SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
-    render::circle(GW_Window.renderer, window_center, vector_grosor / 2.0f, c_black);
+    SDL_FPoint origin_p = coord_system_vector.cartesianToSubPixel(coord_system_origin);
+    render::circle(GW_Window.renderer, origin_p, vector_grosor / 2.0f, c_black);
 
     //Renderizado del menu
     fvetors_ImGuiParam(str_name, menu);
@@ -124,6 +128,12 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
         ImGui::Checkbox("Radianes", &radianes);
         ImGui::Checkbox("Sliders", &slider_components);
         ImGui::SliderFloat("Vector Grosor", &vector_grosor, 1.0f, 20.0f);
+        
+        float sl_fv[2] = {coord_system_origin.x, coord_system_origin.y};
+        ImGui::SliderFloat2("Origen", sl_fv, -10.0f, 10.0f);
+        coord_system_origin.x = sl_fv[0];
+        coord_system_origin.y = sl_fv[1];
+
 
         ImGui::SeparatorText("Información General");
         ImGui::TextColored({0, 0, 205, 255}, "Número de Vectores: %d", (int)vectors.size());
