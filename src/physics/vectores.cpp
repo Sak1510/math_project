@@ -3,8 +3,13 @@
 
 // Variables y objetos globales 
 std::vector<physics::Vector> vectors = {
-    physics::Vector(5.0, 0.0, render::CoordSystem::polar, "V1"),
-    physics::Vector(5.0, PI / 2, render::CoordSystem::polar, "V2")
+    physics::Vector(3.0, 0.0, render::CoordSystem::polar, "V1"),
+    physics::Vector(3.0, PI / 2, render::CoordSystem::polar, "V2")
+};
+
+std::vector<physics::Vector> normal_vectors = {
+    physics::Vector(),
+    physics::Vector()
 };
 
 render::Axis_Coord_System coord_system_vector;
@@ -102,16 +107,23 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
         vector_sub.drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor);
     }
 
-    // Vector Unitario
-    SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE_FLOAT);
     for(int i = 0; i < vectors.size(); i++) {
-        vectors[i].drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor, true);
+        SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+        vectors.at(i).drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor, true);
+
+        // Vectores Unitarios
+        normal_vectors.at(i) = vectors.at(i).getNormalVector();
+
+        SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
+        normal_vectors.at(i).drawOnAxisCoordSystem(coord_system_vector, coord_system_origin, vector_grosor, true);
     }
 
     // Renderizar circulo como origne de vectores
-    SDL_SetRenderDrawColor(GW_Window.renderer, 26, 60, 195, SDL_ALPHA_OPAQUE);
     SDL_FPoint origin_p = coord_system_vector.cartesianToSubPixel(coord_system_origin);
     render::circle(GW_Window.renderer, origin_p, vector_grosor / 2.0f, c_black);
+
+    // Colocar fondo de color blanco
+    SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
     //Renderizado del menu
     fvetors_ImGuiParam(str_name, menu);
@@ -153,6 +165,7 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
         if(ImGui::Button("Añadir Vector")) {
             std::string vector_name = "V" + std::to_string(vector_count);
             vectors.push_back(physics::Vector(vector_name));
+            normal_vectors.push_back(physics::Vector(vector_name));
             vector_count++;
         }
 

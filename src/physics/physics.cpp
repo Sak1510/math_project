@@ -205,7 +205,8 @@ physics::Vector::Vector(std::string name)
     this->name = name;
 }
 
-// TODO: LA DIRECCIÓN DE LA FLECHA ES INCORRECTA CUANDO EL MODULO DEL VECTOR ES NEGATIVO
+// TODO: LA DIRECCIÓN DE LA FLECHA ES INCORRECTA CUANDO EL MODULO DEL VECTOR ES NEGATIVO 
+// UPDATE: Solucionado. 21/08/2026
 void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name) {
     if(std::abs(this->module) <= 1E-6f)
         return;
@@ -300,7 +301,13 @@ SDL_FPoint physics::Vector::getVectorPoint(SDL_FPoint origin) {
     };
 }
 
-
+physics::Vector physics::Vector::getNormalVector(void) {
+    return Vector(
+        this->component_x / std::abs(this->module), 
+        this->component_y / std::abs(this ->module), 
+        render::CoordSystem::cartesian
+    );
+}
 
 
 /* ---- Operators of Vector ---- */ 
