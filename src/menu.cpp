@@ -23,6 +23,7 @@ menu::CategoryMenu physics = menu::CategoryMenu(
     "Física Clásica.", {
         "Conversión de Unidades de Medida",
         "Vectores",
+        "Espacios Vectoriales",
         "Pendulos (simple y doble)",
         "Caída Libre",
         "Movimiento Rotacional",
@@ -30,17 +31,11 @@ menu::CategoryMenu physics = menu::CategoryMenu(
     }, {
         menu::sim::units,
         menu::sim::vectores,
+        menu::sim::vector_space,
         menu::sim::pendulos,
         menu::sim::gravedad,
         menu::sim::movimiento_rotacional,
         menu::sim::sistema_solar
-});
-
-menu::CategoryMenu calcule = menu::CategoryMenu(
-    "Calculo Infinitesiamal.", {
-
-    }, {
-
 });
 
 menu::CategoryMenu calcule_methods = menu::CategoryMenu(
@@ -74,7 +69,7 @@ menu::CategoryMenu selects = menu::CategoryMenu(
 });
 
 std::vector<menu::CategoryMenu> categories = {
-    graphics, physics, selects, calcule
+    graphics, physics
 };
 
 void menu::main_menu(menu::sim &menu_selected, bool &menu_on, std::string &selection_name) {

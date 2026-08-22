@@ -219,6 +219,10 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
             pmain::solar_system(GW_Window, begin_name.c_str(), menu_on);
             break;
 
+        case menu::sim::vector_space:
+            pmain::space_vectors(GW_Window, begin_name.c_str(), menu_on);
+            break;
+
         default:
             ImGui::Begin(begin_name.c_str());
             if(ImGui::Button("Volver al menu principal."))
