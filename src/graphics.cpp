@@ -714,15 +714,11 @@ void render::Axis_Coord_System::scaleAxis(CoordType axis, const float scaler) {
 
 
 int render::Axis_Coord_System::axisModified() {
-    const float mouse_scale = 3.0f;
-
     // Input/Outputs from "Dear ImGui"
     ImGuiIO &io = ImGui::GetIO();
-
     ImVec2 motion = io.MouseDelta;
     float wheel = io.MouseWheel;
 
-    SDL_Cursor *hand;
     bool inWindowWidth = motion.x >= -GW_Window.width && motion.x <= GW_Window.width;
     bool inWindowHeight = motion.y >= -GW_Window.height && motion.y <= GW_Window.height;
 
@@ -730,6 +726,7 @@ int render::Axis_Coord_System::axisModified() {
     if(!inWindowWidth || !inWindowHeight)
         return -1;
 
+    SDL_Cursor *hand;
     bool left_click = io.MouseDown[0];
     if(!io.WantCaptureMouse) {
         if(left_click) {
@@ -739,6 +736,7 @@ int render::Axis_Coord_System::axisModified() {
         } else hand = SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT);
     }
 
+    const float mouse_scale = 3.0f;
     scaleAxis(CoordType::X, wheel * mouse_scale);
     scaleAxis(CoordType::Y, wheel * mouse_scale);
 
@@ -794,39 +792,3 @@ void render::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
         );
 }
 #pragma endregion /* Axis_Coord_System */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const float delta_f(const float (* f)(float), float x1, float x2) {
-    float delta_y, delta_x;
-
-    delta_x = x2 - x1;
-    delta_y = f(x1 + delta_x) - f(x1);
-
-    return delta_y / delta_x;
-}
-
-const float derivada_f(const float (* f)(float), float x) {
-    float dy, dx = 1E-6;
-    dy = f(x + dx) - f(x);
-
-    return dy / dx;
-}
-
-const float derivada_n(const float (* f)(float), float x, int n) {
-    return 0.0f;
-}
