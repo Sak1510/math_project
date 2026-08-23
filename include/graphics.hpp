@@ -168,8 +168,7 @@ namespace render {
         float width;
         float height;
 
-        void printWidth(void);
-        void printHeight(void);
+        FloatCartesian2 getWindowSize(void);
 
         Graph_Window& operator=(Graph_Window &Graph_Window);
         Graph_Window& operator=(long long _null);

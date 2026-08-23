@@ -9,7 +9,7 @@
 
 bool gc_init = false;
 render::Axis_Coord_System gc_coord_system;
-
+render::FloatCartesian2 window_size;
 
 const float f(float x);
 const float g(float x);
@@ -23,11 +23,14 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
         gc_init = true;
     }
 
+    SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     gc_coord_system.render();
     gc_coord_system.graphFunction(f, 3.0f);
     gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
     gc_coord_system.axisModified();
+
+    window_size = GW_Window.getWindowSize();
 
     // ====         FINAL           ====
     // Colocar fondo de color blanco
@@ -41,6 +44,14 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     ImGui::Begin(str_name, nullptr, ImGuiWindowFlags_NoMove);
     if(ImGui::Button("Volver al menu principal."))
         menu_on = !menu_on;
+
+    #ifdef DEBUG
+    ImGui::Text(
+        "window.width = %.3f\n"
+        "window.hegiht = %.3f",
+        window_size.x, window_size.y
+    );
+    #endif
 
     gc_coord_system.debug(true);
 

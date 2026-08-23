@@ -165,7 +165,6 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
 
     SDL_GetRenderDrawColorFloat(renderer, &c.r, &c.g, &c.b, &c.a);
 
-    #ifndef DEBUG
     SDL_Vertex vertex[6] = {
         {points[0], c, {0.0f, 0.0f}},
         {points[1], c, {0.0f, 0.0f}},
@@ -176,8 +175,8 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
     };
 
     SDL_RenderGeometry(renderer, NULL, vertex, 6, NULL, 0);
-    #else   //----     DEBUG       ----
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    #ifdef DEBUG   //----     DEBUG       ----
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderLine(
         renderer, 
         points[0].x, points[0].y,
@@ -205,14 +204,6 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
 }
 
 #pragma region Graph_Window
-void render::Graph_Window::printWidth(void) {
-    std::cout << "width: " << width << "\n";
-}
-
-void render::Graph_Window::printHeight(void) {
-    std::cout << "height: " << height << "\n";
-}
-
 render::Graph_Window::Graph_Window(void) {
     this->window = NULL;
     this->renderer = NULL;
@@ -239,6 +230,14 @@ render::Graph_Window& render::Graph_Window::operator=(render::Graph_Window &GW_W
     return *this;
 }
 
+render::FloatCartesian2 render::Graph_Window::getWindowSize(void) {
+    SDL_GetWindowSizeInPixels(this->window, &iWidth, &iHeight);
+    this->width = (float)iWidth;
+    this->height = (float)iHeight;
+
+    return {this->width, this->height};
+}
+
 render::Graph_Window& render::Graph_Window::operator=(long long _null) {
     if(_null == NULL)
         Graph_Window();
@@ -250,9 +249,7 @@ render::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
     this->window = window;
     this->renderer = renderer;
 
-    SDL_GetCurrentRenderOutputSize(this->renderer, &iWidth, &iHeight);
-    this->width = (float)iWidth;
-    this->height = (float)iHeight;
+    this->getWindowSize();
 }
 #pragma endregion /* Graph_Window */
 
@@ -435,8 +432,8 @@ int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
 }
 
 int render::Axis_Coord_System::renderAxisX(void) {
-    if(origin.y < 0 || origin.y > GW_Window.height)
-        return 0;
+    // if(origin.y < 0 || origin.y > GW_Window.height)
+    //     return 0;
 
     /**
      *  ---- Orden de Renderizado ----
@@ -445,6 +442,9 @@ int render::Axis_Coord_System::renderAxisX(void) {
      *  3. Eje 
      */
 
+    // Actualiza el tamaño de la ventana
+    GW_Window.getWindowSize();
+    
     renderNumAxisX(AxisSigne::pos);
     renderNumAxisX(AxisSigne::neg);
 
@@ -539,8 +539,8 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
 }
 
 int render::Axis_Coord_System::renderAxisY(void) {
-    if(origin.x < 0 || origin.x > GW_Window.width) 
-        return 0;
+    // if(origin.x < 0 || origin.x > GW_Window.width) 
+    //     return 0;
 
     /**
      *  ---- Orden de Renderizado ----
@@ -549,6 +549,9 @@ int render::Axis_Coord_System::renderAxisY(void) {
      *  3. Eje 
      */
 
+    // Actualiza el tamaño de la ventana
+    GW_Window.getWindowSize();
+    
     renderNumAxisY(AxisSigne::pos);
     renderNumAxisY(AxisSigne::neg);
 
