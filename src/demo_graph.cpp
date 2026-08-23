@@ -4,6 +4,7 @@
 #define BIG_POINT_RADIO 5
 #define BIG_POINT_RESOLUTION 10
 
+const float grosor_line = 3.0f;
 bool graficar = false;
 bool b_func[7] = {
     false,  // Recta
@@ -157,7 +158,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             render::thickLine(GW_Window.renderer, p1, p2, 3);
         }
 
-        defgraph::circunference(GW_Window, coord_system, ccf_h, ccf_k, ccf_r);
+        defgraph::circunference(GW_Window, coord_system, ccf_h, ccf_k, ccf_r, grosor_line);
     }
 
     // Transformación de unidades: D, E, F <=> h, k, r
@@ -280,7 +281,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             white, render::FColorToColor(graph_color[func::f_elipse])
         );
         
-        defgraph::elipse(GW_Window, coord_system, ep_h, ep_k, ep_a, ep_b);
+        defgraph::elipse(GW_Window, coord_system, ep_h, ep_k, ep_a, ep_b, grosor_line);
     }
 
     if(canonica[func::f_elipse]) {
@@ -312,7 +313,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             SDL_ALPHA_OPAQUE
         );
 
-        defgraph::parabole(GW_Window, coord_system, pb_h, pb_k, pb_p);
+        defgraph::parabole(GW_Window, coord_system, pb_h, pb_k, pb_p, grosor_line);
     }
 
     // Valores de la parabola
@@ -335,7 +336,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             graph_color[func::f_hiperbola].g, 
             graph_color[func::f_hiperbola].b, 
             SDL_ALPHA_OPAQUE
-        ); defgraph::hiperbole(GW_Window, coord_system, hp_h, hp_k, hp_a, hp_b);
+        ); defgraph::hiperbole(GW_Window, coord_system, hp_h, hp_k, hp_a, hp_b, grosor_line);
     }
 
     if(b_func[func::f_hearth]) {
@@ -345,7 +346,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             graph_color[func::f_hearth].g,
             graph_color[func::f_hearth].b,
             SDL_ALPHA_OPAQUE
-        ); defgraph::hearth(GW_Window, coord_system, ht_h, ht_k);
+        ); defgraph::hearth(GW_Window, coord_system, ht_h, ht_k, grosor_line);
     }
 
     if(b_func[func::f_batman]) {
@@ -355,7 +356,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             graph_color[func::f_batman].g, 
             graph_color[func::f_batman].b, 
             SDL_ALPHA_OPAQUE
-        ); defgraph::batman(GW_Window, coord_system);
+        ); defgraph::batman(GW_Window, coord_system, grosor_line);
     }
 }
 
@@ -600,14 +601,14 @@ const float f_ht_g(float x);
 const float f_ht_h(float x);
 const float f_ht_p(float x);
 
-void defgraph::hearth(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k) {
+void defgraph::hearth(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float g) {
     v_ht_H = h;
     v_ht_K = k;
 
-    coord_system.graphFunction(f_ht_f);
-    coord_system.graphFunction(f_ht_g);
-    coord_system.graphFunction(f_ht_h);
-    coord_system.graphFunction(f_ht_p);
+    coord_system.graphFunction(f_ht_f, g);
+    coord_system.graphFunction(f_ht_g, g);
+    coord_system.graphFunction(f_ht_h, g);
+    coord_system.graphFunction(f_ht_p, g);
 }
 
 const float f_ht_f(float x) {
@@ -637,13 +638,13 @@ float v_cff_R = 0.0f;
 
 const float f_cff_pos(float x);
 const float f_cff_neg(float x);
-void defgraph::circunference(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float r) {
+void defgraph::circunference(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float r, const float g) {
     v_cff_H = h;
     v_cff_K = k;
     v_cff_R = r;
 
-    coord_system.graphFunction(f_cff_pos);
-    coord_system.graphFunction(f_cff_neg);
+    coord_system.graphFunction(f_cff_pos, g);
+    coord_system.graphFunction(f_cff_neg, g);
 }
 
 const float f_cff_pos(float x) {
@@ -664,14 +665,14 @@ float v_dep_B = 0.0f;
 const float f_dep_pos(float x);
 const float f_dep_neg(float x);
 
-void defgraph::elipse(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b) {
+void defgraph::elipse(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g) {
     v_dep_H = h;
     v_dep_K = k;
     v_dep_A = a;
     v_dep_B = b;
 
-    coord_system.graphFunction(f_dep_pos);
-    coord_system.graphFunction(f_dep_neg);
+    coord_system.graphFunction(f_dep_pos, g);
+    coord_system.graphFunction(f_dep_neg, g);
 }
 
 const float f_dep_pos(float x) {
@@ -690,12 +691,12 @@ float v_pb_P = 0.0f;
 
 const float f_pb_pos(float x);
 
-void defgraph::parabole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float p) {
+void defgraph::parabole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float p, const float g) {
     v_pb_H = h;
     v_pb_K = k;
     v_pb_P = p;
 
-    coord_system.graphFunction(f_pb_pos);
+    coord_system.graphFunction(f_pb_pos, g);
 }
 
 const float f_pb_pos(float x) {
@@ -712,14 +713,14 @@ float v_hp_B = 0.0f;
 const float f_hp_pos(float x);
 const float f_hp_neg(float x);
 
-void defgraph::hiperbole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b) {
+void defgraph::hiperbole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g) {
     v_hp_H = h;
     v_hp_K = k;
     v_hp_A = a;
     v_hp_B = b;
 
-    coord_system.graphFunction(f_hp_pos);
-    coord_system.graphFunction(f_hp_neg);
+    coord_system.graphFunction(f_hp_pos, g);
+    coord_system.graphFunction(f_hp_neg, g);
 }
 
 const float f_hp_pos(float x) {
@@ -740,14 +741,14 @@ const float f_bt_y4(float x);
 const float f_bt_y5(float x);
 const float f_bt_y6(float x);
 
-void defgraph::batman(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system) {
-    coord_system.graphFunction(f_bt_y1p);
-    coord_system.graphFunction(f_bt_y2);
-    coord_system.graphFunction(f_bt_y1);
-    coord_system.graphFunction(f_bt_y3);
-    coord_system.graphFunction(f_bt_y4);
-    coord_system.graphFunction(f_bt_y5);
-    coord_system.graphFunction(f_bt_y6);
+void defgraph::batman(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float g) {
+    coord_system.graphFunction(f_bt_y1p, g);
+    coord_system.graphFunction(f_bt_y2, g);
+    coord_system.graphFunction(f_bt_y1, g);
+    coord_system.graphFunction(f_bt_y3, g);
+    coord_system.graphFunction(f_bt_y4, g);
+    coord_system.graphFunction(f_bt_y5, g);
+    coord_system.graphFunction(f_bt_y6, g);
 }
 
 const float f_bt_y1(float x) {

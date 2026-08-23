@@ -611,7 +611,7 @@ const float render::Axis_Coord_System::getAxisScaler(CoordType axis) {
     }
 }
 
-int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(float)) {
+int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(float), float grosor) {
     const float scaler_x = getAxisScaler(CoordType::X);
     const float scaler_y = getAxisScaler(CoordType::Y);
     SDL_FPoint p1, p2;
@@ -637,7 +637,7 @@ int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(
             if(p2.y != p2.y || !in_screen)
                 continue;
 
-            SDL_RenderLine(GW_Window.renderer, p1.x, p1.y, p2.x, p2.y);
+            thickLine(GW_Window.renderer, p1, p2, grosor);
             calculos++;
         }
 
@@ -651,12 +651,12 @@ int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(
     return calculos;
 }
 
-void render::Axis_Coord_System::graphFunction(const float (* f)(float)) {
+void render::Axis_Coord_System::graphFunction(const float (* f)(float), float grosor) {
     SDL_Color previus_color;
     SDL_GetRenderDrawColor(GW_Window.renderer, &previus_color.r, &previus_color.g, &previus_color.b, &previus_color.a);
 
-    this->graphingSigne(AxisSigne::neg, f);
-    this->graphingSigne(AxisSigne::pos, f);
+    this->graphingSigne(AxisSigne::neg, f, grosor);
+    this->graphingSigne(AxisSigne::pos, f, grosor);
 }
 
 #pragma endregion /*Graficadora de func*/

@@ -24,8 +24,8 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
     }
 
     gc_coord_system.render();
-    gc_coord_system.graphFunction(f);
-    gc_coord_system.graphFunction(g); 
+    gc_coord_system.graphFunction(f, 3.0f);
+    gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
     gc_coord_system.axisModified();
 

@@ -196,7 +196,7 @@ namespace render {
         int renderAxisX(void);
         int renderAxisY(void);
         void scaleAxis(CoordType axis, const float scaler);
-        int graphingSigne(AxisSigne signe, const float (* f)(float));
+        int graphingSigne(AxisSigne signe, const float (* f)(float), float grosor);
 
     public:
         SDL_FPoint origin;
@@ -290,7 +290,7 @@ namespace render {
          *  \param f La función f(x) que dibujará. Debe de ser una función que retorne un valor `const float`
          *           con un párametro del mismo tipo.
          */
-        void graphFunction(const float (* f)(float));
+        void graphFunction(const float (* f)(float), float grosor);
 
         /**
          * 
