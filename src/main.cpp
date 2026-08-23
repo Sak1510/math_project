@@ -106,19 +106,11 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     if(!menu_on)
         switch(seleccion) {
             case menu::sim::graficadora_2D:
-                render::Graph_Window GW_Window(window, renderer);
-                render::MouseEvents mouseEvents(event->button, event->motion, event->wheel);
-                coord_system.setGraph_Window(GW_Window);
-
-                for(int i = 0; i < 10; i++) {
-                    bool in_x = event->motion.x > edit_pos[i].x && event->motion.x < edit_pos[i].x + edit_size[i].x; 
-                    bool in_y = event->motion.y > edit_pos[i].y && event->motion.y < edit_pos[i].y + edit_size[i].y; 
-                    in_edit[i] = in_x && in_y;
-                }
-
-                if(!in_edit[0] && !in_edit[1])
-                    coord_system.axisModified(mouseEvents);
-                else SDL_SetCursor(SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT));            
+                // for(int i = 0; i < 10; i++) {
+                //     bool in_x = event->motion.x > edit_pos[i].x && event->motion.x < edit_pos[i].x + edit_size[i].x; 
+                //     bool in_y = event->motion.y > edit_pos[i].y && event->motion.y < edit_pos[i].y + edit_size[i].y; 
+                //     in_edit[i] = in_x && in_y;
+                // } 
                 break;
         }
         
@@ -140,6 +132,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::NewFrame();
 
     render::Graph_Window GW_Window(window, renderer);
+    coord_system.setGraph_Window(GW_Window);
 
     if(menu_on) {
         SDL_Color bg_menu = {26, 60, 195, SDL_ALPHA_OPAQUE};
@@ -149,9 +142,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         case menu::sim::graficadora_2D:
             coord_system.render();
             coord_system.graphFunction(f);
-            coord_system.graphFunction(g);
-
+            coord_system.graphFunction(g); 
             coord_system.showCoords();
+            coord_system.axisModified();
 
             SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
@@ -160,8 +153,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
                 menu_on = !menu_on;
 
             coord_system.debug(true);
-            edit_size[0] = ImGui::GetWindowSize();
-            edit_pos[0] = ImGui::GetWindowPos();
 
             if(ImGui::TreeNode("Axis Modified ##1")) {
                 ImGui::Text(

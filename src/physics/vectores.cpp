@@ -41,15 +41,16 @@ bool radianes = true;
 // Funciones de uso interno
 void fvetors_ImGuiParam(const char *str_name, bool &menu);
 void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu) {
-    if(!fvectors_init) {
+    if(fvectors_init == false) {
         window_center = {GW_Window.width / 2, GW_Window.height / 2};
-        fvectors_init = !fvectors_init;
+        fvectors_init = true;
     }
     
     SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, 255);
     coord_system_vector.setGraph_Window(GW_Window);
     coord_system_vector.setOrigin(window_center);
     coord_system_vector.render();
+    coord_system_vector.axisModified();
 
     // Dibujado de las operaciones con vectors
     if(sum_vectors) {

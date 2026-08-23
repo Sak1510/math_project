@@ -282,7 +282,7 @@ namespace render {
          * 
          *  Esto evita posibles errores del movimiento de los ejes.  
          */
-        int axisModified(MouseEvents &mouse_events);
+        int axisModified();
 
         /**
          *  Grafica una función f(x) específicada.

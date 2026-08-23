@@ -319,6 +319,18 @@ void render::Axis_Coord_System::debug(bool on) {
         return;
     
     ImGui::SeparatorText("Modo Debug");
+    if(ImGui::CollapsingHeader("Mouse")) {
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui::Text(
+            "delta = {%.3f, %.3f}\n"
+            "wheel = %.3f\n"
+            "b_left: pressed = %s, released = %s, down = %s\n",
+            io.MouseDelta.x, io.MouseDelta.y, io.MouseWheel,
+            (io.MouseClicked[0]) ? "true" : "false", (io.MouseReleased[0]) ? "true" : "false",
+            (io.MouseDown[0]) ? "true" : "false"
+        );
+    }
+
     if(ImGui::CollapsingHeader("Coord System")) {
         ImGui::Text(
             "Coordenadas del origen:\n"
@@ -701,38 +713,34 @@ void render::Axis_Coord_System::scaleAxis(CoordType axis, const float scaler) {
 }
 
 
-int render::Axis_Coord_System::axisModified(MouseEvents &mouse_events) {
+int render::Axis_Coord_System::axisModified() {
     const float mouse_scale = 3.0f;
-    const float select_range = 5.0f;
+
+    // Input/Outputs from "Dear ImGui"
+    ImGuiIO &io = ImGui::GetIO();
+
+    ImVec2 motion = io.MouseDelta;
+    float wheel = io.MouseWheel;
 
     SDL_Cursor *hand;
-    bool inWindowWidth = mouse_events.motion.xrel >= -GW_Window.width && mouse_events.motion.xrel <= GW_Window.width;
-    bool inWindowHeight = mouse_events.motion.yrel >= -GW_Window.height && mouse_events.motion.yrel <= GW_Window.height;
-    bool inWheelrange = SDL_fabsf(mouse_events.wheel.y) >= 1.0f && SDL_fabsf(mouse_events.wheel.y) <= 10.0f; // El modulo de la ruedita, es para evitar posibles problemitas
+    bool inWindowWidth = motion.x >= -GW_Window.width && motion.x <= GW_Window.width;
+    bool inWindowHeight = motion.y >= -GW_Window.height && motion.y <= GW_Window.height;
 
     // Verifica que el puntero del mouse este dentro de la ventana
     if(!inWindowWidth || !inWindowHeight)
         return -1;
 
-    switch(mouse_events.button.button) {
-        case SDL_BUTTON_LEFT:
+    bool left_click = io.MouseDown[0];
+    if(!io.WantCaptureMouse) {
+        if(left_click) {
             hand = SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_MOVE);
-            origin.x += mouse_events.motion.xrel;
-            origin.y += mouse_events.motion.yrel;
-            break;
-
-        default:
-            hand = SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT);
-            break;
+            origin.x += motion.x;
+            origin.y += motion.y;
+        } else hand = SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT);
     }
 
-    // Checa la dirección y evita cosas raras
-    // Actualización: Ya no pasan cosas raras!!!!!!!
-    // Actualización 2: Antes no pasaban cosas raras, pero han vuelto
-    if(inWheelrange) {
-        scaleAxis(CoordType::X, mouse_events.wheel.y * mouse_scale);
-        scaleAxis(CoordType::Y, mouse_events.wheel.y * mouse_scale);
-    }
+    scaleAxis(CoordType::X, wheel * mouse_scale);
+    scaleAxis(CoordType::Y, wheel * mouse_scale);
 
     SDL_SetCursor(hand);
     return 0;
