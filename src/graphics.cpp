@@ -1,11 +1,25 @@
 #include <graphics.hpp>
 #define NaN 0.0f / 0.0f
+const float render::PixelDistance(SDL_FPoint p1, SDL_FPoint p2) {
+    float delta_x = p2.x - p1.x;
+    float delta_y = p2.y - p1.y; 
+    
+    return std::sqrtf(delta_x * delta_x + delta_y * delta_y);
+}
+
+const render::FloatCartesian2 render::ImVec2toFloatCartesian2(ImVec2 im_vec2) {
+    return {im_vec2.x, im_vec2.y};
+}
+
+const SDL_FPoint render::ImVec2toSDL_FPoint(ImVec2 im_vec2) {
+    return {im_vec2.x, im_vec2.y};
+}
 
 const SDL_Color render::FColorToColor(SDL_FColor color) {
     return {
         (Uint8)(color.r * 255), 
         (Uint8)(color.g * 255), 
-        (Uint8)(color.b * 255), 
+        (Uint8)(color.b * 255),
         (Uint8)(color.a * 255)
     };
 }
@@ -778,3 +792,86 @@ void render::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
         );
 }
 #pragma endregion /* Axis_Coord_System */
+
+#pragma region Cartesian_Point 
+render::Cartesian_Point::Cartesian_Point(void) {
+    this->radius = 0.0f;
+    this->coords = {0.0f, 0.0f};
+    this->color = {0, 0, 0, 0};
+}
+
+render::Cartesian_Point::Cartesian_Point(float r, SDL_Color color, FloatCartesian2 coords) {
+    this->radius = r;
+    this->color = color;
+    this->coords = coords;
+}
+
+void render::Cartesian_Point::setCoords(FloatCartesian2 coords) {
+    this->coords = coords;
+}
+
+void render::Cartesian_Point::setCoords(Axis_Coord_System coord_system, SDL_FPoint sdl_coords) {
+    this->coords = coord_system.subPixeToCartesian(sdl_coords);
+}
+
+int render::Cartesian_Point::setColor(SDL_Color color) {
+    bool error = !(0 < color.r < 255) || !(0 < color.g < 255) || !(0 < color.b < 255) || !(0 < color.a < 255);
+
+    this->color.r = (0 < color.r < 255) ? color.r : 255;
+    this->color.g = (0 < color.g < 255) ? color.g : 255;
+    this->color.b = (0 < color.b < 255) ? color.b : 255; 
+    this->color.a = (0 < color.a < 255) ? color.a : 255;
+
+    return error ? 0 : -1;
+}
+
+int render::Cartesian_Point::setColor(SDL_FColor color) {
+    bool error = !(0.0f < color.r < 1.0f) || !(0.0f < color.g < 1.0f) || !(0.0f < color.b < 1.0f) || !(0.0f < color.a < 1.0f);
+
+    SDL_Color rgb_color = render::FColorToColor(color);
+    this->color = rgb_color;
+
+    return error ? 0 : -1;
+}
+
+void render::Cartesian_Point::setRadius(float radius) {
+    this->radius = std::abs(radius);
+}
+
+const SDL_FPoint render::Cartesian_Point::getCoordsFPoint(Axis_Coord_System coord_system) {
+    return coord_system.cartesianToSubPixel(this->coords);
+}
+
+int render::Cartesian_Point::render(Axis_Coord_System coord_system) {
+    SDL_FPoint pixel_coords = this->getCoordsFPoint(coord_system);
+    bool in_width_window = -2.0f * this->radius <= pixel_coords.x <= coord_system.GW_Window.width + 2.0f * this->radius;
+    bool in_height_window = -2.0f * this->radius <= pixel_coords.y <= coord_system.GW_Window.height + 2.0f * this->radius;
+    if(in_width_window && in_height_window)
+        return -1;      // Out of range
+    
+    // Renderiza el punto
+    circle(coord_system.GW_Window.renderer, pixel_coords, this->radius, this->color);
+    
+    return 0;
+}
+
+int render::Cartesian_Point::drag(Axis_Coord_System coord_system) {
+    ImGuiIO& io = ImGui::GetIO();
+    SDL_FPoint mouse_pos = ImVec2toSDL_FPoint(io.MousePos);
+    
+    bool in_width_window = 0.0f <= mouse_pos.x <= coord_system.GW_Window.width;
+    bool in_height_window = 0.0f <= mouse_pos.y <= coord_system.GW_Window.height;
+    if(in_width_window && in_height_window)
+        return -1;      // Out of range
+    
+    // Arastra el punto
+    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) < this->radius;
+    bool button_left = io.MouseDown[0];
+    if(in_range && button_left) {
+        this->coords.x += io.MouseDelta.x;
+        this->coords.y += io.MouseDelta.y;
+    }
+
+    return 0;
+}
+#pragma endregion /* Cartesian_Point */

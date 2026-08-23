@@ -77,6 +77,16 @@ namespace render {
     } cartesian_axis_info;  
 
     /**
+     *  Devuelve la distancia en pixeles de un punto a otro.
+     * 
+     *  \param p1 Punto 1.
+     *  \param p2 Punto 2.
+     * 
+     *  \returns Distancia en pixeles.
+     */
+    const float PixelDistance(SDL_FPoint p1, SDL_FPoint p2);
+
+    /**
      *  Convierte un struct `SDL_FColor` en uno `SDL_Color`.
      * 
      *  \param color Struct por ser convertido.
@@ -93,7 +103,25 @@ namespace render {
      *  \returns Los mismos valores RGBA en float `SDL_FColor`.
      */
     const SDL_FColor ColorToFColor(SDL_Color color);
-    
+
+    /**
+     *  Convierte un struct `ImVec2` de Dear ImGui a `FloatCartesian2`. No cambia ningun valor del struct original.
+     * 
+     *  \param im_vec2 `ImVec2` a convertir.
+     * 
+     *  \returns `FloatCartesian2` equivalente.
+     */
+    const FloatCartesian2 ImVec2toFloatCartesian2(ImVec2 im_vec2);
+
+    /**
+     *  Convierte un strct `ImVec2` de Dear ImGui a `SDL_FPoint` de SDL3. No cambia ningun valor del struct original.
+     * 
+     *  \param im_vec2 `ImVec2` a convertir.
+     * 
+     *  \returns `SDL_FPoint` equivalente.
+     */
+    const SDL_FPoint ImVec2toSDL_FPoint(ImVec2 im_vec2);
+
     /**
      *  Dibuja un circulo relleno de un color especifico.
      *  
@@ -358,5 +386,80 @@ namespace render {
          *  primero llamar `ImGui::Begin()` antes de esta función, y después `ImGui::End()` de esta misma.  
          */
         void debug(bool on);
+    };
+
+    class Cartesian_Point {
+    public:
+        float radius;               // Radio en pixeles del punto.
+        SDL_Color color;            // Color de renderizado del punto.
+        FloatCartesian2 coords;     // Coordenadas del plano cartesiano del punto.
+
+        /**
+         *  Establece las coordenadas del punto en coordenadas del plano cartesiano.
+         * 
+         *  \param coords Coordenadas del plano cartesiano.
+         */
+        void setCoords(FloatCartesian2 coords);
+
+        /**
+         *  Establece las coordenadas del punto en coordenadas de pixeles.
+         * 
+         *  \param coord_system Sistema de coordenadas cartesianas.
+         *  \param sdl_coords Coordendas en pixeles.
+         */
+        void setCoords(Axis_Coord_System coord_system, SDL_FPoint sdl_coords);
+
+        /**
+         *  Establece el color de punto en RGB.
+         * 
+         *  \param color Color a dar.
+         *  
+         *  \returns 0 sin problemas. -1 algún valor de `color` fuera de rango.
+         */
+        int setColor(SDL_Color color);
+        
+        /**
+         *  Establece el color de punto en float RGB.
+         * 
+         *  \param color Color a dar.
+         *  
+         *  \returns 0 sin problemas. -1 algún valor de `color` fuera de rango.
+         */
+        int setColor(SDL_FColor color);
+
+        /**
+         *  Establece el radio de renderizado en pixeles del punto.
+         */
+        void setRadius(const float pixel_radius);
+
+        /**
+         *  Obtiene las coordenadas en pixeles del punto.
+         * 
+         *  \param coord_system Sistema de coordenadas del punto.
+         *  
+         *  \return Punto de coordenadas en pixeles.
+         */
+        const SDL_FPoint getCoordsFPoint(Axis_Coord_System coord_system);
+
+        /**
+         *  Renderiza el punto en un sistema de coordenadas.
+         * 
+         *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
+         * 
+         *  \returns 0 sin problemas. -1 fuera de rango del renderizado. 
+         */
+        int render(Axis_Coord_System coord_system);
+
+        /**
+         *  Arrastra con el click-izquierdo el punto dentro del sistema de coordenadas.
+         * 
+         *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
+         *  
+         *  \param 0 sin problemas. -1 fuera del rango del renderizado.  
+         */
+        int drag(Axis_Coord_System coord_system);
+
+        Cartesian_Point(void);
+        Cartesian_Point(float r, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE}, FloatCartesian2 coords);
     };
 };
