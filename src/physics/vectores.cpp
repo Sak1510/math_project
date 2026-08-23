@@ -122,6 +122,9 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     SDL_FPoint origin_p = coord_system_vector.cartesianToSubPixel(coord_system_origin);
     render::circle(GW_Window.renderer, origin_p, vector_grosor / 2.0f, c_black);
 
+
+    
+    // ----     FINAL       ----
     // Colocar fondo de color blanco
     SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 

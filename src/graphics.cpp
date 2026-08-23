@@ -250,7 +250,7 @@ render::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
     this->window = window;
     this->renderer = renderer;
 
-    SDL_GetWindowSize(this->window, &iWidth, &iHeight);
+    SDL_GetCurrentRenderOutputSize(this->renderer, &iWidth, &iHeight);
     this->width = (float)iWidth;
     this->height = (float)iHeight;
 }
@@ -644,7 +644,7 @@ void render::Axis_Coord_System::graphFunction(const float (* f)(float)) {
     SDL_GetRenderDrawColor(GW_Window.renderer, &previus_color.r, &previus_color.g, &previus_color.b, &previus_color.a);
 
     this->graphingSigne(AxisSigne::neg, f);
-    this->graphingSigne(AxisSigne::pos, f);    
+    this->graphingSigne(AxisSigne::pos, f);
 }
 
 #pragma endregion /*Graficadora de func*/

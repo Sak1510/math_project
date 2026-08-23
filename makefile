@@ -9,7 +9,7 @@ all: $(SRC)
 	g++ $(GNU_COMPILER) -o $(EXECUTABLE_NAME)
 
 run:
-	.\$(EXECUTABLE_NAME).exe
+	start $(EXECUTABLE_NAME).exe
 
 build_and_run: all run
 
