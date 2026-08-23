@@ -24,7 +24,6 @@ SDL_Event *globalEvent = NULL;
 #define WINDOW_HEIGHT 700
 
 // Variables y objetos globales de los menus y funciones.
-render::Axis_Coord_System coord_system = render::Axis_Coord_System();
 ImVec2 edit_size[10] = {
     {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
     {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
@@ -85,11 +84,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
 
-    int iWidth, iHeight; 
-    SDL_GetWindowSize(window, &iWidth, &iHeight);
-    SDL_FPoint origin = {(float)(iWidth / 2), (float)(iHeight / 2)};
-    coord_system.setOrigin(origin);
-
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
@@ -103,26 +97,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     globalEvent = event;
     ImGui_ImplSDL3_ProcessEvent(globalEvent);
 
-    if(!menu_on)
-        switch(seleccion) {
-            case menu::sim::graficadora_2D:
-                // for(int i = 0; i < 10; i++) {
-                //     bool in_x = event->motion.x > edit_pos[i].x && event->motion.x < edit_pos[i].x + edit_size[i].x; 
-                //     bool in_y = event->motion.y > edit_pos[i].y && event->motion.y < edit_pos[i].y + edit_size[i].y; 
-                //     in_edit[i] = in_x && in_y;
-                // } 
-                break;
-        }
-        
     return SDL_APP_CONTINUE;  /* carry on with the program! */
-}
-
-const float f(float x) {
-    return - std::sqrtf(x + 6.0f) / 2.0f;
-}
-
-const float g(float x) {
-    return - x * x / 4.0f + 5.0f;
 }
 
 /* This function runs once per frame, and is the heart of the program. */
@@ -132,7 +107,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::NewFrame();
 
     render::Graph_Window GW_Window(window, renderer);
-    coord_system.setGraph_Window(GW_Window);
 
     if(menu_on) {
         SDL_Color bg_menu = {26, 60, 195, SDL_ALPHA_OPAQUE};
@@ -140,54 +114,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         menu::main_menu(seleccion, menu_on, begin_name);
     } else switch(seleccion) {
         case menu::sim::graficadora_2D:
-            coord_system.render();
-            coord_system.graphFunction(f);
-            coord_system.graphFunction(g); 
-            coord_system.showCoords();
-            coord_system.axisModified();
-
-            SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-
-            ImGui::Begin(begin_name.c_str(), nullptr, ImGuiWindowFlags_NoMove);
-            if(ImGui::Button("Volver al menu principal."))
-                menu_on = !menu_on;
-
-            coord_system.debug(true);
-
-            if(ImGui::TreeNode("Axis Modified ##1")) {
-                ImGui::Text(
-                    "edit_size: (%.3f, %.3f)\n"
-                    "edit_pos:  (%.3f, %.3f)\n"
-                    "InsideWindow? %s\n"
-                    "CanMoveAxis? %s",
-                    edit_size[0].x, edit_size[0].y,
-                    edit_pos[0].x, edit_pos[0].y,
-                    (in_edit[0] == true) ? "Sip." : "Nop.",
-                    (!in_edit[0] && !in_edit[1]) ? "Sip." : "Nop" 
-                );
-                ImGui::TreePop();
-            }
-            ImGui::End();
-
-            ImGui::Begin("Demo Graph.");
-            defgraph::ImGui_demo_graph();
-            edit_size[1] = ImGui::GetWindowSize();
-            edit_pos[1] = ImGui::GetWindowPos();
-
-            if(ImGui::TreeNode("Axis Modified ##2")) {
-                ImGui::Text(
-                    "edit_size: (%.3f, %.3f)\n"
-                    "edit_pos:  (%.3f, %.3f)\n"
-                    "InsideWindow? %s\n"
-                    "CanMoveAxis? %s",
-                    edit_size[1].x, edit_size[1].y,
-                    edit_pos[1].x, edit_pos[1].y,
-                    (in_edit[1] == true) ? "Sip." : "Nop.",
-                    (!in_edit[0] && !in_edit[1]) ? "Sip." : "Nop"
-                );
-                ImGui::TreePop();
-            }
-            ImGui::End();
+            pmain::graphing_calculator(GW_Window, begin_name.c_str(), menu_on);
             break;
 
         case menu::sim::cono_3D:

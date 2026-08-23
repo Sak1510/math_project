@@ -66,12 +66,13 @@ namespace menu {
 
 // Funciones principales de uso en main.cpp
 namespace pmain {
-    void mov_rotacional (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
-    void fvectors       (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
-    void units          (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
-    void solar_system   (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
-    void false_3d_cone  (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
-    void space_vectors  (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void graphing_calculator    (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void mov_rotacional         (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void fvectors               (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void units                  (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void solar_system           (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void false_3d_cone          (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
+    void space_vectors          (render::Graph_Window &GW_Window, const char *str_name, bool &menu_on);
 };
 
 #endif /* MENU */
