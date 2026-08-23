@@ -252,15 +252,6 @@ render::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
     this->getWindowSize();
 }
 #pragma endregion /* Graph_Window */
-
-
-render::MouseEvents::MouseEvents(SDL_MouseButtonEvent &button_event, SDL_MouseMotionEvent &motion_event, SDL_MouseWheelEvent &wheel_event) {
-    this->button = button_event;
-    this->motion = motion_event;
-    this->wheel = wheel_event;
-}
-
-
 #pragma region Axis_Coord_System
 render::Axis_Coord_System::Axis_Coord_System(void) {
     this->origin = {0.0f, 0.0f};
@@ -272,11 +263,10 @@ render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_
     this->GW_Window = GW_Window;
 }
 
-render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation, float scale) {
+render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation) {
     this->origin = origin;
     this->GW_Window = GW_Window;
     this->rotation = rotation;
-    this->scale = scale;
 }
 
 void AxisCoordSystemDebug(render::CoordType axis, render::cartesian_axis_info &axis_info) {
@@ -335,15 +325,13 @@ void render::Axis_Coord_System::debug(bool on) {
             "Rotación de los ejes coordenados: \n"
             "   rotation = %.6f rad\n"
             "   0.000000 rad =< rotation < %.6f rad\n"
-            "Escala de ambos ejes:\n"
-            "   scale = %.6f\n",
-            origin.x, origin.y, rotation, 2.0f * M_PI, scale
+            "Escala de ambos ejes:\n",
+            origin.x, origin.y, rotation, 2.0f * M_PI
         );
 
         ImGui::SliderFloat("origin.x", &origin.x, 0.0f, GW_Window.width);
         ImGui::SliderFloat("origin.y", &origin.y, 0.0f, GW_Window.height);
         ImGui::SliderFloat("rotation", &rotation, 0.0f, 2.0f * M_PI, "%.6f");
-        ImGui::InputFloat("scale", &scale, 1.0f, 10.0f, "%.6f");
     }
 
     if(ImGui::CollapsingHeader("Eje de las X"))
@@ -431,10 +419,7 @@ int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
     } return 0;    
 }
 
-int render::Axis_Coord_System::renderAxisX(void) {
-    // if(origin.y < 0 || origin.y > GW_Window.height)
-    //     return 0;
-
+void render::Axis_Coord_System::renderAxisX(void) {
     /**
      *  ---- Orden de Renderizado ----
      *  1. Numeros
@@ -466,8 +451,6 @@ int render::Axis_Coord_System::renderAxisX(void) {
     SDL_FPoint point1 = {0, origin.y};
     SDL_FPoint point2 = {GW_Window.width - axis_x_info.arrow_width, origin.y};
     render::thickLine(GW_Window.renderer, point1, point2, axis_x_info.line_grosor);
-
-    return 0;
 }
 
 #pragma endregion /* Eje X */

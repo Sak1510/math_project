@@ -16,55 +16,65 @@ const float SPACE_AXIS_MEDIA_SPACE = (SPACE_AXIS_MIN_SPACE + SPACE_AXIS_MAX_SPAC
 
 namespace render {
     // --- Enums define ---
+
+    // Signo del eje 
     enum AxisSigne {
-        neg = -1,
-        pos = 1
+        neg = -1,       // Renderiza en la parte negativa del eje.
+        pos = 1         // Renderiza en la parte positiva del eje.
     };
 
+    // Tipo de coordendas en el plano/espacio.
     enum CoordType {
         X,
         Y
     };
 
+    // Tipo de sistema de coordenadas.
     enum CoordSystem {
         cartesian,
         polar
     };
 
     // --- Typedef Structure ---
+
+    // Coordenadas cartesianas dentro de un sistema de coordenadas cartesianas.
     typedef struct FloatCartesian2 {
         float x;
         float y;
     } FloatCartesian2;
 
+    // Coordenadas polares dentro de un sistema de coordenadas polares.
     typedef struct FloatPolar2 {
         float r;
         float a;
     } FloatPolar2;
 
+    // "del eje" => ALEMANIA, ITALIA, Y JAPÓN. Viste, si sé de historia asdajsasn
+    
+    // Variables generales de un eje determinado. Pueden crearse varios ejes en sí con esta misma estructura.
     typedef struct cartesian_axis_info {
         //          ---- Variables del eje principal ----
-        bool        axis_render = true;
-        SDL_Color   axis_color = {0, 0, 0, SDL_ALPHA_OPAQUE};
+        bool        axis_render = true;                             // true: Renderiza el eje, false: No lo renderiza (bruhh) 
+        SDL_Color   axis_color = {0, 0, 0, SDL_ALPHA_OPAQUE};       // Color del eje
         
         //          ---- Variables de los numeros ----
-        bool        nums_render = true;
-        float       nums_initial = 1.0f;
-        SDL_Color   nums_color = {0, 0, 0, SDL_ALPHA_OPAQUE};
-        std::size_t nums_division = 0;
-        float       nums_power = 0.0f;
+        bool        nums_render = true;                             // true: Renderiza los números del eje, false: No las renderiza.
+        float       nums_initial = 1.0f;                            // Número en el que inicia el renderizado de los números del eje.
+        SDL_Color   nums_color = {0, 0, 0, SDL_ALPHA_OPAQUE};       // Color de los números del eje.
+        std::size_t nums_division = 0;                              // ??????
+        float       nums_power = 0.0f;                              // ??????
 
         //          ---- Variables de la flecha renderizada ----
-        bool        arrow_render = true;
-        float       arrow_width = 30.0f;
-        float       arrow_height = 15.0f;
+        bool        arrow_render = true;                            // true: Renderiza la flecha del eje, false: No las renderiza.
+        float       arrow_width = 30.0f;                            // Base de la flecha del eje.
+        float       arrow_height = 15.0f;                           // Alto de la flecha del eje.
 
         //          ---- Variables de la linea divisoras ----
-        bool        line_render = true;
-        float       line_grosor = LINE_GROSOR;
-        float       line_size = LINE_SIZE;
-        float       line_space = SPACE_AXIS_MEDIA_SPACE;
-    } cartesian_axis_info;
+        bool        line_render = true;                             // true: Renderiza las líneas divisoras del eje, false: No la renderiza.
+        float       line_grosor = LINE_GROSOR;                      // Grosor de las líneas de renderizado
+        float       line_size = LINE_SIZE;                          // Tamaño en altura de las líneas del eje.
+        float       line_space = SPACE_AXIS_MEDIA_SPACE;            // Espacio entre cada línea renderizada.
+    } cartesian_axis_info;  
 
     /**
      *  Convierte un struct `SDL_FColor` en uno `SDL_Color`.
@@ -157,18 +167,24 @@ namespace render {
      */
     void debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::string str, SDL_Color bg_c, SDL_Color fg_c);
 
+    // Objeto que guarda lo necesario para poder renderizar en el ejecutable.
     class Graph_Window {
     private:
-        int iWidth;
-        int iHeight;
+        int iWidth;                                                     // Guarda el ancho de la ventana llamando `getWindowSize()`. 
+        int iHeight;                                                    // Guarda el alto de la ventana llamando `getWindowSize()`.
  
     public:
-        SDL_Window *window;
-        SDL_Renderer *renderer;
-        float width;
-        float height;
+        SDL_Window *window;                                             // Puntero de memoría que apunta hacia el `SDL_Window` asignado.
+        SDL_Renderer *renderer;                                         // Puntero de memoría que apunta hacia el `SDL_Renderer` asignado. 
+        float width;                                                    // Ancho de la ventana en pixeles. Se actualiza llamando `getWindowSize()`
+        float height;                                                   // Alto de la ventana en pixeles.  Se actualiza llamando `getWindowSize()`
 
-        FloatCartesian2 getWindowSize(void);
+        /**
+         *  Actualiza el ancho y alto de la ventana actual llamando la función. 
+         * 
+         *  \returns Un `FloatCartesian2` con el ancho actual en `x` y el alto en `y` de la ventana actual. 
+         */
+        FloatCartesian2 getWindowSize(void);                            
 
         Graph_Window& operator=(Graph_Window &Graph_Window);
         Graph_Window& operator=(long long _null);
@@ -178,41 +194,87 @@ namespace render {
         Graph_Window(SDL_Window *window, SDL_Renderer *renderer);
     };
 
-    class MouseEvents {
-    public:
-        SDL_MouseButtonEvent button;
-        SDL_MouseMotionEvent motion;
-        SDL_MouseWheelEvent wheel;
-    
-        MouseEvents(SDL_MouseButtonEvent &button_event, SDL_MouseMotionEvent &motion_event, SDL_MouseWheelEvent &wheel_event);
-    };
-
-    // Sistema de coordenadas como objeto base de todo el programa
+    // Sistema de coordenadas como objeto base de todo el programa. Permite escalar en sí mismo.
     class Axis_Coord_System {
     private:
+        /**
+         *  Renderiza los números del eje de las X's.
+         *  \param signe Signo de renderizado. 
+         *  signe = AxisSigne::pos => La parte positiva del eje, a la derecha del origen; 
+         *  signe = AxisSigne::neg => La parte negativa del eje, a la izquierda del origen. 
+         *  
+         *  \returns 0 si no hubo errores, -1 si hubo un error con `signe`, o el renderizado estuvo fuera de rango.
+         */
         int renderNumAxisX(AxisSigne signe);
+        
+        /**
+         *  Renderiza los números del eje de las Y's.
+         *  \param signe Signo de renderizado. 
+         *  signe = AxisSigne::pos => La parte positiva del eje, sobre del origen; 
+         *  signe = AxisSigne::neg => La parte negativa del eje, abajo del origen. 
+         *  
+         *  \returns 0 si no hubo errores, -1 si hubo un error con `signe`, o el renderizado estuvo fuera de rango.
+         */
         int renderNumAxisY(AxisSigne signe);
-        int renderAxisX(void);
+
+        /**
+         *  Renderiza la línea del eje de las X's, en conjunto de los números y la flecha.
+         */
+        void renderAxisX(void);
+
+        /**
+         *  Renderiza la línea del eje de las Y's, en conjunto de los números y la flecha.
+         */
         int renderAxisY(void);
+
+        /**
+         *  Escala el eje dado con un cierto escalar.
+         *  
+         *  \param axis Eje que se va a escalar.
+         *  \param scaler Escalar por el cual se va a multiplicar. 
+         */
         void scaleAxis(CoordType axis, const float scaler);
+        
+        /**
+         *  Grafíca una función de código.
+         * 
+         *  \param signe Parte positiva/negativa donde se va a renderizar del plano cartesiano.
+         *  \param f Función de código que se va a renderizar.
+         *  \param grosor Grosor de la línea del renderizado.
+         * 
+         *  \returns El número de calculos necesitados para renderizar toda la función dentro de la ventana.
+         */
         int graphingSigne(AxisSigne signe, const float (* f)(float), float grosor);
 
     public:
-        SDL_FPoint origin;
-        Graph_Window GW_Window;
-        float scale = 1.0f;
-        float rotation = 0.0f;
-        bool render_axis = true;
-
-        cartesian_axis_info axis_x_info;
-        cartesian_axis_info axis_y_info;
+        SDL_FPoint origin;                      // Origen del plano cartesiano en coordendas de la ventana de renderizado en pixeles. 
+        Graph_Window GW_Window;                 // Objeto necesario para el renderizado del plano cartesiano.
+        float rotation = 0.0f;                  // Rotación general de ambos ejes X y Y.
+        bool render_axis = true;                // Variable que indica si se renderizan los ejes. 
+        cartesian_axis_info axis_x_info;        // Información general del eje X.
+        cartesian_axis_info axis_y_info;        // Información general del eje Y.
 
         Axis_Coord_System(void);
         Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window);
-        Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation, float scale);
+        Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation);
     
+        /**
+         *  Establece el `Graph_Window` que se va a utilizar para renderizar el plano cartiano
+         */
         void setGraph_Window(Graph_Window GW_Window);
+        
+        /**
+         *  Establece el punto de origen en píxeles de la ventana como punto de referencia del renderiza. 
+         */
         void setOrigin(SDL_FPoint origin);
+        
+        /**
+         *  Obtiene el escalar del eje dado. Permite escalar otros renderizados que no son parte del objeto.
+         * 
+         *  \param axis Eje del cual se obtiene el escalar.
+         * 
+         *  \returns El escalar del eje dado.
+         */
         const float getAxisScaler(CoordType axis);
 
         /**
@@ -292,9 +354,9 @@ namespace render {
         void graphFunction(const float (* f)(float), float grosor);
 
         /**
-         * 
+         *  Por medio de la librería Dear ImGui, da toda la información del plano cartesiano. ES IMPORTANTE 
+         *  primero llamar `ImGui::Begin()` antes de esta función, y después `ImGui::End()` de esta misma.  
          */
         void debug(bool on);
-        
     };
 };
