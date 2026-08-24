@@ -9,7 +9,9 @@
 
 bool gc_init = false;
 render::Axis_Coord_System gc_coord_system;
+render::Cartesian_Point gc_cartesian_point(10.0f, {1.0f, 1.0f});
 render::FloatCartesian2 window_size;
+
 
 const float f(float x);
 const float g(float x);
@@ -28,9 +30,12 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
     gc_coord_system.graphFunction(f, 3.0f);
     gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
-    gc_coord_system.axisModified();
+
+    gc_cartesian_point.render(gc_coord_system);
+    gc_cartesian_point.drag(gc_coord_system);
 
     window_size = GW_Window.getWindowSize();
+    gc_coord_system.axisModified();
 
     // ====         FINAL           ====
     // Colocar fondo de color blanco

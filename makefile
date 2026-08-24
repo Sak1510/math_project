@@ -1,7 +1,7 @@
 SRC = $(wildcard src/*.cpp src/physics/*.cpp src/graphing_calculator/*.cpp bin/ImGui/*.o)
 LIB_SDL3 = -I libs\SDL\include -L libs\SDL\lib -l SDL3
 LIB_IMGUI = -I libs\ImGui\include
-COMPILER_FLAGS = -static-libgcc -static-libstdc++ -ffast-math
+COMPILER_FLAGS = -static-libgcc -static-libstdc++ -ffast-math 
 GNU_COMPILER = $(COMPILER_FLAGS) $(SRC) -Iinclude $(LIB_IMGUI) $(LIB_SDL3)
 
 EXECUTABLE_NAME = bin\math_alpha_demo

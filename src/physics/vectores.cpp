@@ -14,6 +14,7 @@ std::vector<physics::Vector> normal_vectors = {
 
 render::Axis_Coord_System coord_system_vector;
 render::FloatCartesian2 coord_system_origin = {0.0f, 0.0f}; 
+render::Cartesian_Point vectors_origin;
 
 physics::Vector vector_sum;
 physics::Vector vector_sub;

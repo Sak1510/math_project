@@ -278,7 +278,8 @@ namespace render {
         SDL_FPoint origin;                      // Origen del plano cartesiano en coordendas de la ventana de renderizado en pixeles. 
         Graph_Window GW_Window;                 // Objeto necesario para el renderizado del plano cartesiano.
         float rotation = 0.0f;                  // Rotación general de ambos ejes X y Y.
-        bool render_axis = true;                // Variable que indica si se renderizan los ejes. 
+        bool render_axis = true;                // Variable que indica si se renderizan los ejes.
+        bool modified_axies = true;             // Mover / Modificar las coordenadas.
         cartesian_axis_info axis_x_info;        // Información general del eje X.
         cartesian_axis_info axis_y_info;        // Información general del eje Y.
 
@@ -360,10 +361,8 @@ namespace render {
         void render(void);
 
         /** 
-         *  Modifica los ejes por medio de los eventos del mouse de SDL3. Mueve el punto de origen, permite
+         *  Modifica los ejes por medio de los `ImGuiIO` de Dear ImGui. Mueve el punto de origen, permite
          *  hacer zoom de ambos ejes. Proximamente también por separado cada eje. 
-         * 
-         *  \param mouseEvents Información de los eventos del mouse.
          * 
          *  \returns 
          *  Si el movimiento relativo del mouse, esta dentro del rango de las dimensiones de la ventana en
@@ -390,6 +389,7 @@ namespace render {
 
     class Cartesian_Point {
     public:
+        bool isSelected = false;    // El punto es seleccionado ó no. 
         float radius;               // Radio en pixeles del punto.
         SDL_Color color;            // Color de renderizado del punto.
         FloatCartesian2 coords;     // Coordenadas del plano cartesiano del punto.
@@ -460,6 +460,6 @@ namespace render {
         int drag(Axis_Coord_System coord_system);
 
         Cartesian_Point(void);
-        Cartesian_Point(float r, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE}, FloatCartesian2 coords);
+        Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE});
     };
 };

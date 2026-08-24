@@ -157,7 +157,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     SDL_RenderClear(GW_Window.renderer);
     
     // Delay para mantener estables los fps
-    SDL_Delay(FPS_MICROSECONDS); 
+    // SDL_Delay(FPS_MICROSECONDS); 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
