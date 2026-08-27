@@ -60,6 +60,8 @@ namespace render {
         //          ---- Variables de los numeros ----
         bool        nums_render = true;                             // true: Renderiza los números del eje, false: No las renderiza.
         float       nums_initial = 1.0f;                            // Número en el que inicia el renderizado de los números del eje.
+        float       nums_first_render;                              // Primer número en ser renderizado en el eje.
+        float       nums_last_render;                               // Ultimo número en ser renderizado en el eje.
         SDL_Color   nums_color = {0, 0, 0, SDL_ALPHA_OPAQUE};       // Color de los números del eje.
         std::size_t nums_division = 0;                              // ??????
         float       nums_power = 0.0f;                              // ??????

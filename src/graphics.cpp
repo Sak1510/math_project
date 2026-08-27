@@ -324,6 +324,14 @@ void AxisCoordSystemDebug(render::CoordType axis, render::cartesian_axis_info &a
     std::string s_arrow = "arrow" + str_axis;
     std::string s_line =  "line"  + str_axis;
 
+    ImGui::SeparatorText("Información General");
+    ImGui::Text(
+        "nums_first_render = %.6f\n"
+        "nums_last_render = %.6f",
+        axis_info.nums_first_render, axis_info.nums_last_render
+    );
+
+    ImGui::SeparatorText("Variables del eje");
     if(ImGui::TreeNode(s_axis.c_str())) {
         ImGui::Text(
             // Descripción del conjunto de variables
@@ -400,13 +408,15 @@ int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
                 return -1;
 
             total_lines = (int)(origin.x / axis_x_info.line_space);
+            this->axis_x_info.nums_first_render = -(float)total_lines;
             break;
 
         case render::AxisSigne::pos:
-            if(origin.x > GW_Window.width)
+            if(origin.x > GW_Window.width) 
                 return -1;
 
             total_lines = (int)((GW_Window.width - origin.x) / axis_x_info.line_space);
+            this->axis_x_info.nums_last_render = (float)total_lines;
             break;
 
         default:
@@ -505,6 +515,7 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
                 return -1;
 
             total_lines = (int)((GW_Window.height - origin.y) / axis_y_info.line_space);
+            this->axis_y_info.nums_first_render = -(float)total_lines;
             break;
 
         case render::AxisSigne::pos:
@@ -512,6 +523,7 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
                 return -1;
 
             total_lines = (int)(origin.y / axis_y_info.line_space);
+            this->axis_y_info.nums_last_render = (float)total_lines;
             break;
 
         default:
@@ -522,7 +534,6 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
         line_y = origin.y - signe * i * axis_y_info.line_space; 
         str_number = std::to_string(signe * i * axis_y_info.nums_initial);
         text_y = line_y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE / 2;
-
         while(str_number.back() == '0') {
             str_number.pop_back();
 
@@ -907,14 +918,15 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     if(this->isSelected) {
         setCoords(coord_system, mouse_pos);
 
+        // 
         // Anclaje a las cuadriculas del eje cartesiano.
         bool anchor_x, anchor_y;
         const float nums_initial_x = coord_system.axis_x_info.nums_initial;
         const float nums_initial_y = coord_system.axis_y_info.nums_initial;
-        for(float i = -10.0f; i <= 10.0f; i += 1.0f) {
+        for(float i = coord_system.axis_x_info.nums_first_render; i <= coord_system.axis_x_info.nums_last_render; i += 1.0f) {
             anchor_x = std::abs(this->coords.x - i * nums_initial_x) < 0.05f;
 
-            for(float j = -10.0f; j <= 10.0f; j += 1.0f) {
+            for(float j = coord_system.axis_y_info.nums_first_render; j <= coord_system.axis_y_info.nums_last_render; j += 1.0f) {
                 anchor_y = std::abs(this->coords.y - j * nums_initial_y) < 0.05f;
 
                 if(anchor_x && anchor_y)

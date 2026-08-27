@@ -79,7 +79,7 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
             window_size.x, window_size.y,
             (io.WantCaptureMouse) ? "true" : "false",
             (gc_coord_system.modified_axies) ? "true" : "false", (gc_cartesian_point.isSelected) ? "true" : "false" 
-        ); 
+        );
     }
 
     gc_coord_system.debug(true);
