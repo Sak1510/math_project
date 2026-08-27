@@ -904,9 +904,24 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
         this->isSelected = !this->isSelected;
 
     // Cambia las coordenadas del punto a las coordenadas del mouse
-    if(this->isSelected)
+    if(this->isSelected) {
         setCoords(coord_system, mouse_pos);
-       
+
+        // Anclaje a las cuadriculas del eje cartesiano.
+        bool anchor_x, anchor_y;
+        const float nums_initial_x = coord_system.axis_x_info.nums_initial;
+        const float nums_initial_y = coord_system.axis_y_info.nums_initial;
+        for(float i = -10.0f; i <= 10.0f; i += 1.0f) {
+            anchor_x = std::abs(this->coords.x - i * nums_initial_x) < 0.05f;
+
+            for(float j = -10.0f; j <= 10.0f; j += 1.0f) {
+                anchor_y = std::abs(this->coords.y - j * nums_initial_y) < 0.05f;
+
+                if(anchor_x && anchor_y)
+                    this->coords = {i * nums_initial_x, j * nums_initial_y};
+            }
+        }
+    }
 
     // Desactiva el movimiento del eje de coordenadas
     coord_system.modified_axies = !this->isSelected;
@@ -914,3 +929,6 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     return 0;
 }
 #pragma endregion /* Cartesian_Point */
+
+
+// ;['ØÖ°¨Ç]
