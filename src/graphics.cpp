@@ -362,7 +362,7 @@ void render::Axis_Coord_System::debug(bool on) {
         return;
 
     if(ImGui::CollapsingHeader("Debug Axis_Coord_System")) {
-        if(ImGui::CollapsingHeader("Coord System")) {
+        if(ImGui::TreeNode("Coord System")) {
             ImGui::Text(
                 "Coordenadas del origen:\n"
                 "   O(%.3f, %.3f)\n"
@@ -376,13 +376,18 @@ void render::Axis_Coord_System::debug(bool on) {
             ImGui::SliderFloat("origin.x", &origin.x, 0.0f, GW_Window.width);
             ImGui::SliderFloat("origin.y", &origin.y, 0.0f, GW_Window.height);
             ImGui::SliderFloat("rotation", &rotation, 0.0f, 2.0f * M_PI, "%.6f");
+            ImGui::TreePop();
         }
 
-        if(ImGui::CollapsingHeader("Eje de las X"))
+        if(ImGui::TreeNode("Eje de las X")) {
             AxisCoordSystemDebug(CoordType::X, axis_x_info);
+            ImGui::TreePop();
+        }
 
-        if(ImGui::CollapsingHeader("Eje de las Y"))
+        if(ImGui::TreeNode("Eje de las Y")) {
             AxisCoordSystemDebug(CoordType::Y, axis_y_info);
+            ImGui::TreePop();
+        }
     }    
 }
 

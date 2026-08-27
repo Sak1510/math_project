@@ -72,7 +72,7 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
 void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     if(!ig_init) {
         ImGui::SetNextWindowPos({0.0f, 0.0f});
-        ImGui::SetNextWindowSize({270.0f, window_size.y});
+        ImGui::SetNextWindowSize({SPACE_AXIS_MEDIA_SPACE * 5.0f, window_size.y});
     
         ig_init = true;
     }
@@ -85,19 +85,24 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     #define LOCAL_DEBUG
     #if defined(DEBUG) || defined(LOCAL_DEBUG)
     ImGui::SeparatorText("Modo Debug");
-    if(ImGui::CollapsingHeader("Mouse")) {
+    if(ImGui::CollapsingHeader("Variables")) {
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Text(
             "delta = {%.3f, %.3f}\n"
             "wheel = %.3f\n"
-            "b_left: pressed = %s, released = %s, down = %s\n\n"
+            "b_left: pressed = %s\n"
+            "released = %s\n"
+            "down = %s\n\n"
             
             "window.width = %.3f\n"
             "window.hegiht = %.3f\n"
             "io.WantMouseCapture = %s\n"
             "cartesian_coord.modified_axis = %s, point.isSelected = %s",
-            io.MouseDelta.x, io.MouseDelta.y, io.MouseWheel,
-            (io.MouseClicked[0]) ? "true" : "false", (io.MouseReleased[0]) ? "true" : "false", (io.MouseDown[0]) ? "true" : "false",
+            io.MouseDelta.x, io.MouseDelta.y, 
+            io.MouseWheel,
+            (io.MouseClicked[0]) ? "true" : "false", 
+            (io.MouseReleased[0]) ? "true" : "false", 
+            (io.MouseDown[0]) ? "true" : "false",
             
             window_size.x, window_size.y,
             (io.WantCaptureMouse) ? "true" : "false",
