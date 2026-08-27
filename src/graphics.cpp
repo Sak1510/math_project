@@ -872,8 +872,8 @@ int render::Cartesian_Point::render(Axis_Coord_System coord_system) {
     SDL_FPoint pixel_coords = this->getCoordsFPoint(coord_system);
     bool in_width_window = -2.0f * this->radius <= pixel_coords.x <= coord_system.GW_Window.width + 2.0f * this->radius;
     bool in_height_window = -2.0f * this->radius <= pixel_coords.y <= coord_system.GW_Window.height + 2.0f * this->radius;
-    // if(in_width_window && in_height_window)
-    //     return -1;      // Out of range
+    if(!in_width_window || !in_height_window)
+        return -1;      // Out of range
     
     // Renderiza el punto
     circle(coord_system.GW_Window.renderer, pixel_coords, this->radius, this->color);
@@ -891,14 +891,14 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     
     bool in_width_window = 0.0f <= mouse_pos.x <= coord_system.GW_Window.width;
     bool in_height_window = 0.0f <= mouse_pos.y <= coord_system.GW_Window.height;
-    // if(in_width_window && in_height_window)
-    //     return -1;      // Out of range
+    if(!in_width_window || !in_height_window)
+        return -1;      // Out of range
     
     // Apaga el movimiento de los ejes
 
     // Arastra el punto
     float extra_range = 3.0f;
-    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius + extra_range;
+    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius;
     bool button_left_clicked = io.MouseClicked[0], button_left_down = io.MouseDown[0];
     if(!io.WantCaptureMouse && in_range && button_left_clicked)
         this->isSelected = !this->isSelected;
@@ -906,7 +906,8 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     // Cambia las coordenadas del punto a las coordenadas del mouse
     if(this->isSelected)
         setCoords(coord_system, mouse_pos);
-        
+       
+
     // Desactiva el movimiento del eje de coordenadas
     coord_system.modified_axies = !this->isSelected;
 
