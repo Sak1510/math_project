@@ -6,10 +6,13 @@
 // variables, pues puede haber variables con el mismo nombre en otros archivos y puede generar conflictos
 //
 // gc => graphing_calculator
+// ig => Dear ImGui 
 
 bool gc_init = false;
+bool ig_init = false;
+
 render::Axis_Coord_System gc_coord_system;
-render::Cartesian_Point gc_cartesian_point(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE});
+render::Cartesian_Point gc_cartesian_point0(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE});
 render::Cartesian_Point gc_cartesian_point1(10.0f, {-1.0f, 1.0f}, {0, 255, 0, SDL_ALPHA_OPAQUE});
 render::Cartesian_Point gc_cartesian_point2(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE});
 
@@ -21,7 +24,7 @@ const float g(float x);
 
 void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on);
 void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
-    if(gc_init == false) {
+    if(!gc_init) {
         gc_coord_system.setGraph_Window(GW_Window);
         gc_coord_system.setOrigin({GW_Window.width / 2.0f, GW_Window.height / 2.0f});
 
@@ -34,14 +37,26 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
     gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
 
-    gc_cartesian_point.render(gc_coord_system);
-    gc_cartesian_point.drag(gc_coord_system);
+    gc_cartesian_point0.drag(gc_coord_system);
+    gc_cartesian_point1.drag(gc_coord_system);
+    gc_cartesian_point2.drag(gc_coord_system);
 
+    SDL_FPoint points[3] = {
+        gc_cartesian_point0.getCoordsFPoint(gc_coord_system),
+        gc_cartesian_point1.getCoordsFPoint(gc_coord_system),
+        gc_cartesian_point2.getCoordsFPoint(gc_coord_system)
+    };
+
+    render::thickLine(GW_Window.renderer, points[0], points[1], 3.0f);
+    render::thickLine(GW_Window.renderer, points[1], points[2], 3.0f);
+    render::thickLine(GW_Window.renderer, points[2], points[0], 3.0f);
+
+
+
+    gc_cartesian_point0.render(gc_coord_system);
     gc_cartesian_point1.render(gc_coord_system);
     gc_cartesian_point2.render(gc_coord_system);
 
-    gc_cartesian_point1.drag(gc_coord_system);
-    gc_cartesian_point2.drag(gc_coord_system);
 
     window_size = GW_Window.getWindowSize();
     gc_coord_system.axisModified();
@@ -55,6 +70,14 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
 }
 
 void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
+    if(!ig_init) {
+        ImGui::SetNextWindowPos({0.0f, 0.0f});
+        ImGui::SetNextWindowSize({270.0f, window_size.y});
+    
+        ig_init = true;
+    }
+    
+    
     ImGui::Begin(str_name, nullptr, ImGuiWindowFlags_NoMove);
     if(ImGui::Button("Volver al menu principal."))
         menu_on = !menu_on;
@@ -78,7 +101,7 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
             
             window_size.x, window_size.y,
             (io.WantCaptureMouse) ? "true" : "false",
-            (gc_coord_system.modified_axies) ? "true" : "false", (gc_cartesian_point.isSelected) ? "true" : "false" 
+            (gc_coord_system.modified_axies) ? "true" : "false", (gc_cartesian_point0.isSelected) ? "true" : "false" 
         );
     }
 
