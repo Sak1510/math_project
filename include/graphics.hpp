@@ -148,9 +148,22 @@ namespace render {
      *  \param renderer El puntero de renderizado donde será dibujado el circulo.
      *  \param c Punto de coordenadas del centro.
      *  \param r Radio del circulo.
+     *  \param g Grosor del perimetro de la circumferencia.
      *  \param color Color del circulo.
      */
-    void circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_Color color);
+    void circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_FColor color);
+
+    /**
+     *  Dibuja una circunferencia (perimetro de un circulo) de un color especifico.
+     * 
+     *  \param renderer El puntero de renderizado donde será dibujado el circulo.
+     *  \param c Punto de coordenadas del centro.
+     *  \param r Radio del circulo.
+     *  \param g Grosor del perimetro de la circumferencia.
+     *  \param color Color del circulo.
+     */
+    void circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_Color color);
+
 
     /**
      *  Dibuja un triangulo con base y altura dirijido desde un punto de origen, situado en el punto 

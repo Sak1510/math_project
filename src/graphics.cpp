@@ -43,8 +43,8 @@ void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_FColor co
         float angle = RAD * (i / fnum_triangles);
 
         circle_triangles[i][0].position = {c.x, c.y};
-        circle_triangles[i][1].position = {c.x + r * SDL_cosf(angle), c.y - r * SDL_sinf(angle)};
-        circle_triangles[i][2].position = {c.x + r * SDL_cosf(angle + RAD / fnum_triangles), c.y - r * SDL_sinf(angle + RAD / fnum_triangles)};        
+        circle_triangles[i][1].position = {c.x + r * std::cosf(angle), c.y - r * std::sinf(angle)};
+        circle_triangles[i][2].position = {c.x + r * std::cosf(angle + RAD / fnum_triangles), c.y - r * std::sinf(angle + RAD / fnum_triangles)};        
 
         for(int j = 0; j < 3; j++) {
             circle_triangles[i][j].color = {color.r, color.g, color.b, SDL_ALPHA_OPAQUE_FLOAT};
@@ -56,8 +56,42 @@ void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_FColor co
 }
 
 void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_Color color) {
-    SDL_FColor fcolor = ColorToFColor(color);
-    circle(renderer, c, r, fcolor);
+    circle(renderer, c, r, ColorToFColor(color));
+}
+
+void render::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_FColor color) {
+    const size_t num_triangles = 32;
+    const float fnum_triangles = (float)num_triangles;
+    SDL_FPoint circumference_point[2];
+
+    // Obtiene el color actual del renderer
+    SDL_FColor last_color;
+    SDL_GetRenderDrawColorFloat(renderer, &last_color.r, &last_color.g, &last_color.b, &last_color.a);
+
+    // Establece el color de la circumferencia antes del bucle
+    SDL_SetRenderDrawColorFloat(renderer, color.r, color.g, color.b, color.a);
+    for(int i = 0; i < num_triangles; i++) {
+        float angle = RAD * (i / fnum_triangles);
+
+        circumference_point[0] = {
+            c.x + r * std::cosf(angle), 
+            c.y - r * std::sinf(angle)
+        };
+        circumference_point[1] = {
+            c.x + r * std::cosf(angle + RAD / fnum_triangles),
+            c.y - r * std::sinf(angle + RAD / fnum_triangles)
+        };
+
+        // Dibuja con cierto grosor las lineas gruesas de la circunferencia
+        thickLine(renderer, circumference_point[0], circumference_point[1], g);
+    }
+
+    // Vuelve a establecer el color original del renderer
+    SDL_SetRenderDrawColorFloat(renderer, last_color.r, last_color.g, last_color.b, last_color.a);
+}
+
+void render::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_Color color) {
+    circumference(renderer, c, r, g, ColorToFColor(color));
 }
 
 void render::debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::string str, SDL_Color bg_c, SDL_Color fg_c) {
@@ -844,6 +878,10 @@ int render::Cartesian_Point::render(Axis_Coord_System coord_system) {
     // Renderiza el punto
     circle(coord_system.GW_Window.renderer, pixel_coords, this->radius, this->color);
     
+    const float grosor_line = 2.0f;
+    if(this->isSelected) 
+        circumference(coord_system.GW_Window.renderer, pixel_coords, this->radius + 5.0f, grosor_line, this->color);
+
     return 0;
 }
 
@@ -866,7 +904,7 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
         this->isSelected = !this->isSelected;
 
     // Cambia las coordenadas del punto a las coordenadas del mouse
-    if(this->isSelected) 
+    if(this->isSelected)
         setCoords(coord_system, mouse_pos);
         
     // Desactiva el movimiento del eje de coordenadas
