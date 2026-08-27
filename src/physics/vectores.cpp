@@ -13,8 +13,7 @@ std::vector<physics::Vector> normal_vectors = {
 };
 
 render::Axis_Coord_System coord_system_vector;
-render::FloatCartesian2 coord_system_origin = {0.0f, 0.0f}; 
-render::Cartesian_Point vectors_origin;
+render::Cartesian_Point vectors_origin = {10.0f, {0.0f, 0.0f}};
 
 physics::Vector vector_sum;
 physics::Vector vector_sub;
@@ -52,6 +51,11 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, 255);
     coord_system_vector.render();
     coord_system_vector.axisModified();
+
+    vectors_origin.render(coord_system_vector);
+    vectors_origin.drag(coord_system_vector);
+
+    render::FloatCartesian2 coord_system_origin = vectors_origin.coords;
 
     // Dibujado de las operaciones con vectors
     if(sum_vectors) {
@@ -145,12 +149,6 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
         ImGui::Checkbox("Radianes", &radianes);
         ImGui::Checkbox("Sliders", &slider_components);
         ImGui::SliderFloat("Vector Grosor", &vector_grosor, 1.0f, 20.0f);
-        
-        float sl_fv[2] = {coord_system_origin.x, coord_system_origin.y};
-        ImGui::SliderFloat2("Origen", sl_fv, -10.0f, 10.0f);
-        coord_system_origin.x = sl_fv[0];
-        coord_system_origin.y = sl_fv[1];
-
 
         ImGui::SeparatorText("Información General");
         ImGui::TextColored({0, 0, 205, 255}, "Número de Vectores: %d", (int)vectors.size());

@@ -318,41 +318,30 @@ void AxisCoordSystemDebug(render::CoordType axis, render::cartesian_axis_info &a
 void render::Axis_Coord_System::debug(bool on) {
     if(!on)
         return;
-    
-    ImGui::SeparatorText("Modo Debug");
-    if(ImGui::CollapsingHeader("Mouse")) {
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui::Text(
-            "delta = {%.3f, %.3f}\n"
-            "wheel = %.3f\n"
-            "b_left: pressed = %s, released = %s, down = %s\n",
-            io.MouseDelta.x, io.MouseDelta.y, io.MouseWheel,
-            (io.MouseClicked[0]) ? "true" : "false", (io.MouseReleased[0]) ? "true" : "false",
-            (io.MouseDown[0]) ? "true" : "false"
-        );
-    }
 
-    if(ImGui::CollapsingHeader("Coord System")) {
-        ImGui::Text(
-            "Coordenadas del origen:\n"
-            "   O(%.3f, %.3f)\n"
-            "Rotación de los ejes coordenados: \n"
-            "   rotation = %.6f rad\n"
-            "   0.000000 rad =< rotation < %.6f rad\n"
-            "Escala de ambos ejes:\n",
-            origin.x, origin.y, rotation, 2.0f * M_PI
-        );
+    if(ImGui::CollapsingHeader("Debug Axis_Coord_System")) {
+        if(ImGui::CollapsingHeader("Coord System")) {
+            ImGui::Text(
+                "Coordenadas del origen:\n"
+                "   O(%.3f, %.3f)\n"
+                "Rotación de los ejes coordenados: \n"
+                "   rotation = %.6f rad\n"
+                "   0.000000 rad =< rotation < %.6f rad\n"
+                "Escala de ambos ejes:\n",
+                origin.x, origin.y, rotation, 2.0f * M_PI
+            );
 
-        ImGui::SliderFloat("origin.x", &origin.x, 0.0f, GW_Window.width);
-        ImGui::SliderFloat("origin.y", &origin.y, 0.0f, GW_Window.height);
-        ImGui::SliderFloat("rotation", &rotation, 0.0f, 2.0f * M_PI, "%.6f");
-    }
+            ImGui::SliderFloat("origin.x", &origin.x, 0.0f, GW_Window.width);
+            ImGui::SliderFloat("origin.y", &origin.y, 0.0f, GW_Window.height);
+            ImGui::SliderFloat("rotation", &rotation, 0.0f, 2.0f * M_PI, "%.6f");
+        }
 
-    if(ImGui::CollapsingHeader("Eje de las X"))
-        AxisCoordSystemDebug(CoordType::X, axis_x_info);
+        if(ImGui::CollapsingHeader("Eje de las X"))
+            AxisCoordSystemDebug(CoordType::X, axis_x_info);
 
-    if(ImGui::CollapsingHeader("Eje de las Y"))
-        AxisCoordSystemDebug(CoordType::Y, axis_y_info);
+        if(ImGui::CollapsingHeader("Eje de las Y"))
+            AxisCoordSystemDebug(CoordType::Y, axis_y_info);
+    }    
 }
 
 void render::Axis_Coord_System::setGraph_Window(Graph_Window GW_Window) {
@@ -805,8 +794,8 @@ render::Cartesian_Point::Cartesian_Point(void) {
 
 render::Cartesian_Point::Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color) {
     this->radius = r;
-    this->color = color;
     this->coords = coords;
+    this->color = color;
 }
 
 void render::Cartesian_Point::setCoords(FloatCartesian2 coords) {
@@ -858,7 +847,7 @@ int render::Cartesian_Point::render(Axis_Coord_System coord_system) {
     return 0;
 }
 
-int render::Cartesian_Point::drag(Axis_Coord_System coord_system) {
+int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     ImGuiIO& io = ImGui::GetIO();
     SDL_FPoint mouse_pos = ImVec2toSDL_FPoint(io.MousePos);
     
@@ -870,20 +859,18 @@ int render::Cartesian_Point::drag(Axis_Coord_System coord_system) {
     // Apaga el movimiento de los ejes
 
     // Arastra el punto
-    float extra_range = 5.0f;
+    float extra_range = 3.0f;
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius + extra_range;
     bool button_left_clicked = io.MouseClicked[0], button_left_down = io.MouseDown[0];
-    if(button_left_clicked)
-        if(in_range)
-            this->isSelected = !this->isSelected;
-        else
-            this->isSelected = false;
-    
+    if(!io.WantCaptureMouse && in_range && button_left_clicked)
+        this->isSelected = !this->isSelected;
 
-    if(this->isSelected && button_left_down) {    
-        this->coords = coord_system.subPixeToCartesian(mouse_pos);
-        coord_system.modified_axies = false;
-    }
+    // Cambia las coordenadas del punto a las coordenadas del mouse
+    if(this->isSelected) 
+        setCoords(coord_system, mouse_pos);
+        
+    // Desactiva el movimiento del eje de coordenadas
+    coord_system.modified_axies = !this->isSelected;
 
     return 0;
 }

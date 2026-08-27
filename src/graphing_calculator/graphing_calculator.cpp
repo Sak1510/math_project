@@ -9,7 +9,10 @@
 
 bool gc_init = false;
 render::Axis_Coord_System gc_coord_system;
-render::Cartesian_Point gc_cartesian_point(10.0f, {1.0f, 1.0f});
+render::Cartesian_Point gc_cartesian_point(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE});
+render::Cartesian_Point gc_cartesian_point1(10.0f, {-1.0f, 1.0f}, {0, 255, 0, SDL_ALPHA_OPAQUE});
+render::Cartesian_Point gc_cartesian_point2(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE});
+
 render::FloatCartesian2 window_size;
 
 
@@ -34,6 +37,12 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
     gc_cartesian_point.render(gc_coord_system);
     gc_cartesian_point.drag(gc_coord_system);
 
+    gc_cartesian_point1.render(gc_coord_system);
+    gc_cartesian_point2.render(gc_coord_system);
+
+    gc_cartesian_point1.drag(gc_coord_system);
+    gc_cartesian_point2.drag(gc_coord_system);
+
     window_size = GW_Window.getWindowSize();
     gc_coord_system.axisModified();
 
@@ -50,15 +59,35 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     if(ImGui::Button("Volver al menu principal."))
         menu_on = !menu_on;
 
-    #ifdef DEBUG
-    ImGui::Text(
-        "window.width = %.3f\n"
-        "window.hegiht = %.3f",
-        window_size.x, window_size.y
-    );
-    #endif
+    #define LOCAL_DEBUG
+    #if defined(DEBUG) || defined(LOCAL_DEBUG)
+    ImGui::SeparatorText("Modo Debug");
+    if(ImGui::CollapsingHeader("Mouse")) {
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui::Text(
+            "delta = {%.3f, %.3f}\n"
+            "wheel = %.3f\n"
+            "b_left: pressed = %s, released = %s, down = %s\n\n"
+            
+            "window.width = %.3f\n"
+            "window.hegiht = %.3f\n"
+            "io.WantMouseCapture = %s\n"
+            "cartesian_coord.modified_axis = %s, point.isSelected = %s",
+            io.MouseDelta.x, io.MouseDelta.y, io.MouseWheel,
+            (io.MouseClicked[0]) ? "true" : "false", (io.MouseReleased[0]) ? "true" : "false", (io.MouseDown[0]) ? "true" : "false",
+            
+            window_size.x, window_size.y,
+            (io.WantCaptureMouse) ? "true" : "false",
+            (gc_coord_system.modified_axies) ? "true" : "false", (gc_cartesian_point.isSelected) ? "true" : "false" 
+        ); 
+    }
 
     gc_coord_system.debug(true);
+    #ifdef LOCAL_DEBUG
+        #undef LOCAL_DEBUG
+    #endif /* LOCAL_DEBUG */
+    #endif /* defined(DEBUG) || defined(LOCAL_DEBUG) */
+
 
     ImGui::End();
 }

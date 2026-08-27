@@ -457,7 +457,7 @@ namespace render {
          *  
          *  \param 0 sin problemas. -1 fuera del rango del renderizado.  
          */
-        int drag(Axis_Coord_System coord_system);
+        int drag(Axis_Coord_System& coord_system);
 
         Cartesian_Point(void);
         Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE});
