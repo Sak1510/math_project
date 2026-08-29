@@ -848,6 +848,15 @@ render::Cartesian_Point::Cartesian_Point(float r, FloatCartesian2 coords, SDL_Co
     this->color = color;
 }
 
+render::Cartesian_Point::Cartesian_Point(float r, float coords[2], float color[4]) {
+    FloatCartesian2 ncoords = {coords[0], coords[1]};
+    SDL_Color ncolor = FColorToColor({color[0], color[1], color[2], color[3]});
+    
+    this->radius = r;
+    this->coords = ncoords;
+    this->color = ncolor;
+}
+
 void render::Cartesian_Point::setCoords(FloatCartesian2 coords) {
     this->coords = coords;
 }

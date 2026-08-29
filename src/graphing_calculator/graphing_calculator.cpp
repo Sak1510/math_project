@@ -9,14 +9,32 @@
 // ig => Dear ImGui 
 
 bool gc_init = false;
-bool ig_init = false;
+bool ig_init0 = false;
+bool ig_init1 = false;
+
+
 
 render::Axis_Coord_System gc_coord_system;
-render::Cartesian_Point gc_cartesian_point0(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE});
-render::Cartesian_Point gc_cartesian_point1(10.0f, {-1.0f, 1.0f}, {0, 255, 0, SDL_ALPHA_OPAQUE});
-render::Cartesian_Point gc_cartesian_point2(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE});
+render::FloatCartesian2 gc_window_size;
 
-render::FloatCartesian2 window_size;
+
+std::vector<render::Cartesian_Point> gc_cartesian_points = {
+    render::Cartesian_Point(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE}),
+    render::Cartesian_Point(10.0f, {-1.0f, 1.0f}, {0, 255, 0, SDL_ALPHA_OPAQUE}),
+    render::Cartesian_Point(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE})
+};
+
+typedef struct Init_Point {
+    float r = 10.0f;
+    render::FloatCartesian2 coords = {0.0f, 0.0f};
+    SDL_FColor fcolor = {1.0f, 1.0f, 1.0f, SDL_ALPHA_OPAQUE_FLOAT};
+
+    float array_coords[2] = {0.0f, 0.0f};
+    float array_fcolor[4] = {1.0f, 1.0f, 1.0f, SDL_ALPHA_OPAQUE_FLOAT};
+} Init_Point;
+
+const Init_Point init_point;
+Init_Point new_button;
 
 
 const float f(float x);
@@ -37,28 +55,22 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
     gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
 
-    gc_cartesian_point0.drag(gc_coord_system);
-    gc_cartesian_point1.drag(gc_coord_system);
-    gc_cartesian_point2.drag(gc_coord_system);
-
     SDL_FPoint points[3] = {
-        gc_cartesian_point0.getCoordsFPoint(gc_coord_system),
-        gc_cartesian_point1.getCoordsFPoint(gc_coord_system),
-        gc_cartesian_point2.getCoordsFPoint(gc_coord_system)
+        gc_cartesian_points[0].getCoordsFPoint(gc_coord_system),
+        gc_cartesian_points[1].getCoordsFPoint(gc_coord_system),
+        gc_cartesian_points[2].getCoordsFPoint(gc_coord_system)
     };
 
     render::thickLine(GW_Window.renderer, points[0], points[1], 3.0f);
     render::thickLine(GW_Window.renderer, points[1], points[2], 3.0f);
     render::thickLine(GW_Window.renderer, points[2], points[0], 3.0f);
 
+    for(size_t i = 0; i < gc_cartesian_points.size(); i++) {
+        gc_cartesian_points[i].drag(gc_coord_system);
+        gc_cartesian_points[i].render(gc_coord_system);
+    }
 
-
-    gc_cartesian_point0.render(gc_coord_system);
-    gc_cartesian_point1.render(gc_coord_system);
-    gc_cartesian_point2.render(gc_coord_system);
-
-
-    window_size = GW_Window.getWindowSize();
+    gc_window_size = GW_Window.getWindowSize();
     gc_coord_system.axisModified();
 
     // ====         FINAL           ====
@@ -70,19 +82,29 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
 }
 
 void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
-    if(!ig_init) {
+    bool open1, open2;
+    #if defined(DEBUG) || defined(LOCAL_DEBUG)
+        open1 = open2 = true;
+    #else    
+        open1 = open2 = false;
+    #endif /* defined(DEBUG) || defined(LOCAL_DEBUG) */
+
+
+    if(!ig_init0) {
         ImGui::SetNextWindowPos({0.0f, 0.0f});
-        ImGui::SetNextWindowSize({SPACE_AXIS_MEDIA_SPACE * 5.0f, window_size.y});
+        ImGui::SetNextWindowSize({SPACE_AXIS_MEDIA_SPACE * 5.0f, gc_window_size.y});
+        ImGui::SetNextWindowCollapsed(open1);
     
-        ig_init = true;
+        ig_init0 = true;
     }
     
     
+    // Añadir nuevos objetos
     ImGui::Begin(str_name, nullptr, ImGuiWindowFlags_NoMove);
     if(ImGui::Button("Volver al menu principal."))
         menu_on = !menu_on;
 
-    #define LOCAL_DEBUG
+    // #define LOCAL_DEBUG
     #if defined(DEBUG) || defined(LOCAL_DEBUG)
     ImGui::SeparatorText("Modo Debug");
     if(ImGui::CollapsingHeader("Variables")) {
@@ -104,7 +126,7 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
             (io.MouseReleased[0]) ? "true" : "false", 
             (io.MouseDown[0]) ? "true" : "false",
             
-            window_size.x, window_size.y,
+            gc_window_size.x, gc_window_size.y,
             (io.WantCaptureMouse) ? "true" : "false",
             (gc_coord_system.modified_axies) ? "true" : "false", (gc_cartesian_point0.isSelected) ? "true" : "false" 
         );
@@ -117,7 +139,45 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     #endif /* defined(DEBUG) || defined(LOCAL_DEBUG) */
 
 
-    ImGui::End();
+    ImGui::SeparatorText("Botones");
+    if(ImGui::CollapsingHeader("Botones")) {
+        ImGui::Text("Especifica las caracteristicas del botón a crear.");
+        ImGui::InputFloat("Radio Pixeles", &new_button.r);
+        ImGui::InputFloat2("X/Y", new_button.array_coords);
+        ImGui::ColorEdit4("Color", new_button.array_fcolor);
+
+        if(ImGui::Button("Añadir botón")) {
+            gc_cartesian_points.push_back(
+                render::Cartesian_Point(new_button.r, new_button.array_coords, new_button.array_fcolor)
+            );
+
+            // Restablece los valores iniciales
+            new_button.r = init_point.r;
+            new_button.array_coords[0] = init_point.coords.x;
+            new_button.array_coords[1] = init_point.coords.y;
+            new_button.array_fcolor[0] = init_point.fcolor.r;
+            new_button.array_fcolor[1] = init_point.fcolor.g;
+            new_button.array_fcolor[2] = init_point.fcolor.b;
+            new_button.array_fcolor[3] = init_point.fcolor.a; 
+        }
+    }
+    
+
+    ImGui::End(); // Fin de añadir nuevos objetos
+
+
+    if(!ig_init1) {
+        ImGui::SetNextWindowPos({gc_window_size.x, 0}, 0, {1.0f, 0.0f});
+        ImGui::SetNextWindowSize({SPACE_AXIS_MEDIA_SPACE * 3.0f, gc_window_size.y});
+        ImGui::SetNextWindowCollapsed(open2);
+
+        ig_init1 = true;
+    }
+
+    // Zona para las propiedades del objeto seleccionado
+    ImGui::Begin("Propiedades del objeto", nullptr, ImGuiWindowFlags_NoMove);
+
+    ImGui::End(); // Fin de las propiedades del objeto seleccionado
 }
 
 

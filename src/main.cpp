@@ -23,21 +23,9 @@ SDL_Event *globalEvent = NULL;
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 700
 
-// Variables y objetos globales de los menus y funciones.
-ImVec2 edit_size[10] = {
-    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
-    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
-};
-
-ImVec2 edit_pos[10] = {
-    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
-    {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
-};
-
 std::string begin_name = "Esto nunca lo vas a ver en el ejecutable ajsdjasdasjdnasjdasd";
 menu::sim seleccion = menu::sim::graficadora_2D;
 bool menu_on = true;
-
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {

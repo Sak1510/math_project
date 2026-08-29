@@ -476,5 +476,6 @@ namespace render {
 
         Cartesian_Point(void);
         Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE});
+        Cartesian_Point(float r, float coords[2], float color[4]);
     };
 };
