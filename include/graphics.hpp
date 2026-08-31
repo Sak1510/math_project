@@ -412,7 +412,7 @@ namespace render {
         /**
          *  Establece las coordenadas del punto en coordenadas del plano cartesiano.
          * 
-         *  \param coords Coordenadas del plano cartesiano.
+         *  \param coords Coordenadas del plano cartesiano usando FloatCartesian2.
          */
         void setCoords(FloatCartesian2 coords);
 
@@ -427,7 +427,7 @@ namespace render {
         /**
          *  Establece el color de punto en RGB.
          * 
-         *  \param color Color a dar.
+         *  \param color Color a dar SDL_Color.
          *  
          *  \returns 0 sin problemas. -1 algún valor de `color` fuera de rango.
          */
@@ -436,7 +436,7 @@ namespace render {
         /**
          *  Establece el color de punto en float RGB.
          * 
-         *  \param color Color a dar.
+         *  \param color Color a dar en SDL_FColor.
          *  
          *  \returns 0 sin problemas. -1 algún valor de `color` fuera de rango.
          */

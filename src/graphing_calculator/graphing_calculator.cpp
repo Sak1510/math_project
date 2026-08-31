@@ -12,11 +12,8 @@ bool gc_init = false;
 bool ig_init0 = false;
 bool ig_init1 = false;
 
-
-
 render::Axis_Coord_System gc_coord_system;
 render::FloatCartesian2 gc_window_size;
-
 
 std::vector<render::Cartesian_Point> gc_cartesian_points = {
     render::Cartesian_Point(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE}),
@@ -24,21 +21,13 @@ std::vector<render::Cartesian_Point> gc_cartesian_points = {
     render::Cartesian_Point(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE})
 };
 
-typedef struct Init_Point {
-    float r = 10.0f;
-    render::FloatCartesian2 coords = {0.0f, 0.0f};
-    SDL_FColor fcolor = {1.0f, 1.0f, 1.0f, SDL_ALPHA_OPAQUE_FLOAT};
-
-    float array_coords[2] = {0.0f, 0.0f};
-    float array_fcolor[4] = {1.0f, 1.0f, 1.0f, SDL_ALPHA_OPAQUE_FLOAT};
-} Init_Point;
-
-const Init_Point init_point;
-Init_Point new_button;
-
+const render::Cartesian_Point gc_init_point(10.0f, {0.0f, 0.0f}, {0, 0, 0, SDL_ALPHA_OPAQUE});
+render::Cartesian_Point gc_new_point = gc_init_point;
+SDL_FColor gc_float_color_new_point, gc_float_color;
 
 const float f(float x);
 const float g(float x);
+const size_t gc_getActualPointSelected(std::vector<render::Cartesian_Point> points);
 
 void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on);
 void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
@@ -141,27 +130,22 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
 
     ImGui::SeparatorText("Botones");
     if(ImGui::CollapsingHeader("Botones")) {
+        gc_float_color = render::ColorToFColor(gc_new_point.color);
+
         ImGui::Text("Especifica las caracteristicas del botón a crear.");
-        ImGui::InputFloat("Radio Pixeles", &new_button.r);
-        ImGui::InputFloat2("X/Y", new_button.array_coords);
-        ImGui::ColorEdit4("Color", new_button.array_fcolor);
+        ImGui::InputFloat("Radio Pixeles", &gc_new_point.radius);
+        ImGui::InputFloat2("X/Y", (float *)&gc_new_point.coords);
+        ImGui::ColorEdit4("Color", (float *)&gc_float_color);
+
+        gc_new_point.setColor(gc_float_color);
 
         if(ImGui::Button("Añadir botón")) {
-            gc_cartesian_points.push_back(
-                render::Cartesian_Point(new_button.r, new_button.array_coords, new_button.array_fcolor)
-            );
+            gc_cartesian_points.push_back(gc_new_point);
 
             // Restablece los valores iniciales
-            new_button.r = init_point.r;
-            new_button.array_coords[0] = init_point.coords.x;
-            new_button.array_coords[1] = init_point.coords.y;
-            new_button.array_fcolor[0] = init_point.fcolor.r;
-            new_button.array_fcolor[1] = init_point.fcolor.g;
-            new_button.array_fcolor[2] = init_point.fcolor.b;
-            new_button.array_fcolor[3] = init_point.fcolor.a; 
+            gc_new_point = gc_init_point;
         }
     }
-    
 
     ImGui::End(); // Fin de añadir nuevos objetos
 
@@ -176,6 +160,20 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
 
     // Zona para las propiedades del objeto seleccionado
     ImGui::Begin("Propiedades del objeto", nullptr, ImGuiWindowFlags_NoMove);
+    const size_t id_point = gc_getActualPointSelected(gc_cartesian_points);
+    if(id_point != gc_cartesian_points.size() + 1) {
+        render::Cartesian_Point& gc_ap = gc_cartesian_points.at(id_point);  // gc_Actual_Point
+        gc_float_color = render::ColorToFColor(gc_ap.color);                // gc_Float_Color
+
+        ImGui::Text("El punto %d esta seleccionado", id_point);
+        ImGui::InputFloat("Radio Pixeles", &gc_ap.radius);
+        ImGui::InputFloat2("X/Y", (float *)&gc_ap.coords);
+        ImGui::ColorEdit4("Color", (float *)&gc_float_color);
+
+        gc_ap.setColor(gc_float_color);
+    } else {
+        ImGui::Text("Ningun punto esta seleccionado.");
+    }
 
     ImGui::End(); // Fin de las propiedades del objeto seleccionado
 }
@@ -187,4 +185,14 @@ const float f(float x) {
 
 const float g(float x) {
     return - x * x / 4.0f + 5.0f;
+}
+
+const size_t gc_getActualPointSelected(std::vector<render::Cartesian_Point> points) {
+    // Si encuentra uno seleccionado, devuelve el seleccionado.
+    for(size_t i = 0; i < points.size(); i++)
+        if(points[i].isSelected)
+            return i;
+
+    // Si no encuentra ninguno seleccionado, devuelve points.size() + 1
+    return points.size() + 1;
 }

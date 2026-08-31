@@ -930,9 +930,8 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
 
     // Cambia las coordenadas del punto a las coordenadas del mouse
     if(this->isSelected) {
-        setCoords(coord_system, mouse_pos);
+        // this->setCoords(coord_system, mouse_pos);
 
-        // 
         // Anclaje a las cuadriculas del eje cartesiano.
         bool anchor_x, anchor_y;
         const float nums_initial_x = coord_system.axis_x_info.nums_initial;
