@@ -1,5 +1,6 @@
 #include <graphics.hpp>
 #include <menu.hpp>
+#define LOCAL_DEBUG
 
 // ====     PREFIJOS USADOS EN EL ARCHIVO      =====
 // El uso de estos prefijos, permite evitar posibles errores de compilación por re-definición de
@@ -98,26 +99,35 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     ImGui::SeparatorText("Modo Debug");
     if(ImGui::CollapsingHeader("Variables")) {
         ImGuiIO& io = ImGui::GetIO();
+
+        float mouse_down_prev;
+        if(io.MouseDown[0])
+            mouse_down_prev = io.MouseDownDurationPrev[0];
+
         ImGui::Text(
             "delta = {%.3f, %.3f}\n"
             "wheel = %.3f\n"
             "b_left: pressed = %s\n"
             "released = %s\n"
-            "down = %s\n\n"
+            "down = %s\n"
+            "down_duration = %.3f\n"
+            "down_duration_prev = %.3f\n"
             
             "window.width = %.3f\n"
             "window.hegiht = %.3f\n"
             "io.WantMouseCapture = %s\n"
-            "cartesian_coord.modified_axis = %s, point.isSelected = %s",
-            io.MouseDelta.x, io.MouseDelta.y, 
+            "cartesian_coord.modified_axis = %s",
+            io.MouseDelta.x, io.MouseDelta.y,
             io.MouseWheel,
             (io.MouseClicked[0]) ? "true" : "false", 
             (io.MouseReleased[0]) ? "true" : "false", 
             (io.MouseDown[0]) ? "true" : "false",
-            
+            io.MouseDownDuration[0], 
+            mouse_down_prev,
+
             gc_window_size.x, gc_window_size.y,
             (io.WantCaptureMouse) ? "true" : "false",
-            (gc_coord_system.modified_axies) ? "true" : "false", (gc_cartesian_point0.isSelected) ? "true" : "false" 
+            (gc_coord_system.modified_axies) ? "true" : "false" 
         );
     }
 

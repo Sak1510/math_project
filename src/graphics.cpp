@@ -919,8 +919,6 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     if(!in_width_window || !in_height_window)
         return -1;      // Out of range
     
-    // Apaga el movimiento de los ejes
-
     // Arastra el punto
     float extra_range = 3.0f;
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius;
