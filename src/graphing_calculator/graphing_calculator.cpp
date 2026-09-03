@@ -170,6 +170,8 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
 
     // Zona para las propiedades del objeto seleccionado
     ImGui::Begin("Propiedades del objeto", nullptr, ImGuiWindowFlags_NoMove);
+    ImGui::Text("Probando Claude Code #3");
+
     const size_t id_point = gc_getActualPointSelected(gc_cartesian_points);
     if(id_point != gc_cartesian_points.size() + 1) {
         render::Cartesian_Point& gc_ap = gc_cartesian_points.at(id_point);  // gc_Actual_Point

@@ -1,5 +1,6 @@
 executable/
 .vscode/
+bin/obj/
 
 math.code-workspace
 *.ini
