@@ -918,17 +918,15 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     bool in_height_window = 0.0f <= mouse_pos.y <= coord_system.GW_Window.height;
     if(!in_width_window || !in_height_window)
         return -1;      // Out of range
-    
+
     // Arastra el punto
-    float extra_range = 3.0f;
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius;
-    bool button_left_clicked = io.MouseClicked[0], button_left_down = io.MouseDown[0];
-    if(!io.WantCaptureMouse && in_range && button_left_clicked)
+    if(!io.WantCaptureMouse && in_range && io.MouseClicked[0])
         this->isSelected = !this->isSelected;
 
     // Cambia las coordenadas del punto a las coordenadas del mouse
     if(this->isSelected) {
-        // this->setCoords(coord_system, mouse_pos);
+        this->setCoords(coord_system, mouse_pos);
 
         // Anclaje a las cuadriculas del eje cartesiano.
         bool anchor_x, anchor_y;

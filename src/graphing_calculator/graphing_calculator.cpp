@@ -55,9 +55,9 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
     render::thickLine(GW_Window.renderer, points[1], points[2], 3.0f);
     render::thickLine(GW_Window.renderer, points[2], points[0], 3.0f);
 
-    for(size_t i = 0; i < gc_cartesian_points.size(); i++) {
-        gc_cartesian_points[i].drag(gc_coord_system);
-        gc_cartesian_points[i].render(gc_coord_system);
+    for(auto &p : gc_cartesian_points) {
+        p.drag(gc_coord_system);
+        p.render(gc_coord_system);
     }
 
     gc_window_size = GW_Window.getWindowSize();
@@ -170,7 +170,7 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
 
     // Zona para las propiedades del objeto seleccionado
     ImGui::Begin("Propiedades del objeto", nullptr, ImGuiWindowFlags_NoMove);
-    ImGui::Text("Probando Claude Code #3");
+    ImGui::Text("Probando Claude Code #4");
 
     const size_t id_point = gc_getActualPointSelected(gc_cartesian_points);
     if(id_point != gc_cartesian_points.size() + 1) {
