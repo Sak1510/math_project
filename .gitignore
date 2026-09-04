@@ -3,4 +3,4 @@ executable/
 bin/obj/
 
 math.code-workspace
-*.ini
+imgui.ini
