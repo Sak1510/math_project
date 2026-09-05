@@ -405,7 +405,6 @@ namespace render {
     class Cartesian_Point {
     public:
         bool isSelected = false;    // El punto es seleccionado ó no. 
-        bool isDraged = false;      // El punto esta siendo arrastrado.
         float radius;               // Radio en pixeles del punto.
         SDL_Color color;            // Color de renderizado del punto.
         FloatCartesian2 coords;     // Coordenadas del plano cartesiano del punto.

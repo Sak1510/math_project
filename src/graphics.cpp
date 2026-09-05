@@ -919,17 +919,22 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     if(!in_width_window || !in_height_window || io.WantCaptureMouse)
         return -1;      // Out of range
 
+    // Time on ms for turn off the modified_axies
+    const float time_out = 0.075f; 
+        
     // Arastra el punto
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius;
     if(in_range && io.MouseClicked[0])
         this->isSelected = !this->isSelected;
 
-    if(!in_range && io.MouseClicked[0])
+    // Si esta fuera del rango y el click izquierdo fue presionado
+    if(!in_range && io.MouseClicked[0]) 
         this->isSelected = false;
 
     // Cambia las coordenadas del punto a las coordenadas del mouse
     if(this->isSelected) {
-        //this->setCoords(coord_system, mouse_pos);
+        if(io.MouseDownDuration[0] > time_out)
+            this->setCoords(coord_system, mouse_pos);
 
         // Anclaje a las cuadriculas del eje cartesiano.
         bool anchor_x, anchor_y;
@@ -949,6 +954,10 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
 
     // Desactiva el movimiento del eje de coordenadas
     coord_system.modified_axies = !this->isSelected;
+
+    // This modifies the last line 
+    if(io.MouseDownDuration[0] > time_out)
+        coord_system.modified_axies = false;
 
     return 0;
 }
