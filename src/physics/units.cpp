@@ -34,7 +34,7 @@ const char* const US_length_units[] = {
 physics::Velocity velocity = physics::Velocity(10, physics::SI_length::SI_m, physics::SI_time::SI_s);
 
 void units_ImGuiParam(const char *str_name, bool &menu_on);
-void pmain::units(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
+void pmain::units(rnd::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
     units_ImGuiParam(str_name, menu_on);
 
     units_timer += FPS_MICROSECONDS;

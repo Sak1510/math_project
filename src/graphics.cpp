@@ -1,21 +1,21 @@
 #include <graphics.hpp>
 #define NaN 0.0f / 0.0f
-const float render::PixelDistance(SDL_FPoint p1, SDL_FPoint p2) {
+const float rnd::PixelDistance(SDL_FPoint p1, SDL_FPoint p2) {
     float delta_x = p2.x - p1.x;
     float delta_y = p2.y - p1.y; 
     
     return std::sqrtf(delta_x * delta_x + delta_y * delta_y);
 }
 
-const render::FloatCartesian2 render::ImVec2toFloatCartesian2(ImVec2 im_vec2) {
+const rnd::FloatCartesian2 rnd::ImVec2toFloatCartesian2(ImVec2 im_vec2) {
     return {im_vec2.x, im_vec2.y};
 }
 
-const SDL_FPoint render::ImVec2toSDL_FPoint(ImVec2 im_vec2) {
+const SDL_FPoint rnd::ImVec2toSDL_FPoint(ImVec2 im_vec2) {
     return {im_vec2.x, im_vec2.y};
 }
 
-const SDL_Color render::FColorToColor(SDL_FColor color) {
+const SDL_Color rnd::FColorToColor(SDL_FColor color) {
     return {
         (Uint8)(color.r * 255), 
         (Uint8)(color.g * 255), 
@@ -24,7 +24,7 @@ const SDL_Color render::FColorToColor(SDL_FColor color) {
     };
 }
 
-const SDL_FColor render::ColorToFColor(SDL_Color color) {
+const SDL_FColor rnd::ColorToFColor(SDL_Color color) {
     return {
         (float)(color.r / 255.0f), 
         (float)(color.g / 255.0f), 
@@ -34,7 +34,7 @@ const SDL_FColor render::ColorToFColor(SDL_Color color) {
 }
 
 #define RAD 2.0f * 3.14159f
-void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_FColor color) {
+void rnd::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_FColor color) {
     const size_t num_triangles = 64;
     const float fnum_triangles = (float)num_triangles;
     SDL_Vertex circle_triangles[num_triangles][3];
@@ -55,11 +55,11 @@ void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_FColor co
     }
 }
 
-void render::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_Color color) {
+void rnd::circle(SDL_Renderer *renderer, SDL_FPoint c, float r, SDL_Color color) {
     circle(renderer, c, r, ColorToFColor(color));
 }
 
-void render::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_FColor color) {
+void rnd::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_FColor color) {
     const size_t num_triangles = 32;
     const float fnum_triangles = (float)num_triangles;
     SDL_FPoint circumference_point[2];
@@ -90,11 +90,11 @@ void render::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float 
     SDL_SetRenderDrawColorFloat(renderer, last_color.r, last_color.g, last_color.b, last_color.a);
 }
 
-void render::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_Color color) {
+void rnd::circumference(SDL_Renderer *renderer, SDL_FPoint c, float r, float g, SDL_Color color) {
     circumference(renderer, c, r, g, ColorToFColor(color));
 }
 
-void render::debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::string str, SDL_Color bg_c, SDL_Color fg_c) {
+void rnd::debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::string str, SDL_Color bg_c, SDL_Color fg_c) {
     SDL_Color pre_color; SDL_GetRenderDrawColor(renderer, &pre_color.r, &pre_color.g, &pre_color.b, &pre_color.a);
     SDL_FRect bg_rect = {
         p.x - 1.0f, p.y - 1.0f,
@@ -113,7 +113,7 @@ void render::debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::stri
     SDL_SetRenderDrawColor(renderer, pre_color.r, pre_color.g, pre_color.b, pre_color.a);    
 }
 
-void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float b) {
+void rnd::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float b) {
     const float a = std::atan2f(p2.y - p1.y, p2.x - p1.x);
     const float d = std::sqrtf((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
     SDL_FColor c;
@@ -155,7 +155,7 @@ void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint
 }
 
 
-void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, float h, float angle) {
+void rnd::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, float h, float angle) {
     SDL_FColor c;
     SDL_FPoint points[3] = {
         {
@@ -191,7 +191,7 @@ void render::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, fl
 }
 
 
-void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float grosor) {
+void rnd::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float grosor) {
     const float angle = std::atan2f(p2.y - p1.y, p2.x - p1.x);
     SDL_FColor c;
     SDL_FPoint points[4] = {
@@ -252,7 +252,7 @@ void render::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, flo
 }
 
 #pragma region Graph_Window
-render::Graph_Window::Graph_Window(void) {
+rnd::Graph_Window::Graph_Window(void) {
     this->window = NULL;
     this->renderer = NULL;
 
@@ -260,7 +260,7 @@ render::Graph_Window::Graph_Window(void) {
     this->height = 0.0f;
 }
 
-render::Graph_Window::Graph_Window(render::Graph_Window &GW_Window) {
+rnd::Graph_Window::Graph_Window(rnd::Graph_Window &GW_Window) {
     this->window = GW_Window.window;
     this->renderer = GW_Window.renderer;
 
@@ -268,7 +268,7 @@ render::Graph_Window::Graph_Window(render::Graph_Window &GW_Window) {
     this->height = GW_Window.width;
 }
 
-render::Graph_Window& render::Graph_Window::operator=(render::Graph_Window &GW_Window) {
+rnd::Graph_Window& rnd::Graph_Window::operator=(rnd::Graph_Window &GW_Window) {
     this->window = GW_Window.window;
     this->renderer = GW_Window.renderer;
 
@@ -278,7 +278,7 @@ render::Graph_Window& render::Graph_Window::operator=(render::Graph_Window &GW_W
     return *this;
 }
 
-render::FloatCartesian2 render::Graph_Window::getWindowSize(void) {
+rnd::FloatCartesian2 rnd::Graph_Window::getWindowSize(void) {
     SDL_GetWindowSizeInPixels(this->window, &iWidth, &iHeight);
     this->width = (float)iWidth;
     this->height = (float)iHeight;
@@ -286,14 +286,14 @@ render::FloatCartesian2 render::Graph_Window::getWindowSize(void) {
     return {this->width, this->height};
 }
 
-render::Graph_Window& render::Graph_Window::operator=(long long _null) {
+rnd::Graph_Window& rnd::Graph_Window::operator=(long long _null) {
     if(_null == NULL)
         Graph_Window();
     
     return *this;
 }
 
-render::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
+rnd::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
     this->window = window;
     this->renderer = renderer;
 
@@ -301,24 +301,24 @@ render::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
 }
 #pragma endregion /* Graph_Window */
 #pragma region Axis_Coord_System
-render::Axis_Coord_System::Axis_Coord_System(void) {
+rnd::Axis_Coord_System::Axis_Coord_System(void) {
     this->origin = {0.0f, 0.0f};
     this->GW_Window = NULL;
 }
 
-render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window) {
+rnd::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window) {
     this->origin = origin;
     this->GW_Window = GW_Window;
 }
 
-render::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation) {
+rnd::Axis_Coord_System::Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation) {
     this->origin = origin;
     this->GW_Window = GW_Window;
     this->rotation = rotation;
 }
 
-void AxisCoordSystemDebug(render::CoordType axis, render::cartesian_axis_info &axis_info) {
-    const std::string str_axis = (axis == render::CoordType::X) ? " ##X" : " ##Y";
+void AxisCoordSystemDebug(rnd::CoordType axis, rnd::cartesian_axis_info &axis_info) {
+    const std::string str_axis = (axis == rnd::CoordType::X) ? " ##X" : " ##Y";
     std::string s_axis =  "axis"  + str_axis;
     std::string s_nums =  "nums"  + str_axis;
     std::string s_arrow = "arrow" + str_axis;
@@ -357,7 +357,7 @@ void AxisCoordSystemDebug(render::CoordType axis, render::cartesian_axis_info &a
 }
 
 
-void render::Axis_Coord_System::debug(bool on) {
+void rnd::Axis_Coord_System::debug(bool on) {
     if(!on)
         return;
 
@@ -391,15 +391,15 @@ void render::Axis_Coord_System::debug(bool on) {
     }    
 }
 
-void render::Axis_Coord_System::setGraph_Window(Graph_Window GW_Window) {
+void rnd::Axis_Coord_System::setGraph_Window(Graph_Window GW_Window) {
     this->GW_Window = GW_Window;
 }
 
-void render::Axis_Coord_System::setOrigin(SDL_FPoint origin) {
+void rnd::Axis_Coord_System::setOrigin(SDL_FPoint origin) {
     this->origin = origin;
 }
 
-int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
+int rnd::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
     SDL_FPoint point1, point2;
     std::string str_number;
     int total_lines, i, j;
@@ -408,7 +408,7 @@ int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
 
     // Dibujado de los números del eje X dependiendo el signo
     switch(signe) {
-        case render::AxisSigne::neg:
+        case rnd::AxisSigne::neg:
             if(origin.x < 0)
                 return -1;
 
@@ -416,7 +416,7 @@ int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
             this->axis_x_info.nums_first_render = -(float)total_lines;
             break;
 
-        case render::AxisSigne::pos:
+        case rnd::AxisSigne::pos:
             if(origin.x > GW_Window.width) 
                 return -1;
 
@@ -466,12 +466,12 @@ int render::Axis_Coord_System::renderNumAxisX(AxisSigne signe) {
         SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         if(text_x < GW_Window.width - axis_x_info.arrow_height - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE) {
             SDL_RenderDebugText(GW_Window.renderer, text_x, text_y, str_number.c_str());
-            render::thickLine(GW_Window.renderer, point1, point2, LINE_GROSOR);
+            rnd::thickLine(GW_Window.renderer, point1, point2, LINE_GROSOR);
         }
     } return 0;    
 }
 
-void render::Axis_Coord_System::renderAxisX(void) {
+void rnd::Axis_Coord_System::renderAxisX(void) {
     /**
      *  ---- Orden de Renderizado ----
      *  1. Numeros
@@ -502,12 +502,12 @@ void render::Axis_Coord_System::renderAxisX(void) {
     // Renderiza el eje en sí
     SDL_FPoint point1 = {0, origin.y};
     SDL_FPoint point2 = {GW_Window.width - axis_x_info.arrow_width, origin.y};
-    render::thickLine(GW_Window.renderer, point1, point2, axis_x_info.line_grosor);
+    rnd::thickLine(GW_Window.renderer, point1, point2, axis_x_info.line_grosor);
 }
 
 #pragma endregion /* Eje X */
 #pragma region Eje Y
-int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
+int rnd::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
     SDL_FPoint point1, point2;
     std::string str_number;
     int total_lines, i;
@@ -515,7 +515,7 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
     float line_y, posX;
 
     switch(signe) {
-        case render::AxisSigne::neg:
+        case rnd::AxisSigne::neg:
             if(origin.y > GW_Window.height)
                 return -1;
 
@@ -523,7 +523,7 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
             this->axis_y_info.nums_first_render = -(float)total_lines;
             break;
 
-        case render::AxisSigne::pos:
+        case rnd::AxisSigne::pos:
             if(origin.y < 0)
                 return -1;
 
@@ -570,11 +570,11 @@ int render::Axis_Coord_System::renderNumAxisY(AxisSigne signe) {
         if(text_y > axis_y_info.arrow_height + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE) {
             SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
             SDL_RenderDebugText(GW_Window.renderer, text_x, text_y, str_number.c_str());
-            render::thickLine(GW_Window.renderer, point1, point2, LINE_GROSOR);
+            rnd::thickLine(GW_Window.renderer, point1, point2, LINE_GROSOR);
     }} return 0;
 }
 
-int render::Axis_Coord_System::renderAxisY(void) {
+int rnd::Axis_Coord_System::renderAxisY(void) {
     // if(origin.x < 0 || origin.x > GW_Window.width) 
     //     return 0;
 
@@ -613,7 +613,7 @@ int render::Axis_Coord_System::renderAxisY(void) {
 
     // Dibuja el grosor del eje Y
     point2 = {origin.x, GW_Window.height};
-    render::thickLine(GW_Window.renderer, point1, point2, LINE_GROSOR);
+    rnd::thickLine(GW_Window.renderer, point1, point2, LINE_GROSOR);
 
     return 0;
 }
@@ -621,7 +621,7 @@ int render::Axis_Coord_System::renderAxisY(void) {
 
 #pragma endregion /* Eje Y */
 #pragma region renderAxis()
-void render::Axis_Coord_System::render(void) {
+void rnd::Axis_Coord_System::render(void) {
     if(!render_axis)
         return;
 
@@ -642,7 +642,7 @@ void render::Axis_Coord_System::render(void) {
 // Hay que intentar disminuir ese 8.04e6 a por lo menos, 10,000 calculos porfavoooooooooooooooooor
 // Actualización: Solucionado :)
 #define SPACE_GRAPHIC 0.05f
-const float render::Axis_Coord_System::getAxisScaler(CoordType axis) {
+const float rnd::Axis_Coord_System::getAxisScaler(CoordType axis) {
     switch(axis) {
         case CoordType::X:  return axis_x_info.line_space / axis_x_info.nums_initial;
         case CoordType::Y:  return axis_y_info.line_space / axis_y_info.nums_initial;
@@ -650,7 +650,7 @@ const float render::Axis_Coord_System::getAxisScaler(CoordType axis) {
     }
 }
 
-int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(float), float grosor) {
+int rnd::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(float), float grosor) {
     const float scaler_x = getAxisScaler(CoordType::X);
     const float scaler_y = getAxisScaler(CoordType::Y);
     SDL_FPoint p1, p2;
@@ -690,7 +690,7 @@ int render::Axis_Coord_System::graphingSigne(AxisSigne signe, const float (* f)(
     return calculos;
 }
 
-void render::Axis_Coord_System::graphFunction(const float (* f)(float), float grosor) {
+void rnd::Axis_Coord_System::graphFunction(const float (* f)(float), float grosor) {
     SDL_Color previus_color;
     SDL_GetRenderDrawColor(GW_Window.renderer, &previus_color.r, &previus_color.g, &previus_color.b, &previus_color.a);
 
@@ -701,7 +701,7 @@ void render::Axis_Coord_System::graphFunction(const float (* f)(float), float gr
 #pragma endregion /*Graficadora de func*/
 #pragma region Movimiento ejes
 bool inicio[2] = {true, true};
-void render::Axis_Coord_System::scaleAxis(CoordType axis, const float scaler) {
+void rnd::Axis_Coord_System::scaleAxis(CoordType axis, const float scaler) {
     const std::size_t divisionArrayLenght = 3;
     const float divisionArray[3] = {1.0f, 2.0f, 5.0f};
     const float multipliArray[3] = {5.0f, 2.0f, 1.0f};
@@ -752,7 +752,7 @@ void render::Axis_Coord_System::scaleAxis(CoordType axis, const float scaler) {
 }
 
 
-int render::Axis_Coord_System::axisModified() {
+int rnd::Axis_Coord_System::axisModified() {
     if(!this->modified_axies)
         return 0;
 
@@ -786,30 +786,30 @@ int render::Axis_Coord_System::axisModified() {
     return 0;
 }
 
-const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(float x, float y) {
+const SDL_FPoint rnd::Axis_Coord_System::cartesianToSubPixel(float x, float y) {
     return {
         origin.x + x * getAxisScaler(CoordType::X),
         origin.y - y * getAxisScaler(CoordType::Y)
     };
 }
 
-const SDL_FPoint render::Axis_Coord_System::cartesianToSubPixel(render::FloatCartesian2 p) {
+const SDL_FPoint rnd::Axis_Coord_System::cartesianToSubPixel(rnd::FloatCartesian2 p) {
     return cartesianToSubPixel(p.x, p.y);
 }
 
-const render::FloatCartesian2 render::Axis_Coord_System::subPixeToCartesian(float x, float y) {
+const rnd::FloatCartesian2 rnd::Axis_Coord_System::subPixeToCartesian(float x, float y) {
     return {
         (x - origin.x) / getAxisScaler(CoordType::X),
         - (y - origin.y) / getAxisScaler(CoordType::Y)
     };
 }
 
-const render::FloatCartesian2 render::Axis_Coord_System::subPixeToCartesian(SDL_FPoint p) {
+const rnd::FloatCartesian2 rnd::Axis_Coord_System::subPixeToCartesian(SDL_FPoint p) {
     return subPixeToCartesian(p.x, p.y);
 }
 
 // Será mejor utilizar la librería de ImGui para obtener el input del mouse y keyboard?
-void render::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
+void rnd::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
     if(!on)
         return;
 
@@ -836,19 +836,19 @@ void render::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
 #pragma endregion /* Axis_Coord_System */
 
 #pragma region Cartesian_Point 
-render::Cartesian_Point::Cartesian_Point(void) {
+rnd::Cartesian_Point::Cartesian_Point(void) {
     this->radius = 0.0f;
     this->coords = {0.0f, 0.0f};
     this->color = {0, 0, 0, 0};
 }
 
-render::Cartesian_Point::Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color) {
+rnd::Cartesian_Point::Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color) {
     this->radius = r;
     this->coords = coords;
     this->color = color;
 }
 
-render::Cartesian_Point::Cartesian_Point(float r, float coords[2], float color[4]) {
+rnd::Cartesian_Point::Cartesian_Point(float r, float coords[2], float color[4]) {
     FloatCartesian2 ncoords = {coords[0], coords[1]};
     SDL_Color ncolor = FColorToColor({color[0], color[1], color[2], color[3]});
     
@@ -857,15 +857,15 @@ render::Cartesian_Point::Cartesian_Point(float r, float coords[2], float color[4
     this->color = ncolor;
 }
 
-void render::Cartesian_Point::setCoords(FloatCartesian2 coords) {
+void rnd::Cartesian_Point::setCoords(FloatCartesian2 coords) {
     this->coords = coords;
 }
 
-void render::Cartesian_Point::setCoords(Axis_Coord_System coord_system, SDL_FPoint sdl_coords) {
+void rnd::Cartesian_Point::setCoords(Axis_Coord_System coord_system, SDL_FPoint sdl_coords) {
     this->coords = coord_system.subPixeToCartesian(sdl_coords);
 }
 
-int render::Cartesian_Point::setColor(SDL_Color color) {
+int rnd::Cartesian_Point::setColor(SDL_Color color) {
     bool error = !(0 < color.r < 255) || !(0 < color.g < 255) || !(0 < color.b < 255) || !(0 < color.a < 255);
 
     this->color.r = (0 < color.r < 255) ? color.r : 255;
@@ -876,24 +876,28 @@ int render::Cartesian_Point::setColor(SDL_Color color) {
     return error ? 0 : -1;
 }
 
-int render::Cartesian_Point::setColor(SDL_FColor color) {
+int rnd::Cartesian_Point::setColor(SDL_FColor color) {
     bool error = !(0.0f < color.r < 1.0f) || !(0.0f < color.g < 1.0f) || !(0.0f < color.b < 1.0f) || !(0.0f < color.a < 1.0f);
 
-    SDL_Color rgb_color = render::FColorToColor(color);
+    SDL_Color rgb_color = rnd::FColorToColor(color);
     this->color = rgb_color;
 
     return error ? 0 : -1;
 }
 
-void render::Cartesian_Point::setRadius(float radius) {
+void rnd::Cartesian_Point::setRadius(float radius) {
     this->radius = std::abs(radius);
 }
 
-const SDL_FPoint render::Cartesian_Point::getCoordsFPoint(Axis_Coord_System coord_system) {
+bool rnd::Cartesian_Point::IsSelected(void) {
+    return this->is_selected;
+}
+
+const SDL_FPoint rnd::Cartesian_Point::getCoordsFPoint(Axis_Coord_System coord_system) {
     return coord_system.cartesianToSubPixel(this->coords);
 }
 
-int render::Cartesian_Point::render(Axis_Coord_System coord_system) {
+int rnd::Cartesian_Point::render(Axis_Coord_System coord_system) {
     SDL_FPoint pixel_coords = this->getCoordsFPoint(coord_system);
     bool in_width_window = -2.0f * this->radius <= pixel_coords.x <= coord_system.GW_Window.width + 2.0f * this->radius;
     bool in_height_window = -2.0f * this->radius <= pixel_coords.y <= coord_system.GW_Window.height + 2.0f * this->radius;
@@ -904,13 +908,13 @@ int render::Cartesian_Point::render(Axis_Coord_System coord_system) {
     circle(coord_system.GW_Window.renderer, pixel_coords, this->radius, this->color);
     
     const float grosor_line = 2.0f;
-    if(this->isSelected) 
+    if(this->is_selected) 
         circumference(coord_system.GW_Window.renderer, pixel_coords, this->radius + 5.0f, grosor_line, this->color);
 
     return 0;
 }
 
-int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
+int rnd::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     ImGuiIO& io = ImGui::GetIO();
     SDL_FPoint mouse_pos = ImVec2toSDL_FPoint(io.MousePos);
     
@@ -924,16 +928,16 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     // Arastra el punto
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= 3.0f * this->radius / 2.0f;
     if(in_range && io.MouseClicked[0])
-        this->isSelected = !this->isSelected;
+        this->is_selected = !this->is_selected;
 
     // Si esta fuera del rango y el click izquierdo fue presionado
     if(!in_range && io.MouseClicked[0]) {
-        this->isSelected = false;
+        this->is_selected = false;
         coord_system.modified_axies = true;
     }
 
     // Si no esta seleccionado, se termina la función
-    if(!this->isSelected) 
+    if(!this->is_selected) 
         return 1;
 
 
@@ -975,6 +979,13 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     return 0;
 }
 #pragma endregion /* Cartesian_Point */
+
+#pragma region Euclidean_Segment2
+rnd::Euclidean_Segment2::Euclidean_Segment2(void) {
+    this->is_selected = false;
+}
+
+#pragma endregion /* Euclidean_Segment2 */
 
 
 // ;['ØÖ°¨Ç]

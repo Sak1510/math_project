@@ -14,7 +14,7 @@ const float SPACE_AXIS_MEDIA_SPACE = (SPACE_AXIS_MIN_SPACE + SPACE_AXIS_MAX_SPAC
 #define LINE_SIZE 16.0f
 #define LINE_GROSOR 3
 
-namespace render {
+namespace rnd {
     // --- Enums define ---
 
     // Signo del eje 
@@ -235,7 +235,7 @@ namespace render {
         Graph_Window(void);
         Graph_Window(Graph_Window &GW_Window);
         Graph_Window(SDL_Window *window, SDL_Renderer *renderer);
-    };
+    }; /* Graph_Window */
 
     // Sistema de coordenadas como objeto base de todo el programa. Permite escalar en sí mismo.
     class Axis_Coord_System {
@@ -298,6 +298,9 @@ namespace render {
         cartesian_axis_info axis_x_info;        // Información general del eje X.
         cartesian_axis_info axis_y_info;        // Información general del eje Y.
 
+
+
+        /* ----     Constructors    ---- */
         Axis_Coord_System(void);
         Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window);
         Axis_Coord_System(SDL_FPoint origin, Graph_Window GW_Window, float rotation);
@@ -312,6 +315,9 @@ namespace render {
          */
         void setOrigin(SDL_FPoint origin);
         
+
+
+        /* ----     Getters()       ---- */
         /**
          *  Obtiene el escalar del eje dado. Permite escalar otros renderizados que no son parte del objeto.
          * 
@@ -321,6 +327,9 @@ namespace render {
          */
         const float getAxisScaler(CoordType axis);
 
+
+
+        /* ----     Methods()   ----*/
         /**
          *  Convierte las coordenadas respecto a los ejes dibujados a coordenadas de ventana a nivel subpixel.
          * 
@@ -400,11 +409,13 @@ namespace render {
          *  primero llamar `ImGui::Begin()` antes de esta función, y después `ImGui::End()` de esta misma.  
          */
         void debug(bool on);
-    };
+    }; /* Axis_Coord_System */
 
     class Cartesian_Point {
+    private:
+        bool is_selected = false;    // El punto es seleccionado ó no. 
+
     public:
-        bool isSelected = false;    // El punto es seleccionado ó no. 
         float radius;               // Radio en pixeles del punto.
         SDL_Color color;            // Color de renderizado del punto.
         FloatCartesian2 coords;     // Coordenadas del plano cartesiano del punto.
@@ -448,6 +459,11 @@ namespace render {
         void setRadius(const float pixel_radius);
 
         /**
+         *  Devuelve si esta seleccionado el punto cartesiano.
+         */
+        bool IsSelected(void);
+
+        /**
          *  Obtiene las coordenadas en pixeles del punto.
          * 
          *  \param coord_system Sistema de coordenadas del punto.
@@ -470,7 +486,7 @@ namespace render {
          * 
          *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
          *  
-         *  \param 
+         *  \returns
          *  0 sin problemas. 
          *  1 si el punto no esta seleccionado. 
          *  2 si esta presionada la tecla Alt (no ancla con la cuadricula).
@@ -481,5 +497,72 @@ namespace render {
         Cartesian_Point(void);
         Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE});
         Cartesian_Point(float r, float coords[2], float color[4]);
-    };
-};
+    }; /* Cartesian_Point */
+
+    class Euclidean_Segment2 {
+    private:
+        bool is_selected = false;                                           
+        SDL_FColor color = {1.0f, 1.0f, 1.0f, SDL_ALPHA_OPAQUE_FLOAT};
+
+    public:
+        float grosor = 5.0f;
+
+        FloatCartesian2 p1;
+        FloatCartesian2 p2;
+
+        /* ----     Constructors    ---- */
+        Euclidean_Segment2(void);
+        Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2, SDL_FColor color);
+        Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2, SDL_FColor color, float grosor);        
+
+
+
+        /* ----     Setters()   ---- */
+        /**
+         *  Establece el color del segmento en float RGB.
+         * 
+         *  \param color Color a dar en `SDL_FColor`.
+         */
+        void setFColor(SDL_FColor color);
+
+        /**
+         *  Establece el color del segmento en int RGB.
+         * 
+         *  \param color Color a dar en `SDL_Color`.
+         */
+        void setFColor(SDL_Color color);
+
+
+
+        /* ----     getters()   ---- */
+        /**
+         *  Devuelve si esta seleccionado el segmento.
+         */
+        bool getIsSelected(void);
+
+
+
+        /* ----     Methods()   ---- */
+        /**
+         *  Renderiza el segmento en un sistema de coordenadas.
+         * 
+         *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
+         * 
+         *  \returns 0 sin problemas. -1 fuera de rango del renderizado. 
+         */
+        int render(Axis_Coord_System coord_system);
+
+        /**
+         *  Selecciona el segmento, deseleccionando todos los demás.
+         * 
+         *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
+         * 
+         *  \returns
+         *  0 sin problemas. 
+         *  1 si el punto no esta seleccionado. 
+         *  2 si esta presionada la tecla Alt (no ancla con la cuadricula).
+         *  -1 fuera del rango del renderizado.
+         */
+        int select(Axis_Coord_System &coord_system);
+    }; /* Euclidean_Segment2 */
+}; /* namespace rnd */ 

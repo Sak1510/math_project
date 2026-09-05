@@ -13,25 +13,25 @@ bool gc_init = false;
 bool ig_init0 = false;
 bool ig_init1 = false;
 
-render::Axis_Coord_System gc_coord_system;
-render::FloatCartesian2 gc_window_size;
+rnd::Axis_Coord_System gc_coord_system;
+rnd::FloatCartesian2 gc_window_size;
 
-std::vector<render::Cartesian_Point> gc_cartesian_points = {
-    render::Cartesian_Point(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE}),
-    render::Cartesian_Point(10.0f, {-1.0f, 1.0f}, {0, 255, 0, SDL_ALPHA_OPAQUE}),
-    render::Cartesian_Point(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE})
+std::vector<rnd::Cartesian_Point> gc_cartesian_points = {
+    rnd::Cartesian_Point(10.0f, {1.0f, 1.0f}, {255, 0, 0, SDL_ALPHA_OPAQUE}),
+    rnd::Cartesian_Point(10.0f, {-1.0f, 1.0f}, {0, 255, 0, SDL_ALPHA_OPAQUE}),
+    rnd::Cartesian_Point(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE})
 };
 
-const render::Cartesian_Point gc_init_point(10.0f, {0.0f, 0.0f}, {0, 0, 0, SDL_ALPHA_OPAQUE});
-render::Cartesian_Point gc_new_point = gc_init_point;
+const rnd::Cartesian_Point gc_init_point(10.0f, {0.0f, 0.0f}, {0, 0, 0, SDL_ALPHA_OPAQUE});
+rnd::Cartesian_Point gc_new_point = gc_init_point;
 SDL_FColor gc_float_color_new_point, gc_float_color;
 
 const float f(float x);
 const float g(float x);
-const size_t gc_getActualPointSelected(std::vector<render::Cartesian_Point> points);
+const size_t gc_getActualPointSelected(std::vector<rnd::Cartesian_Point> points);
 
 void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on);
-void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
+void pmain::graphing_calculator(rnd::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
     if(!gc_init) {
         gc_coord_system.setGraph_Window(GW_Window);
         gc_coord_system.setOrigin({GW_Window.width / 2.0f, GW_Window.height / 2.0f});
@@ -51,9 +51,9 @@ void pmain::graphing_calculator(render::Graph_Window &GW_Window, const char *str
         gc_cartesian_points[2].getCoordsFPoint(gc_coord_system)
     };
 
-    render::thickLine(GW_Window.renderer, points[0], points[1], 3.0f);
-    render::thickLine(GW_Window.renderer, points[1], points[2], 3.0f);
-    render::thickLine(GW_Window.renderer, points[2], points[0], 3.0f);
+    rnd::thickLine(GW_Window.renderer, points[0], points[1], 3.0f);
+    rnd::thickLine(GW_Window.renderer, points[1], points[2], 3.0f);
+    rnd::thickLine(GW_Window.renderer, points[2], points[0], 3.0f);
 
     for(auto &p : gc_cartesian_points) {
         p.drag(gc_coord_system);
@@ -140,7 +140,7 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
 
     ImGui::SeparatorText("Botones");
     if(ImGui::CollapsingHeader("Botones")) {
-        gc_float_color = render::ColorToFColor(gc_new_point.color);
+        gc_float_color = rnd::ColorToFColor(gc_new_point.color);
 
         ImGui::Text("Especifica las caracteristicas del botón a crear.");
         ImGui::InputFloat("Radio Pixeles", &gc_new_point.radius);
@@ -172,8 +172,8 @@ void graphing_calculator_ImGuiParam(const char *str_name, bool &menu_on) {
     ImGui::Begin("Propiedades del objeto", nullptr, ImGuiWindowFlags_NoMove);
     const size_t id_point = gc_getActualPointSelected(gc_cartesian_points);
     if(id_point != gc_cartesian_points.size() + 1) {
-        render::Cartesian_Point& gc_ap = gc_cartesian_points.at(id_point);  // gc_Actual_Point
-        gc_float_color = render::ColorToFColor(gc_ap.color);                // gc_Float_Color
+        rnd::Cartesian_Point& gc_ap = gc_cartesian_points.at(id_point);  // gc_Actual_Point
+        gc_float_color = rnd::ColorToFColor(gc_ap.color);                // gc_Float_Color
 
         ImGui::Text("El punto %d esta seleccionado", id_point);
         ImGui::InputFloat("Radio Pixeles", &gc_ap.radius);
@@ -197,10 +197,10 @@ const float g(float x) {
     return - x * x / 4.0f + 5.0f;
 }
 
-const size_t gc_getActualPointSelected(std::vector<render::Cartesian_Point> points) {
+const size_t gc_getActualPointSelected(std::vector<rnd::Cartesian_Point> points) {
     // Si encuentra uno seleccionado, devuelve el seleccionado.
     for(size_t i = 0; i < points.size(); i++)
-        if(points[i].isSelected)
+        if(points[i].IsSelected()) 
             return i;
 
     // Si no encuentra ninguno seleccionado, devuelve points.size() + 1

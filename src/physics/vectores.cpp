@@ -3,8 +3,8 @@
 
 // Variables y objetos globales 
 std::vector<physics::Vector> vectors = {
-    physics::Vector(3.0, 0.0, render::CoordSystem::polar, "V1"),
-    physics::Vector(3.0, PI / 2, render::CoordSystem::polar, "V2")
+    physics::Vector(3.0, 0.0, rnd::CoordSystem::polar, "V1"),
+    physics::Vector(3.0, PI / 2, rnd::CoordSystem::polar, "V2")
 };
 
 std::vector<physics::Vector> normal_vectors = {
@@ -12,8 +12,8 @@ std::vector<physics::Vector> normal_vectors = {
     physics::Vector()
 };
 
-render::Axis_Coord_System coord_system_vector;
-render::Cartesian_Point vectors_origin = {10.0f, {0.0f, 0.0f}};
+rnd::Axis_Coord_System coord_system_vector;
+rnd::Cartesian_Point vectors_origin = {10.0f, {0.0f, 0.0f}};
 
 physics::Vector vector_sum;
 physics::Vector vector_sub;
@@ -40,7 +40,7 @@ bool radianes = true;
 // ALGO ESTA PASANDO, NO SE RENDERIZA BIEN TODO 
 // Funciones de uso interno
 void fvetors_ImGuiParam(const char *str_name, bool &menu);
-void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu) {
+void pmain::fvectors(rnd::Graph_Window &GW_Window, const char *str_name, bool &menu) {
     if(fvectors_init == false) {
         window_center = {GW_Window.width / 2, GW_Window.height / 2};
         coord_system_vector.setGraph_Window(GW_Window);
@@ -55,7 +55,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     vectors_origin.render(coord_system_vector);
     vectors_origin.drag(coord_system_vector);
 
-    render::FloatCartesian2 coord_system_origin = vectors_origin.coords;
+    rnd::FloatCartesian2 coord_system_origin = vectors_origin.coords;
 
     // Dibujado de las operaciones con vectors
     if(sum_vectors) {
@@ -66,7 +66,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
             // vector_parallel1.drawVector(GW_Window.renderer, vectors[0].getVectorPoint(window_center), false);
             // vector_parallel2.drawVector(GW_Window.renderer, vectors[1].getVectorPoint(window_center), false);
 
-            render::FloatCartesian2 p;
+            rnd::FloatCartesian2 p;
             p = coord_system_vector.subPixeToCartesian(vectors[0].getVectorPoint(window_center));
             vector_parallel1.drawOnAxisCoordSystem(coord_system_vector, p, vector_grosor);
 
@@ -84,7 +84,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
                 sum_y += vect_s.getCartesian().y;
             }
 
-            render::FloatCartesian2 last_vector_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
+            rnd::FloatCartesian2 last_vector_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
             for(int i = 1; i < vectors.size(); i++) {
                 physics::Vector last_vector_sum = vectors[i];
                 SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
@@ -103,7 +103,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
     if(sub_vectors) {
         SDL_SetRenderDrawColor(GW_Window.renderer, 60, 60, 60, 255);
         vector_negative = vectors[1] * -1.0;
-        render::FloatCartesian2 vector_negative_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
+        rnd::FloatCartesian2 vector_negative_point = vectors[0].getVectorPointOnAxisCoordSystem(coord_system_vector, coord_system_origin);
         vector_negative.drawOnAxisCoordSystem(coord_system_vector, vector_negative_point, vector_grosor);
 
         vector_sub = vectors[0] - vectors[1];
@@ -126,7 +126,7 @@ void pmain::fvectors(render::Graph_Window &GW_Window, const char *str_name, bool
 
     // Renderizar circulo como origne de vectores
     SDL_FPoint origin_p = coord_system_vector.cartesianToSubPixel(coord_system_origin);
-    render::circle(GW_Window.renderer, origin_p, vector_grosor / 2.0f, c_black);
+    rnd::circle(GW_Window.renderer, origin_p, vector_grosor / 2.0f, c_black);
 
 
     
@@ -187,7 +187,7 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
                 ImGui::InputText("Nombre", &vectors[i].name);
 
                 if(polar_coords) {
-                    render::FloatPolar2 v_polar_coords = vectors[i].getPolar();
+                    rnd::FloatPolar2 v_polar_coords = vectors[i].getPolar();
 
                     if(slider_components) {
                         ImGui::SliderFloat("Modulo", &v_polar_coords.r, 0.0, 100.0, "%.6f");
@@ -199,7 +199,7 @@ void fvetors_ImGuiParam(const char *str_name, bool &menu) {
 
                     vectors[i].setPolar(v_polar_coords);
                 } else {
-                    render::FloatCartesian2 cartesian_coords = vectors[i].getCartesian();
+                    rnd::FloatCartesian2 cartesian_coords = vectors[i].getCartesian();
 
                     if(slider_components) {
                         ImGui::SliderFloat("Fx", &cartesian_coords.x, -100.0, 100.0, "%.6f");

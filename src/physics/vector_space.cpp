@@ -31,8 +31,8 @@ struct ig_configs {
 } ig_configs;
 
 
-void space_vectors_ImGuiParam(render::Graph_Window GW_Window, const char *str_name, bool &menu);
-void pmain::space_vectors(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
+void space_vectors_ImGuiParam(rnd::Graph_Window GW_Window, const char *str_name, bool &menu);
+void pmain::space_vectors(rnd::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
     const float sp_xstart = GW_Window.width - (sp_separation_bar.width + sp_color_bar.width);
     const float sp_xfinal = GW_Window.width - sp_separation_bar.width;
     const float sp_ystart = sp_separation_bar.height;
@@ -69,7 +69,7 @@ void pmain::space_vectors(render::Graph_Window &GW_Window, const char *str_name,
     // Dibuja el grosor de las líneas
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     for(std::size_t i = 0; i < SDL_arraysize(points) - 1; i++) {
-        render::thickLine(GW_Window.renderer, points[i], points[i + 1], sp_color_bar.grosor);
+        rnd::thickLine(GW_Window.renderer, points[i], points[i + 1], sp_color_bar.grosor);
     }
 
 
@@ -81,7 +81,7 @@ void pmain::space_vectors(render::Graph_Window &GW_Window, const char *str_name,
     space_vectors_ImGuiParam(GW_Window, str_name, menu_on);
 }
 
-void space_vectors_ImGuiParam(render::Graph_Window GW_Window, const char *str_name, bool &menu) {
+void space_vectors_ImGuiParam(rnd::Graph_Window GW_Window, const char *str_name, bool &menu) {
     ImGui::Begin(str_name);
     if(ImGui::Button("Volver al menu principal."))
         menu = !menu;

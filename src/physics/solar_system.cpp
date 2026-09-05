@@ -16,13 +16,13 @@ float earth_mass = 3000.0f;
 
 float sun_earth_distance_cuadratic; 
 
-physics::Vector earth_vel = physics::Vector(0.0f, 110.0f, render::CoordSystem::cartesian);
+physics::Vector earth_vel = physics::Vector(0.0f, 110.0f, rnd::CoordSystem::cartesian);
 physics::Vector earth_aceleration;
 
 void solar_system_ImGuiParam(const char *str_name, bool &menu_on);
-void pmain::solar_system(render::Graph_Window &GW_Window, const char* str_name, bool &menu_on) {
+void pmain::solar_system(rnd::Graph_Window &GW_Window, const char* str_name, bool &menu_on) {
     SDL_FPoint origin_point = {GW_Window.width/2, GW_Window.height/2};          // Punto de referencia de coordenadas
-    render::Axis_Coord_System axis_reference(origin_point, GW_Window);
+    rnd::Axis_Coord_System axis_reference(origin_point, GW_Window);
 
     // Planeta tierra
     if(listo) {
@@ -31,8 +31,8 @@ void pmain::solar_system(render::Graph_Window &GW_Window, const char* str_name, 
     }
     
     axis_reference.render();
-    render::circle(GW_Window.renderer, origin_point, sun_radius, sun_color);
-    render::circle(GW_Window.renderer, earth_position, earth_radius, earth_color);
+    rnd::circle(GW_Window.renderer, origin_point, sun_radius, sun_color);
+    rnd::circle(GW_Window.renderer, earth_position, earth_radius, earth_color);
     //earth_vel.drawVector(GW_Window.renderer, earth_position, false);
     //earth_aceleration.drawVector(GW_Window.renderer, earth_position, false);
 
@@ -46,7 +46,7 @@ void pmain::solar_system(render::Graph_Window &GW_Window, const char* str_name, 
 
     earth_aceleration = physics::Vector(
         ((UNIVERSAL_GRAVITACIONAL_CONSTANT * sun_mass) / sun_earth_distance_cuadratic) / FPS_TIMES,
-        std::atan2(delta_y, delta_x), render::CoordSystem::polar
+        std::atan2(delta_y, delta_x), rnd::CoordSystem::polar
     );
 
     earth_vel = earth_vel + earth_aceleration;

@@ -94,7 +94,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 
-    render::Graph_Window GW_Window(window, renderer);
+    rnd::Graph_Window GW_Window(window, renderer);
 
     if(menu_on) {
         SDL_Color bg_menu = {26, 60, 195, SDL_ALPHA_OPAQUE};

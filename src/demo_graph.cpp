@@ -99,10 +99,10 @@ const std::string graficas_names[] = {
     "Batma"
 };
 
-void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
-    render::Graph_Window GW_Window = coord_system.GW_Window;
-    const float scalerX = coord_system.getAxisScaler(render::CoordType::X);
-    const float scalerY = coord_system.getAxisScaler(render::CoordType::Y);
+void defgraph::demo_graph(rnd::Axis_Coord_System coord_system) {
+    rnd::Graph_Window GW_Window = coord_system.GW_Window;
+    const float scalerX = coord_system.getAxisScaler(rnd::CoordType::X);
+    const float scalerY = coord_system.getAxisScaler(rnd::CoordType::Y);
     const SDL_Color white = {255, 255, 255, SDL_ALPHA_OPAQUE};
     const SDL_Color black = {0, 0, 0, SDL_ALPHA_OPAQUE};
 
@@ -126,7 +126,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
         }
     }
 
-    // render::circle(GW_Window.renderer, GW_Window.width / 2, GW_Window.height / 2, 100, 25);
+    // rnd::circle(GW_Window.renderer, GW_Window.width / 2, GW_Window.height / 2, 100, 25);
 
     if(b_func[func::f_recta]) {
 
@@ -144,7 +144,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
         // Dibujado del centro de la circunferencia
         pointX = coord_system.origin.x + ccf_h * scalerX;
         pointY = coord_system.origin.y - ccf_k * scalerY;
-        render::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[f_circunferencia]);
+        rnd::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[f_circunferencia]);
         SDL_RenderDebugText(GW_Window.renderer, pointX + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, pointY, "C");
 
         // Dibujado del radio (tipo vector) cuando es activado
@@ -152,10 +152,10 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             pointXp = pointX + ccf_r * SDL_cosf(Accf_rad) * scalerX;
             pointYp = pointY - ccf_r * SDL_sinf(Accf_rad) * scalerY;
             
-            render::circle(GW_Window.renderer, {pointXp, pointYp}, BIG_POINT_RADIO, graph_color[f_circunferencia]);
+            rnd::circle(GW_Window.renderer, {pointXp, pointYp}, BIG_POINT_RADIO, graph_color[f_circunferencia]);
             
             SDL_FPoint p1 = {pointX, pointY}, p2 = {pointXp, pointYp};
-            render::thickLine(GW_Window.renderer, p1, p2, 3);
+            rnd::thickLine(GW_Window.renderer, p1, p2, 3);
         }
 
         defgraph::circunference(GW_Window, coord_system, ccf_h, ccf_k, ccf_r, grosor_line);
@@ -197,7 +197,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
         // Centro
         pointX = coord_system.origin.x + ep_h * scalerX;
         pointY = coord_system.origin.y - ep_k * scalerY;
-        render::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         SDL_RenderDebugText(GW_Window.renderer, pointX + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, pointY - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "C");
 
         // VERTICES DE LA ELIPSE 
@@ -219,10 +219,10 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             pointYp = coord_system.origin.y - (ep_k - ep_b) * scalerY;
         }
 
-        render::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         SDL_RenderDebugText(GW_Window.renderer, pointX + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, pointY, "V");
 
-        render::circle(GW_Window.renderer, {pointXp, pointYp}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointXp, pointYp}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         SDL_RenderDebugText(GW_Window.renderer, pointXp - 2.0f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, pointYp, "V'");
 
         // APENDICES DE LA ELIPSE
@@ -245,10 +245,10 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
         }
 
 
-        render::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         SDL_RenderDebugText(GW_Window.renderer, pointX, pointY - 2.0f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "A");
 
-        render::circle(GW_Window.renderer, {pointXp, pointYp}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointXp, pointYp}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         SDL_RenderDebugText(GW_Window.renderer, pointXp, pointYp + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "A'");
 
         
@@ -261,7 +261,7 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             pointY = coord_system.origin.y - (ep_k + ep_c) * scalerY;
         }
         
-        render::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         SDL_RenderDebugText(GW_Window.renderer, pointX, pointY - 2.0f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "F");
 
         if(Bep_mayor_axis_is_x) {
@@ -274,11 +274,11 @@ void defgraph::demo_graph(render::Axis_Coord_System coord_system) {
             pointY = coord_system.origin.y - (ep_k - ep_c) * scalerY;
         }
 
-        render::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
+        rnd::circle(GW_Window.renderer, {pointX, pointY}, BIG_POINT_RADIO, graph_color[func::f_elipse]);
         
         SDL_FPoint text_point = {pointX + BIG_POINT_RADIO, pointY + BIG_POINT_RADIO};
-        render::debugBackgroundText(GW_Window.renderer, text_point, "F'", 
-            white, render::FColorToColor(graph_color[func::f_elipse])
+        rnd::debugBackgroundText(GW_Window.renderer, text_point, "F'", 
+            white, rnd::FColorToColor(graph_color[func::f_elipse])
         );
         
         defgraph::elipse(GW_Window, coord_system, ep_h, ep_k, ep_a, ep_b, grosor_line);
@@ -601,7 +601,7 @@ const float f_ht_g(float x);
 const float f_ht_h(float x);
 const float f_ht_p(float x);
 
-void defgraph::hearth(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float g) {
+void defgraph::hearth(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float g) {
     v_ht_H = h;
     v_ht_K = k;
 
@@ -638,7 +638,7 @@ float v_cff_R = 0.0f;
 
 const float f_cff_pos(float x);
 const float f_cff_neg(float x);
-void defgraph::circunference(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float r, const float g) {
+void defgraph::circunference(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float r, const float g) {
     v_cff_H = h;
     v_cff_K = k;
     v_cff_R = r;
@@ -665,7 +665,7 @@ float v_dep_B = 0.0f;
 const float f_dep_pos(float x);
 const float f_dep_neg(float x);
 
-void defgraph::elipse(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g) {
+void defgraph::elipse(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g) {
     v_dep_H = h;
     v_dep_K = k;
     v_dep_A = a;
@@ -691,7 +691,7 @@ float v_pb_P = 0.0f;
 
 const float f_pb_pos(float x);
 
-void defgraph::parabole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float p, const float g) {
+void defgraph::parabole(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float p, const float g) {
     v_pb_H = h;
     v_pb_K = k;
     v_pb_P = p;
@@ -713,7 +713,7 @@ float v_hp_B = 0.0f;
 const float f_hp_pos(float x);
 const float f_hp_neg(float x);
 
-void defgraph::hiperbole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g) {
+void defgraph::hiperbole(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g) {
     v_hp_H = h;
     v_hp_K = k;
     v_hp_A = a;
@@ -741,7 +741,7 @@ const float f_bt_y4(float x);
 const float f_bt_y5(float x);
 const float f_bt_y6(float x);
 
-void defgraph::batman(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float g) {
+void defgraph::batman(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float g) {
     coord_system.graphFunction(f_bt_y1p, g);
     coord_system.graphFunction(f_bt_y2, g);
     coord_system.graphFunction(f_bt_y1, g);

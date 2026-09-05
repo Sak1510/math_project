@@ -162,11 +162,11 @@ physics::Vector::Vector(void) {
     this->name = "V";
 }
 
-physics::Vector::Vector(double a, double b, render::CoordSystem CoordSystem) {
+physics::Vector::Vector(double a, double b, rnd::CoordSystem CoordSystem) {
     this->name = "V"; 
 
     switch(CoordSystem) {
-        case render::CoordSystem::cartesian:    // P(x, y)
+        case rnd::CoordSystem::cartesian:    // P(x, y)
             // Se asignan los factores Fx y Fy al vector primero
             this->component_x = a;
             this->component_y = b;
@@ -176,7 +176,7 @@ physics::Vector::Vector(double a, double b, render::CoordSystem CoordSystem) {
             this->module = std::sqrtf(this->component_x * this->component_x + this->component_y * this->component_y);
             break;
 
-        case render::CoordSystem::polar:        // P(r, theta)
+        case rnd::CoordSystem::polar:        // P(r, theta)
             // Se asginan los valores polares del vector primero
             this->module = a;
             this->direction = b;
@@ -193,7 +193,7 @@ physics::Vector::Vector(double a, double b, render::CoordSystem CoordSystem) {
     }
 }
 
-physics::Vector::Vector(double a, double b, render::CoordSystem CoordSystem, std::string name)
+physics::Vector::Vector(double a, double b, rnd::CoordSystem CoordSystem, std::string name)
     : Vector(a, b, CoordSystem) {
 
     this->name = name;
@@ -220,10 +220,10 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
     };
 
     // Dibujado de la linea de la flecha
-    render::thickLine(renderer, origin, limit_point, grosor);
+    rnd::thickLine(renderer, origin, limit_point, grosor);
 
     // Dibujado de la flecha del vector
-    render::triangleDirection(renderer, limit_point, vector_point, 2.5f * grosor);
+    rnd::triangleDirection(renderer, limit_point, vector_point, 2.5f * grosor);
 
     // Dibujado del nombre del vector
     int font_size = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
@@ -235,24 +235,24 @@ void physics::Vector::drawVector(SDL_Renderer *renderer, SDL_FPoint origin, floa
         SDL_RenderDebugText(renderer, vector_point.x + font_size, vector_point.y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE / 2, this->name.c_str());
 }
 
-physics::Vector physics::Vector::getCopyVectorOnAxisCoordSystem(render::Axis_Coord_System coord_system) {
-    const float scaler_x = coord_system.getAxisScaler(render::CoordType::X);
-    const float scaler_y = coord_system.getAxisScaler(render::CoordType::Y);
+physics::Vector physics::Vector::getCopyVectorOnAxisCoordSystem(rnd::Axis_Coord_System coord_system) {
+    const float scaler_x = coord_system.getAxisScaler(rnd::CoordType::X);
+    const float scaler_y = coord_system.getAxisScaler(rnd::CoordType::Y);
 
-    Vector vector_copy(this->component_x * scaler_x, this->component_y * scaler_y, render::CoordSystem::cartesian);
+    Vector vector_copy(this->component_x * scaler_x, this->component_y * scaler_y, rnd::CoordSystem::cartesian);
     return vector_copy;
 }
 
-void physics::Vector::drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin, float grosor, bool draw_name) {
+void physics::Vector::drawOnAxisCoordSystem(rnd::Axis_Coord_System coord_system, rnd::FloatCartesian2 origin, float grosor, bool draw_name) {
     Vector vector_copy = this->getCopyVectorOnAxisCoordSystem(coord_system);
     SDL_FPoint window_origin = coord_system.cartesianToSubPixel(origin);
     vector_copy.drawVector(coord_system.GW_Window.renderer, window_origin, grosor, draw_name);
 }
 
-render::FloatCartesian2 physics::Vector::getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin) {
+rnd::FloatCartesian2 physics::Vector::getVectorPointOnAxisCoordSystem(rnd::Axis_Coord_System coord_system, rnd::FloatCartesian2 origin) {
     Vector vector_copy = this->getCopyVectorOnAxisCoordSystem(coord_system);
     SDL_FPoint origin_axis_coord = coord_system.cartesianToSubPixel(origin);
-    render::FloatCartesian2 vector_point_coord_system = coord_system.subPixeToCartesian(vector_copy.getVectorPoint(origin_axis_coord));
+    rnd::FloatCartesian2 vector_point_coord_system = coord_system.subPixeToCartesian(vector_copy.getVectorPoint(origin_axis_coord));
     return vector_point_coord_system;
 }
 
@@ -266,7 +266,7 @@ void physics::Vector::setPolar(double r, double theta) {
     this->component_y = r * std::sin(theta);
 }
 
-void physics::Vector::setPolar(render::FloatPolar2 polar) {
+void physics::Vector::setPolar(rnd::FloatPolar2 polar) {
     this->setPolar(polar.r, polar.a);
 }
 
@@ -278,19 +278,19 @@ void physics::Vector::setCartesian(double x, double y) {
     this->direction = std::atan2(this->component_y, this->component_x);
 }
 
-void physics::Vector::setCartesian(render::FloatCartesian2 cartesian) {
+void physics::Vector::setCartesian(rnd::FloatCartesian2 cartesian) {
     setCartesian(cartesian.x, cartesian.y);
 }
 
 
 
 /* ---- Getters() of Vector ---- */
-render::FloatPolar2 physics::Vector::getPolar() {
+rnd::FloatPolar2 physics::Vector::getPolar() {
     return {this->module, this->direction};
 }
 
 // Return the angle theta and not the coord y bruuuuuhhhh
-render::FloatCartesian2 physics::Vector::getCartesian() {
+rnd::FloatCartesian2 physics::Vector::getCartesian() {
     return {this->component_x, this->component_y};
 }
 
@@ -305,7 +305,7 @@ physics::Vector physics::Vector::getNormalVector(void) {
     return Vector(
         this->component_x / std::abs(this->module), 
         this->component_y / std::abs(this ->module), 
-        render::CoordSystem::cartesian
+        rnd::CoordSystem::cartesian
     );
 }
 
@@ -315,18 +315,18 @@ physics::Vector physics::Vector::operator+(const Vector &v_sum) const {
     double sum_x = component_x + v_sum.component_x;
     double sum_y = component_y + v_sum.component_y;
 
-    return Vector(sum_x, sum_y, render::CoordSystem::cartesian);
+    return Vector(sum_x, sum_y, rnd::CoordSystem::cartesian);
 }
 
 physics::Vector physics::Vector::operator-(const Vector &v_res) const {
     double res_x = component_x - v_res.component_x;
     double res_y = component_y - v_res.component_y;
 
-    return Vector(res_x, res_y, render::CoordSystem::cartesian);
+    return Vector(res_x, res_y, rnd::CoordSystem::cartesian);
 }
 
 physics::Vector physics::Vector::operator*(const double mult) const {
-    return Vector(module * mult, direction, render::CoordSystem::polar);
+    return Vector(module * mult, direction, rnd::CoordSystem::polar);
 }
 
 

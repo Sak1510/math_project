@@ -26,7 +26,7 @@ namespace defgraph {
      *  
      *  Se utiliza `system_coord` como sistema de coordenadas XY  
      */
-    void demo_graph(render::Axis_Coord_System system_coord); 
+    void demo_graph(rnd::Axis_Coord_System system_coord); 
     
     /**
      *  La interfaz grafica con ImGui para `demo_graph()`
@@ -42,7 +42,7 @@ namespace defgraph {
      *  \param k Coordenada Y del centro.
      *  \param g Grosor de las lineas de renderizado
      */
-    void hearth(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float g);
+    void hearth(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float g);
 
     /** 
      *  Dibuja una circunferencia.
@@ -54,7 +54,7 @@ namespace defgraph {
      *  \param r Radio de la circunferencia.
      *  \param g Grosor de las lineas de renderizado
      */
-    void circunference(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float r, const float g);
+    void circunference(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float r, const float g);
 
     /**
      *  Dibuja una elipse.
@@ -67,7 +67,7 @@ namespace defgraph {
      *  \param b La mitad del eje menor.
      *  \param g Grosor de las lineas de renderizado
      */
-    void elipse(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g);
+    void elipse(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g);
 
     /**
      *  Dibuja una parabola.
@@ -79,7 +79,7 @@ namespace defgraph {
      *  \param p Distancia del vertice al eje recto.
      *  \param g Grosor de las lineas de renderizado
      */
-    void parabole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float p, const float g);
+    void parabole(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float p, const float g);
 
     /**
      *  Dibuja una hiperbola.
@@ -92,7 +92,7 @@ namespace defgraph {
      *  \param b La distancia desde el centro al apendice.
      *  \param g Grosor de las lineas de renderizado
      */
-    void hiperbole(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g);
+    void hiperbole(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float h, const float k, const float a, const float b, const float g);
 
     /** 
      *  Dibuja un batman bien chingon (pedidos del RobinZeta).
@@ -101,6 +101,6 @@ namespace defgraph {
      *  \param coord_system Sistema de coordenadas XY
      *  \param g Grosor de las lineas de renderizado
      */
-    void batman(render::Graph_Window GW_Window, render::Axis_Coord_System coord_system, const float g);
+    void batman(rnd::Graph_Window GW_Window, rnd::Axis_Coord_System coord_system, const float g);
 }
 

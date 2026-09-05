@@ -32,24 +32,24 @@ float mov_rotacional_timer = 0.0f;
 
 // Funciones alpha usar
 void mov_rotacional_ImGuiParam(const char *str_name, bool &menu_on);  // Interfaz de ImGui 
-void pmain::mov_rotacional(render::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
+void pmain::mov_rotacional(rnd::Graph_Window &GW_Window, const char *str_name, bool &menu_on) {
     SDL_FPoint center = {GW_Window.width / 2, GW_Window.height / 2};
     SDL_FPoint radio_pos = {center.x + radio * SDL_cosf(theta), center.y - radio * SDL_sinf(theta)};
 
     // Renderizado de todo lo rotacional
     // Renderizado de la circunferencia
-    render::circle(GW_Window.renderer, center, radio, c);
+    rnd::circle(GW_Window.renderer, center, radio, c);
 
     // Renderizado del radio vectors
     SDL_SetRenderDrawColor(GW_Window.renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderLine(GW_Window.renderer, center.x, center.y, radio_pos.x, radio_pos.y);
-    render::thickLine(GW_Window.renderer, center, radio_pos, 3);
+    rnd::thickLine(GW_Window.renderer, center, radio_pos, 3);
 
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
     // Renderizado del circulo y del radio vector.
-    render::circle(GW_Window.renderer, radio_pos, 5.0f, color_black);
-    render::circle(GW_Window.renderer, center, 5.0f, color_black);
+    rnd::circle(GW_Window.renderer, radio_pos, 5.0f, color_black);
+    rnd::circle(GW_Window.renderer, center, 5.0f, color_black);
 
 
     // Logica Fisica 

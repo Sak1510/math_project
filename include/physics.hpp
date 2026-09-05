@@ -102,20 +102,20 @@ namespace physics {
         
         void setPolar(double r, double theta);
         void setCartesian(double x, double y);
-        void setPolar(render::FloatPolar2 polar);
-        void setCartesian(render::FloatCartesian2 cartesian);
+        void setPolar(rnd::FloatPolar2 polar);
+        void setCartesian(rnd::FloatCartesian2 cartesian);
 
-        render::FloatPolar2 getPolar();
-        render::FloatCartesian2 getCartesian();
+        rnd::FloatPolar2 getPolar();
+        rnd::FloatCartesian2 getCartesian();
         SDL_FPoint getVectorPoint(SDL_FPoint origin);
         Vector getNormalVector(void);
 
         void drawVector(SDL_Renderer *renderer, SDL_FPoint origin, float grosor, bool draw_name = true);
 
         // Implementaciones con Axis_Coord_System
-        Vector getCopyVectorOnAxisCoordSystem(render::Axis_Coord_System coord_system);
-        void drawOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin, float grosor, bool draw_name = true);
-        render::FloatCartesian2 getVectorPointOnAxisCoordSystem(render::Axis_Coord_System coord_system, render::FloatCartesian2 origin);
+        Vector getCopyVectorOnAxisCoordSystem(rnd::Axis_Coord_System coord_system);
+        void drawOnAxisCoordSystem(rnd::Axis_Coord_System coord_system, rnd::FloatCartesian2 origin, float grosor, bool draw_name = true);
+        rnd::FloatCartesian2 getVectorPointOnAxisCoordSystem(rnd::Axis_Coord_System coord_system, rnd::FloatCartesian2 origin);
 
         Vector operator+(const Vector &v_sum) const;
         Vector operator-(const Vector &v_res) const;
@@ -123,8 +123,8 @@ namespace physics {
 
         Vector(void);
         Vector(std::string name);
-        Vector(double value1, double value2, render::CoordSystem coordSystem);
-        Vector(double value1, double value2, render::CoordSystem coordSystem, std::string name);
+        Vector(double value1, double value2, rnd::CoordSystem coordSystem);
+        Vector(double value1, double value2, rnd::CoordSystem coordSystem, std::string name);
     };
 
     // --- Velocity Vectors ---
