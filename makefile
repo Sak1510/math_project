@@ -1,25 +1,3 @@
-##	SRC = $(wildcard src/*.cpp src/physics/*.cpp src/graphing_calculator/*.cpp bin/ImGui/*.o)
-##	LIB_SDL3 = -I libs\SDL\include -L libs\SDL\lib -l SDL3
-##	LIB_IMGUI = -I libs\ImGui\include
-##	COMPILER_FLAGS = -static-libgcc -static-libstdc++ -ffast-math 
-##	GNU_COMPILER = $(COMPILER_FLAGS) $(SRC) -Iinclude $(LIB_IMGUI) $(LIB_SDL3)
-##
-##	EXECUTABLE_NAME = bin\math_alpha_demo
-##
-##	all: $(SRC) 
-##		g++ $(GNU_COMPILER) -o $(EXECUTABLE_NAME)
-##
-##	run:
-##		start $(EXECUTABLE_NAME).exe
-##
-##	build_and_run: all run
-##
-##	hello:
-##		echo "Hola :3"
-
-
-
-
 ## 	---- Código generado por Claude para optimizar tiempo de compilados ----
 ##  04/Septiembre/2026
 CXX = g++
@@ -83,6 +61,7 @@ clean_all:
 release: COMPILER_FLAGS = -static-libgcc -static-libstdc++ -ffast-math -O3 -DNDEBUG
 release: clean $(EXECUTABLE_NAME).exe
 
+## Este si es mio muajajaja
 hello:
 	echo "Hola :3"
 
