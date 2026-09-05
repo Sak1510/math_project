@@ -470,7 +470,11 @@ namespace render {
          * 
          *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
          *  
-         *  \param 0 sin problemas. -1 fuera del rango del renderizado.  
+         *  \param 
+         *  0 sin problemas. 
+         *  1 si el punto no esta seleccionado. 
+         *  2 si esta presionada la tecla Alt (no ancla con la cuadricula).
+         *  -1 fuera del rango del renderizado.
          */
         int drag(Axis_Coord_System& coord_system);
 

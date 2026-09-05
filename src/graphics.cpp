@@ -917,47 +917,60 @@ int render::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     bool in_width_window = 0.0f <= mouse_pos.x <= coord_system.GW_Window.width;
     bool in_height_window = 0.0f <= mouse_pos.y <= coord_system.GW_Window.height;
     if(!in_width_window || !in_height_window || io.WantCaptureMouse)
-        return -1;      // Out of range
+        return -1;      // Fuera de rango
 
-    // Time on ms for turn off the modified_axies
-    const float time_out = 0.075f; 
-        
+
+
     // Arastra el punto
-    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= this->radius;
+    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= 3.0f * this->radius / 2.0f;
     if(in_range && io.MouseClicked[0])
         this->isSelected = !this->isSelected;
 
     // Si esta fuera del rango y el click izquierdo fue presionado
-    if(!in_range && io.MouseClicked[0]) 
+    if(!in_range && io.MouseClicked[0]) {
         this->isSelected = false;
-
-    // Cambia las coordenadas del punto a las coordenadas del mouse
-    if(this->isSelected) {
-        if(io.MouseDownDuration[0] > time_out)
-            this->setCoords(coord_system, mouse_pos);
-
-        // Anclaje a las cuadriculas del eje cartesiano.
-        bool anchor_x, anchor_y;
-        const float nums_initial_x = coord_system.axis_x_info.nums_initial;
-        const float nums_initial_y = coord_system.axis_y_info.nums_initial;
-        for(float i = coord_system.axis_x_info.nums_first_render; i <= coord_system.axis_x_info.nums_last_render; i += 1.0f) {
-            anchor_x = std::abs(this->coords.x - i * nums_initial_x) < 0.05f;
-
-            for(float j = coord_system.axis_y_info.nums_first_render; j <= coord_system.axis_y_info.nums_last_render; j += 1.0f) {
-                anchor_y = std::abs(this->coords.y - j * nums_initial_y) < 0.05f;
-
-                if(anchor_x && anchor_y)
-                    this->coords = {i * nums_initial_x, j * nums_initial_y};
-            }
-        }
+        coord_system.modified_axies = true;
     }
 
-    // Desactiva el movimiento del eje de coordenadas
-    coord_system.modified_axies = !this->isSelected;
+    // Si no esta seleccionado, se termina la función
+    if(!this->isSelected) 
+        return 1;
 
-    // This modifies the last line 
+
+
+    // Time on ms for turn off the modified_axies
+    const float time_out = 0.075f; 
+        
+    // Desactiva el movimiento del eje de coordenadas
+    coord_system.modified_axies = false;
+
+    // Cambia las coordenadas del punto a las coordenadas del mouse
+    if(io.MouseDownDuration[0] > time_out)
+        this->setCoords(coord_system, mouse_pos);
+
+    // Si el mouse permanece presionado por más tiempo del time_out, se desactiva automaticamente el modified_axies
     if(io.MouseDownDuration[0] > time_out)
         coord_system.modified_axies = false;
+
+    // Desactiva el anclaje a las cuadriculas del eje cartesiano si la tecla Alt esta presionada
+    if(io.KeyAlt) 
+        return 2;
+
+
+
+    bool anchor_x, anchor_y;
+    const float nums_initial_x = coord_system.axis_x_info.nums_initial;
+    const float nums_initial_y = coord_system.axis_y_info.nums_initial;
+    for(float i = coord_system.axis_x_info.nums_first_render; i <= coord_system.axis_x_info.nums_last_render; i += 1.0f) {
+        anchor_x = std::abs(this->coords.x - i * nums_initial_x) < 0.05f;
+
+        for(float j = coord_system.axis_y_info.nums_first_render; j <= coord_system.axis_y_info.nums_last_render; j += 1.0f) {
+            anchor_y = std::abs(this->coords.y - j * nums_initial_y) < 0.05f;
+
+            if(anchor_x && anchor_y)
+                this->coords = {i * nums_initial_x, j * nums_initial_y};
+        }
+    }
 
     return 0;
 }
