@@ -22,6 +22,12 @@ std::vector<rnd::Cartesian_Point> gc_cartesian_points = {
     rnd::Cartesian_Point(10.0f, {1.0f, -1.0f}, {0, 0, 255, SDL_ALPHA_OPAQUE})
 };
 
+std::vector<rnd::Euclidean_Segment2> gc_euclidean_segment = {
+    rnd::Euclidean_Segment2(), 
+    rnd::Euclidean_Segment2(), 
+    rnd::Euclidean_Segment2()
+};
+
 const rnd::Cartesian_Point gc_init_point(10.0f, {0.0f, 0.0f}, {0, 0, 0, SDL_ALPHA_OPAQUE});
 rnd::Cartesian_Point gc_new_point = gc_init_point;
 SDL_FColor gc_float_color_new_point, gc_float_color;
@@ -45,15 +51,20 @@ void pmain::graphing_calculator(rnd::Graph_Window &GW_Window, const char *str_na
     gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
 
-    SDL_FPoint points[3] = {
-        gc_cartesian_points[0].getCoordsFPoint(gc_coord_system),
-        gc_cartesian_points[1].getCoordsFPoint(gc_coord_system),
-        gc_cartesian_points[2].getCoordsFPoint(gc_coord_system)
-    };
 
-    rnd::thickLine(GW_Window.renderer, points[0], points[1], 3.0f);
-    rnd::thickLine(GW_Window.renderer, points[1], points[2], 3.0f);
-    rnd::thickLine(GW_Window.renderer, points[2], points[0], 3.0f);
+    gc_euclidean_segment.at(0).p1 = gc_cartesian_points.at(0).coords;
+    gc_euclidean_segment.at(0).p2 = gc_cartesian_points.at(1).coords;
+
+    gc_euclidean_segment.at(1).p1 = gc_cartesian_points.at(1).coords;
+    gc_euclidean_segment.at(1).p2 = gc_cartesian_points.at(2).coords;
+
+    gc_euclidean_segment.at(2).p1 = gc_cartesian_points.at(2).coords;
+    gc_euclidean_segment.at(2).p2 = gc_cartesian_points.at(0).coords;
+    
+
+    for(auto &s : gc_euclidean_segment) {
+        s.render(gc_coord_system);
+    }
 
     for(auto &p : gc_cartesian_points) {
         p.drag(gc_coord_system);

@@ -16,7 +16,6 @@ const float SPACE_AXIS_MEDIA_SPACE = (SPACE_AXIS_MIN_SPACE + SPACE_AXIS_MAX_SPAC
 
 namespace rnd {
     // --- Enums define ---
-
     // Signo del eje 
     enum AxisSigne {
         neg = -1,       // Renderiza en la parte negativa del eje.
@@ -237,6 +236,9 @@ namespace rnd {
         Graph_Window(SDL_Window *window, SDL_Renderer *renderer);
     }; /* Graph_Window */
 
+
+
+
     // Sistema de coordenadas como objeto base de todo el programa. Permite escalar en sí mismo.
     class Axis_Coord_System {
     private:
@@ -411,6 +413,9 @@ namespace rnd {
         void debug(bool on);
     }; /* Axis_Coord_System */
 
+
+
+
     class Cartesian_Point {
     private:
         bool is_selected = false;    // El punto es seleccionado ó no. 
@@ -499,19 +504,23 @@ namespace rnd {
         Cartesian_Point(float r, float coords[2], float color[4]);
     }; /* Cartesian_Point */
 
+
+
     class Euclidean_Segment2 {
     private:
-        bool is_selected = false;                                           
-        SDL_FColor color = {1.0f, 1.0f, 1.0f, SDL_ALPHA_OPAQUE_FLOAT};
+        const float extra_range = 3.0f;
+        bool is_selected = true;                          
+        SDL_FColor color;
 
     public:
-        float grosor = 5.0f;
+        float grosor;
 
         FloatCartesian2 p1;
         FloatCartesian2 p2;
 
         /* ----     Constructors    ---- */
         Euclidean_Segment2(void);
+        Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2);
         Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2, SDL_FColor color);
         Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2, SDL_FColor color, float grosor);        
 
@@ -548,7 +557,10 @@ namespace rnd {
          * 
          *  \param coord_system Sistema de coordenadas donde va a ser renderizado.
          * 
-         *  \returns 0 sin problemas. -1 fuera de rango del renderizado. 
+         *  \returns 
+         *  0 sin problemas. 
+         *  1 si no esta seleccionado.
+         *  -1 fuera de rango del renderizado. 
          */
         int render(Axis_Coord_System coord_system);
 
@@ -559,8 +571,7 @@ namespace rnd {
          * 
          *  \returns
          *  0 sin problemas. 
-         *  1 si el punto no esta seleccionado. 
-         *  2 si esta presionada la tecla Alt (no ancla con la cuadricula).
+         *  1 si el segmento no esta seleccionado. 
          *  -1 fuera del rango del renderizado.
          */
         int select(Axis_Coord_System &coord_system);

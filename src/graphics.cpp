@@ -793,7 +793,7 @@ const SDL_FPoint rnd::Axis_Coord_System::cartesianToSubPixel(float x, float y) {
     };
 }
 
-const SDL_FPoint rnd::Axis_Coord_System::cartesianToSubPixel(rnd::FloatCartesian2 p) {
+const SDL_FPoint rnd::Axis_Coord_System::cartesianToSubPixel(FloatCartesian2 p) {
     return cartesianToSubPixel(p.x, p.y);
 }
 
@@ -982,9 +982,87 @@ int rnd::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
 
 #pragma region Euclidean_Segment2
 rnd::Euclidean_Segment2::Euclidean_Segment2(void) {
-    this->is_selected = false;
+    this->color = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};
+    this->grosor = 5.0f;
+    this->p1 = {0.0f, 0.0f};
+    this->p2 = {0.0f, 0.0f};
 }
 
+rnd::Euclidean_Segment2::Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2) {
+    this->grosor = 5.0f;
+    this->color = {0.0f, 0.0f, 0.0f, SDL_ALPHA_OPAQUE_FLOAT};
+    this->p1 = p1;
+    this->p2 = p2;
+}
+
+rnd::Euclidean_Segment2::Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2, SDL_FColor color) {
+    this->grosor = 5.0f;
+    this->color = color;
+    this->p1 = p1;
+    this->p2 = p2;
+}
+
+rnd::Euclidean_Segment2::Euclidean_Segment2(FloatCartesian2 p1, FloatCartesian2 p2, SDL_FColor color, float grosor) {
+    this->grosor = grosor;
+    this->color = color;
+    this->p1 = p1;
+    this->p2 = p2;
+}
+
+void rnd::Euclidean_Segment2::setFColor(SDL_FColor color) {
+    this->color = color;
+}
+
+void rnd::Euclidean_Segment2::setFColor(SDL_Color color) {
+    this->color = ColorToFColor(color);
+}
+
+bool rnd::Euclidean_Segment2::getIsSelected(void) {
+    return this->is_selected;
+}
+
+int rnd::Euclidean_Segment2::render(Axis_Coord_System coord_system) {
+    SDL_FColor render_color;
+    SDL_GetRenderDrawColorFloat(coord_system.GW_Window.renderer, &render_color.r, &render_color.g, &render_color.b, &render_color.a);
+    SDL_SetRenderDrawColorFloat(coord_system.GW_Window.renderer, this->color.r, this->color.g, this->color.b, this->color.a);
+    
+    SDL_FPoint p1 = coord_system.cartesianToSubPixel(this->p1), p2 = coord_system.cartesianToSubPixel(this->p2);
+    thickLine(coord_system.GW_Window.renderer, p1, p2, this->grosor);
+
+    if(!this->is_selected)
+        return 1;
+
+    const float angle = std::atan2f(p2.y - p1.y, p2.x - p1.x);
+    SDL_FPoint p_selected_down[2] = {
+        {
+            p1.x + this->grosor * std::cosf(angle + M_PI_2),
+            p1.y + this->grosor * std::sinf(angle + M_PI_2),
+        }, {
+            p1.x + this->grosor * std::cosf(angle - M_PI_2),
+            p1.y + this->grosor * std::sinf(angle - M_PI_2),
+        }
+    };
+    
+    SDL_FPoint p_selected_up[2] = {
+        {
+            p2.x + grosor * std::cosf(angle + M_PI_2),
+            p2.y + grosor * std::sinf(angle + M_PI_2)
+        },{
+            p2.x + grosor * std::cosf(angle - M_PI_2),
+            p2.y + grosor * std::sinf(angle - M_PI_2)
+        }
+    };
+    
+    thickLine(coord_system.GW_Window.renderer, p_selected_down[0], p_selected_up[0], 2.0f);
+    thickLine(coord_system.GW_Window.renderer, p_selected_down[1], p_selected_up[1], 2.0f);
+
+    SDL_SetRenderDrawColorFloat(coord_system.GW_Window.renderer, render_color.r, render_color.g, render_color.b, render_color.a);
+    return 0;
+}
+
+int rnd::Euclidean_Segment2::select(Axis_Coord_System &coord_system) {
+
+}
 #pragma endregion /* Euclidean_Segment2 */
 
 
