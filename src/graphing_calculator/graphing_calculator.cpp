@@ -47,19 +47,14 @@ void pmain::graphing_calculator(rnd::Graph_Window &GW_Window, const char *str_na
 
     SDL_SetRenderDrawColor(GW_Window.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     gc_coord_system.render();
-    gc_coord_system.graphFunction(f, 3.0f);
-    gc_coord_system.graphFunction(g, 3.0f); 
+    // gc_coord_system.graphFunction(f, 3.0f);
+    // gc_coord_system.graphFunction(g, 3.0f); 
     gc_coord_system.showCoords();
 
 
-    gc_euclidean_segment.at(0).p1 = gc_cartesian_points.at(0).coords;
-    gc_euclidean_segment.at(0).p2 = gc_cartesian_points.at(1).coords;
-
-    gc_euclidean_segment.at(1).p1 = gc_cartesian_points.at(1).coords;
-    gc_euclidean_segment.at(1).p2 = gc_cartesian_points.at(2).coords;
-
-    gc_euclidean_segment.at(2).p1 = gc_cartesian_points.at(2).coords;
-    gc_euclidean_segment.at(2).p2 = gc_cartesian_points.at(0).coords;
+    gc_euclidean_segment.at(0).setCoords(gc_cartesian_points.at(0), gc_cartesian_points.at(1));
+    gc_euclidean_segment.at(1).setCoords(gc_cartesian_points.at(1), gc_cartesian_points.at(2));
+    gc_euclidean_segment.at(2).setCoords(gc_cartesian_points.at(2), gc_cartesian_points.at(0));
     
 
     for(auto &s : gc_euclidean_segment) {

@@ -1017,6 +1017,16 @@ void rnd::Euclidean_Segment2::setFColor(SDL_Color color) {
     this->color = ColorToFColor(color);
 }
 
+void rnd::Euclidean_Segment2::setCoords(FloatCartesian2 p1, FloatCartesian2 p2) {
+    this->p1 = p1;
+    this->p2 = p2;
+}
+
+void rnd::Euclidean_Segment2::setCoords(Cartesian_Point &p1, Cartesian_Point &p2) {
+    this->p1 = p1.coords;
+    this->p2 = p2.coords;
+}
+
 bool rnd::Euclidean_Segment2::getIsSelected(void) {
     return this->is_selected;
 }
@@ -1061,7 +1071,7 @@ int rnd::Euclidean_Segment2::render(Axis_Coord_System coord_system) {
 }
 
 int rnd::Euclidean_Segment2::select(Axis_Coord_System &coord_system) {
-
+    return 0;
 }
 #pragma endregion /* Euclidean_Segment2 */
 

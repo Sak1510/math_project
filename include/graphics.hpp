@@ -541,6 +541,21 @@ namespace rnd {
          */
         void setFColor(SDL_Color color);
 
+        /**
+         *  Establece las coordenadas p1 y p2 en FloatCartesian2.
+         * 
+         *  \param p1 Punto 1.
+         *  \param p2 Punto 2.
+         */
+        void setCoords(FloatCartesian2 p1, FloatCartesian2 p2);
+
+        /**
+         *  Establece las coordenadas usando dos Cartesian_Points.
+         *
+         *  \param p1 CartesianPoint 1.
+         *  \param p2 CartesianPoint 2.
+         */
+        void setCoords(Cartesian_Point &p1, Cartesian_Point &p2);
 
 
         /* ----     getters()   ---- */
