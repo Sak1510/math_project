@@ -937,6 +937,9 @@ int rnd::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     if(!inScreen((float *)&io.MousePos, coord_system.GW_Window))
         return -1;
 
+    if(io.WantCaptureMouse)
+        return -1;
+
     // Arastra el punto
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= 3.0f * this->radius / 2.0f;
     if(in_range && io.MouseClicked[0])
@@ -1114,11 +1117,18 @@ int rnd::Euclidean_Segment2::select(Axis_Coord_System &coord_system) {
     if(!inScreen((float *)&mouse_pos, coord_system.GW_Window)) 
         return -1;
 
+    if(ImGui::GetIO().WantCaptureMouse)
+        return -1;
+
     if(this->p1.x == this->p2.x) {
-        SDL_FPoint p1_px = coord_system.cartesianToSubPixel(this->p1);
-        SDL_FPoint p2_px = coord_system.cartesianToSubPixel(this->p2);
-        if(!(std::abs(p1_px.x - mouse_pos.x) <= 1.5f * this->grosor))
+        SDL_FPoint p_px = coord_system.cartesianToSubPixel(this->p1);
+        if(!(std::abs(p_px.x - mouse_pos.x) <= 1.5f * this->grosor)) {
+            if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+                this->is_selected = false;
+
             return -1; 
+
+        }
 
         if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
             this->is_selected = !this->is_selected;
@@ -1130,19 +1140,26 @@ int rnd::Euclidean_Segment2::select(Axis_Coord_System &coord_system) {
     // Idea principal del algoritmo
     // select = d(P, l) <= grosor && p1.x <= mouse.x <= p2.x;
     FloatCartesian2 mouse_cart = coord_system.subPixeToCartesian(ImVec2toSDL_FPoint(mouse_pos));
+    const float m = (this->p2.y - this->p1.y) / (this->p2.x - this->p1.x);
+    const float b = this->p1.y - m * this->p1.x;
+    float d = std::abs(m * mouse_cart.x - mouse_cart.y + b) / std::sqrt(m * m + 1);
+
+    bool in_range = d <= 1.5f * grosor / coord_system.getAxisScaler(CoordType::Y);
+    if(!in_range && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+        this->is_selected = false;
+        return -1;
+    }
+
     if(this->p1.x < this->p2.x && !(this->p1.x <= mouse_cart.x && mouse_cart.x <= this->p2.x))
         return -1;
         
     if(this->p1.x > this->p2.x && !(this->p2.x <= mouse_cart.x && mouse_cart.x <= this->p1.x))
         return -1;
 
-    const float m = (this->p2.y - this->p1.y) / (this->p2.x - this->p1.x);
-    const float b = this->p1.y - m * this->p1.x;
-    float d = std::abs(m * mouse_cart.x - mouse_cart.y + b) / std::sqrt(m * m + 1);
-
-    if(d <= 1.5f * grosor / coord_system.getAxisScaler(CoordType::Y) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+    if(in_range && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
         this->is_selected = !this->is_selected;
-    return 0;
+    
+        return 0;
 }
 #pragma endregion /* Euclidean_Segment2 */
 
