@@ -23,8 +23,8 @@ std::vector<rnd::Cartesian_Point> gc_cartesian_points = {
 };
 
 std::vector<rnd::Euclidean_Segment2> gc_euclidean_segment = {
-    rnd::Euclidean_Segment2(), 
-    rnd::Euclidean_Segment2(), 
+    rnd::Euclidean_Segment2(),
+    rnd::Euclidean_Segment2(),
     rnd::Euclidean_Segment2()
 };
 
@@ -49,22 +49,40 @@ void pmain::graphing_calculator(rnd::Graph_Window &GW_Window, const char *str_na
     gc_coord_system.render();
     // gc_coord_system.graphFunction(f, 3.0f);
     // gc_coord_system.graphFunction(g, 3.0f); 
-    gc_coord_system.showCoords();
+    gc_coord_system.showCoords(true, true);
 
 
+    // El punto rojo es el p1, y el punto verde es el p2
     gc_euclidean_segment.at(0).setCoords(gc_cartesian_points.at(0), gc_cartesian_points.at(1));
     gc_euclidean_segment.at(1).setCoords(gc_cartesian_points.at(1), gc_cartesian_points.at(2));
     gc_euclidean_segment.at(2).setCoords(gc_cartesian_points.at(2), gc_cartesian_points.at(0));
     
+    SDL_FPoint coords[2] = {
+        gc_coord_system.cartesianToSubPixel(gc_cartesian_points.at(0).coords),
+        gc_coord_system.cartesianToSubPixel(gc_cartesian_points.at(1).coords),        
+    };
+    SDL_RenderDebugTextFormat(GW_Window.renderer, 
+        coords[0].x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE+ 1.5f * gc_cartesian_points.at(0).radius, 
+        coords[0].y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "P1"
+    );
+    SDL_RenderDebugTextFormat(GW_Window.renderer, 
+        coords[1].x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE+ 1.5f * gc_cartesian_points.at(1).radius, 
+        coords[1].y - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "P2"
+    );
 
+    SDL_FColor pcolor_r = {1.0f, 0.0f, 0.0f, 1.0f}, pcolor_n = {0.0f, 0.0f, 0.0f, 1.0f};
     for(auto &s : gc_euclidean_segment) {
         s.render(gc_coord_system);
+        s.select(gc_coord_system);
     }
 
     for(auto &p : gc_cartesian_points) {
         p.drag(gc_coord_system);
         p.render(gc_coord_system);
+        p.showCoords(gc_coord_system, true, true);
     }
+
+
 
     gc_window_size = GW_Window.getWindowSize();
     gc_coord_system.axisModified();

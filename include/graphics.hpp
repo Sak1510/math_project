@@ -77,6 +77,59 @@ namespace rnd {
         float       line_space = SPACE_AXIS_MEDIA_SPACE;            // Espacio entre cada línea renderizada.
     } cartesian_axis_info;  
 
+        // Objeto que guarda lo necesario para poder renderizar en el ejecutable.
+    class Graph_Window {
+    private:
+        int iWidth;                                                     // Guarda el ancho de la ventana llamando `getWindowSize()`. 
+        int iHeight;                                                    // Guarda el alto de la ventana llamando `getWindowSize()`.
+ 
+    public:
+        SDL_Window *window;                                             // Puntero de memoría que apunta hacia el `SDL_Window` asignado.
+        SDL_Renderer *renderer;                                         // Puntero de memoría que apunta hacia el `SDL_Renderer` asignado. 
+        float width;                                                    // Ancho de la ventana en pixeles. Se actualiza llamando `getWindowSize()`
+        float height;                                                   // Alto de la ventana en pixeles.  Se actualiza llamando `getWindowSize()`
+
+        /**
+         *  Actualiza el ancho y alto de la ventana actual llamando la función. 
+         * 
+         *  \returns Un `FloatCartesian2` con el ancho actual en `x` y el alto en `y` de la ventana actual. 
+         */
+        FloatCartesian2 getWindowSize(void);                            
+
+        Graph_Window& operator=(Graph_Window &Graph_Window);
+        Graph_Window& operator=(long long _null);
+
+        Graph_Window(void);
+        Graph_Window(Graph_Window &GW_Window);
+        Graph_Window(SDL_Window *window, SDL_Renderer *renderer);
+    }; /* Graph_Window */
+
+    /**
+     *  Permite saber si un objeto determinado esta dentro de la ventana de renderizado.
+     * 
+     *  \param p Puntero donde se tienen las coordenadas del objeto dentro de la ventana.
+     *  \param GW_Window De donde se obtendra el ancho y alto de la ventana.
+     *  \param limits Limites adicionales en el orden: 
+     *      l[0] <= p.x <= window_w + l[1]
+     *      l[2] <= p.y <= window_h + l[3]
+     * 
+     *  \returns Si el objeto esta dentro: True. Si no, False. 
+     */
+    bool inScreen(float *p, Graph_Window GW_Window, float limits[4]);
+    
+
+    /**
+     *  Permite saber si un objeto determinado esta dentro de la ventana de renderizado. Es un overload de inScreen(), pero con 
+     *  limits = {0.0f, 0.0f, 0.0f, 0.0f}.
+     * 
+     *  \param p Puntero donde se tienen las coordenadas del objeto dentro de la ventana.
+     *  \param GW_Window De donde se obtendra el ancho y alto de la ventana.
+     * 
+     *  \returns Si el objeto esta dentro: True. Si no, False. 
+     */
+    bool inScreen(float p[2], Graph_Window GW_Window);
+
+
     /**
      *  Devuelve la distancia en pixeles de un punto a otro.
      * 
@@ -208,36 +261,6 @@ namespace rnd {
      *  \param fg_c Color del texto.
      */
     void debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::string str, SDL_Color bg_c, SDL_Color fg_c);
-
-    // Objeto que guarda lo necesario para poder renderizar en el ejecutable.
-    class Graph_Window {
-    private:
-        int iWidth;                                                     // Guarda el ancho de la ventana llamando `getWindowSize()`. 
-        int iHeight;                                                    // Guarda el alto de la ventana llamando `getWindowSize()`.
- 
-    public:
-        SDL_Window *window;                                             // Puntero de memoría que apunta hacia el `SDL_Window` asignado.
-        SDL_Renderer *renderer;                                         // Puntero de memoría que apunta hacia el `SDL_Renderer` asignado. 
-        float width;                                                    // Ancho de la ventana en pixeles. Se actualiza llamando `getWindowSize()`
-        float height;                                                   // Alto de la ventana en pixeles.  Se actualiza llamando `getWindowSize()`
-
-        /**
-         *  Actualiza el ancho y alto de la ventana actual llamando la función. 
-         * 
-         *  \returns Un `FloatCartesian2` con el ancho actual en `x` y el alto en `y` de la ventana actual. 
-         */
-        FloatCartesian2 getWindowSize(void);                            
-
-        Graph_Window& operator=(Graph_Window &Graph_Window);
-        Graph_Window& operator=(long long _null);
-
-        Graph_Window(void);
-        Graph_Window(Graph_Window &GW_Window);
-        Graph_Window(SDL_Window *window, SDL_Renderer *renderer);
-    }; /* Graph_Window */
-
-
-
 
     // Sistema de coordenadas como objeto base de todo el programa. Permite escalar en sí mismo.
     class Axis_Coord_System {
@@ -499,6 +522,15 @@ namespace rnd {
          */
         int drag(Axis_Coord_System& coord_system);
 
+        /**
+         *  Muestra las coordenadas cartesianas del punto sobre el sistema de coordenadas.
+         * 
+         *  \param coord_system Sistema de coordenadas del punto cartesiano.
+         *  \param on Encendido o apagado.
+         *  \param pixel_coords Mostrar en coordenadas de pixel si es true.
+         */
+        void showCoords(Axis_Coord_System coord_system, bool on, bool pixel_coords);
+
         Cartesian_Point(void);
         Cartesian_Point(float r, FloatCartesian2 coords, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE});
         Cartesian_Point(float r, float coords[2], float color[4]);
@@ -509,12 +541,11 @@ namespace rnd {
     class Euclidean_Segment2 {
     private:
         const float extra_range = 3.0f;
-        bool is_selected = true;                          
+        bool is_selected = false;                          
         SDL_FColor color;
 
     public:
         float grosor;
-
         FloatCartesian2 p1;
         FloatCartesian2 p2;
 

@@ -1,5 +1,18 @@
 #include <graphics.hpp>
 #define NaN 0.0f / 0.0f
+
+bool rnd::inScreen(float *p, Graph_Window GW_Window, float limits[4]) {
+    bool in_width_window  = limits[0] <= p[0] <= GW_Window.width  + limits[1];
+    bool in_height_window = limits[2] <= p[1] <= GW_Window.height + limits[3];
+    
+    return in_width_window && in_height_window;
+}
+
+bool rnd::inScreen(float p[2], Graph_Window GW_Window) {
+    float limits[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+    return inScreen(p, GW_Window, limits);
+}
+
 const float rnd::PixelDistance(SDL_FPoint p1, SDL_FPoint p2) {
     float delta_x = p2.x - p1.x;
     float delta_y = p2.y - p1.y; 
@@ -829,7 +842,7 @@ void rnd::Axis_Coord_System::showCoords(bool on, bool pixel_coords) {
             GW_Window.renderer, 
             mouse_pos.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
             mouse_pos.y + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE,
-            "(%.3f, %.3f)",
+            "(%.3fpx, %.3fpx)",
             mouse_pos.x, mouse_pos.y
         );
 }
@@ -899,10 +912,13 @@ const SDL_FPoint rnd::Cartesian_Point::getCoordsFPoint(Axis_Coord_System coord_s
 
 int rnd::Cartesian_Point::render(Axis_Coord_System coord_system) {
     SDL_FPoint pixel_coords = this->getCoordsFPoint(coord_system);
-    bool in_width_window = -2.0f * this->radius <= pixel_coords.x <= coord_system.GW_Window.width + 2.0f * this->radius;
-    bool in_height_window = -2.0f * this->radius <= pixel_coords.y <= coord_system.GW_Window.height + 2.0f * this->radius;
-    if(!in_width_window || !in_height_window)
-        return -1;      // Out of range
+    float limits[4] = {
+        -2.0f * this->radius, 2.0f * this->radius,
+        -2.0f * this->radius, 2.0f * this->radius
+    };
+
+    if(!inScreen((float *)&pixel_coords, coord_system.GW_Window, limits))
+        return -1;
     
     // Renderiza el punto
     circle(coord_system.GW_Window.renderer, pixel_coords, this->radius, this->color);
@@ -918,12 +934,8 @@ int rnd::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
     ImGuiIO& io = ImGui::GetIO();
     SDL_FPoint mouse_pos = ImVec2toSDL_FPoint(io.MousePos);
     
-    bool in_width_window = 0.0f <= mouse_pos.x <= coord_system.GW_Window.width;
-    bool in_height_window = 0.0f <= mouse_pos.y <= coord_system.GW_Window.height;
-    if(!in_width_window || !in_height_window || io.WantCaptureMouse)
-        return -1;      // Fuera de rango
-
-
+    if(!inScreen((float *)&io.MousePos, coord_system.GW_Window))
+        return -1;
 
     // Arastra el punto
     bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= 3.0f * this->radius / 2.0f;
@@ -978,6 +990,33 @@ int rnd::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
 
     return 0;
 }
+
+void rnd::Cartesian_Point::showCoords(Axis_Coord_System coord_system, bool on, bool pixel_coords) {
+    if(!on)
+        return;
+
+    SDL_FPoint coords_pixel = coord_system.cartesianToSubPixel(this->coords.x, this->coords.y);
+    const float margin = 1.5f * this->radius;
+
+    SDL_RenderDebugTextFormat(
+        coord_system.GW_Window.renderer, 
+        coords_pixel.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE + margin, 
+        coords_pixel.y,
+        "(%.3f, %.3f)",
+        this->coords.x, this->coords.y
+    );
+
+    if(pixel_coords) {
+        SDL_RenderDebugTextFormat(
+            coord_system.GW_Window.renderer, 
+            coords_pixel.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE + margin, 
+            coords_pixel.y + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE,
+            "(%.3fpx, %.3fpx)",
+            coords_pixel.x, coords_pixel.y
+        );
+    }
+}
+
 #pragma endregion /* Cartesian_Point */
 
 #pragma region Euclidean_Segment2
@@ -1071,6 +1110,38 @@ int rnd::Euclidean_Segment2::render(Axis_Coord_System coord_system) {
 }
 
 int rnd::Euclidean_Segment2::select(Axis_Coord_System &coord_system) {
+    ImVec2 mouse_pos = ImGui::GetMousePos();
+    if(!inScreen((float *)&mouse_pos, coord_system.GW_Window)) 
+        return -1;
+
+    if(this->p1.x == this->p2.x) {
+        SDL_FPoint p1_px = coord_system.cartesianToSubPixel(this->p1);
+        SDL_FPoint p2_px = coord_system.cartesianToSubPixel(this->p2);
+        if(!(std::abs(p1_px.x - mouse_pos.x) <= 1.5f * this->grosor))
+            return -1; 
+
+        if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+            this->is_selected = !this->is_selected;
+
+        return 0;
+    }
+
+
+    // Idea principal del algoritmo
+    // select = d(P, l) <= grosor && p1.x <= mouse.x <= p2.x;
+    FloatCartesian2 mouse_cart = coord_system.subPixeToCartesian(ImVec2toSDL_FPoint(mouse_pos));
+    if(this->p1.x < this->p2.x && !(this->p1.x <= mouse_cart.x && mouse_cart.x <= this->p2.x))
+        return -1;
+        
+    if(this->p1.x > this->p2.x && !(this->p2.x <= mouse_cart.x && mouse_cart.x <= this->p1.x))
+        return -1;
+
+    const float m = (this->p2.y - this->p1.y) / (this->p2.x - this->p1.x);
+    const float b = this->p1.y - m * this->p1.x;
+    float d = std::abs(m * mouse_cart.x - mouse_cart.y + b) / std::sqrt(m * m + 1);
+
+    if(d <= 1.5f * grosor / coord_system.getAxisScaler(CoordType::Y) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        this->is_selected = !this->is_selected;
     return 0;
 }
 #pragma endregion /* Euclidean_Segment2 */
