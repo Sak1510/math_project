@@ -1120,14 +1120,29 @@ int rnd::Euclidean_Segment2::select(Axis_Coord_System &coord_system) {
     if(ImGui::GetIO().WantCaptureMouse)
         return -1;
 
+    if(this->p1.x == this->p2.x && this->p1.y == this->p2.y)
+        return -1;
+
+
     if(this->p1.x == this->p2.x) {
-        SDL_FPoint p_px = coord_system.cartesianToSubPixel(this->p1);
-        if(!(std::abs(p_px.x - mouse_pos.x) <= 1.5f * this->grosor)) {
+        SDL_FPoint p1_px = coord_system.cartesianToSubPixel(this->p1);
+        SDL_FPoint p2_px = coord_system.cartesianToSubPixel(this->p2);
+
+        // (p1_px.y <= mouse_pos.y && mouse_pos.y <= p2_px.y)
+        if((p1_px.y > p2_px.y && !(p2_px.y <= mouse_pos.y && mouse_pos.y <= p1_px.y))
+        || (p1_px.y < p2_px.y && !(p1_px.y <= mouse_pos.y && mouse_pos.y <= p2_px.y))) {
+            if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+                this->is_selected = false;
+
+            return -1;
+        }
+
+
+        if(!(std::abs(p1_px.x - mouse_pos.x) <= 1.5f * this->grosor)) {
             if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
                 this->is_selected = false;
 
             return -1; 
-
         }
 
         if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
