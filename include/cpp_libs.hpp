@@ -6,6 +6,9 @@
 
 #define FPS_MICROSECONDS 16     // 16 ms => 60 fps
 #define FPS_TIMES 60            // 60 fps
+#define C_PI   3.141592653589f  // La constante de PI
+#define C_2_PI 6.283185307179f  // 2 * pi 
+#define C_PI_2 1.570796326794f  // pi / 2
 
 #ifndef IS_INCLUDED_CPP
 #define IS_INCLUDED_CPP

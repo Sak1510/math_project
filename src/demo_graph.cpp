@@ -407,7 +407,7 @@ void defgraph::ImGui_demo_graph(void) {
             ImGui::Checkbox("Radianes ##Circunferencia", &Bccf_rad);
             
             if(Bccf_rad) 
-                ImGui::SliderFloat("rad ##Cirfunferencia", &Accf_rad, -2.0f * M_PI, 2.0f * M_PI, "%.2f");
+                ImGui::SliderFloat("rad ##Cirfunferencia", &Accf_rad, -C_2_PI, C_2_PI, "%.2f");
             else
                 ImGui::SliderFloat("dec ##Cirfunferencia", &Accf_dec, -360.0f, 360.0f, "%.2f");
 

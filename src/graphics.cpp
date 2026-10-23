@@ -1,6 +1,7 @@
 #include <graphics.hpp>
 #define NaN 0.0f / 0.0f
 
+
 bool rnd::inScreen(float *p, Graph_Window GW_Window, float limits[4]) {
     bool in_width_window  = limits[0] <= p[0] <= GW_Window.width  + limits[1];
     bool in_height_window = limits[2] <= p[1] <= GW_Window.height + limits[3];
@@ -132,11 +133,11 @@ void rnd::triangleDirection(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2
     SDL_FColor c;
     SDL_FPoint points[3] = {
         {
-            p1.x + b * std::cosf(a + M_PI_2) / 2.0f,
-            p1.y + b * std::sinf(a + M_PI_2) / 2.0f
+            p1.x + b * std::cosf(a + C_PI_2) / 2.0f,
+            p1.y + b * std::sinf(a + C_PI_2) / 2.0f
         }, {
-            p1.x + b * std::cosf(a - M_PI_2) / 2.0f,
-            p1.y + b * std::sinf(a - M_PI_2) / 2.0f
+            p1.x + b * std::cosf(a - C_PI_2) / 2.0f,
+            p1.y + b * std::sinf(a - C_PI_2) / 2.0f
         }, {
             p1.x + d * std::cosf(a),
             p1.y + d * std::sinf(a)
@@ -172,11 +173,11 @@ void rnd::triangleDirection(SDL_Renderer *renderer, SDL_FPoint o, float b, float
     SDL_FColor c;
     SDL_FPoint points[3] = {
         {
-            o.x + b * std::cosf(angle + M_PI_2) / 2.0f,
-            o.y + b * std::sinf(angle + M_PI_2) / 2.0f
+            o.x + b * std::cosf(angle + C_PI_2) / 2.0f,
+            o.y + b * std::sinf(angle + C_PI_2) / 2.0f
         }, {
-            o.x + b * std::cosf(angle - M_PI_2) / 2.0f,
-            o.y + b * std::sinf(angle - M_PI_2) / 2.0f
+            o.x + b * std::cosf(angle - C_PI_2) / 2.0f,
+            o.y + b * std::sinf(angle - C_PI_2) / 2.0f
         }, {
             o.x + h * std::cosf(angle),
             o.y + h * std::sinf(angle)
@@ -209,17 +210,17 @@ void rnd::thickLine(SDL_Renderer *renderer, SDL_FPoint p1, SDL_FPoint p2, float 
     SDL_FColor c;
     SDL_FPoint points[4] = {
         {
-            p1.x + grosor * std::cosf(angle + M_PI_2) / 2.0f,
-            p1.y + grosor * std::sinf(angle + M_PI_2) / 2.0f
+            p1.x + grosor * std::cosf(angle + C_PI_2) / 2.0f,
+            p1.y + grosor * std::sinf(angle + C_PI_2) / 2.0f
         }, {
-            p1.x + grosor * std::cosf(angle - M_PI_2) / 2.0f,
-            p1.y + grosor * std::sinf(angle - M_PI_2) / 2.0f
+            p1.x + grosor * std::cosf(angle - C_PI_2) / 2.0f,
+            p1.y + grosor * std::sinf(angle - C_PI_2) / 2.0f
         }, {
-            p2.x + grosor * std::cosf(angle - M_PI_2) / 2.0f,
-            p2.y + grosor * std::sinf(angle - M_PI_2) / 2.0f
+            p2.x + grosor * std::cosf(angle - C_PI_2) / 2.0f,
+            p2.y + grosor * std::sinf(angle - C_PI_2) / 2.0f
         }, {
-            p2.x + grosor * std::cosf(angle + M_PI_2) / 2.0f,
-            p2.y + grosor * std::sinf(angle + M_PI_2) / 2.0f
+            p2.x + grosor * std::cosf(angle + C_PI_2) / 2.0f,
+            p2.y + grosor * std::sinf(angle + C_PI_2) / 2.0f
         }
     };
 
@@ -383,12 +384,12 @@ void rnd::Axis_Coord_System::debug(bool on) {
                 "   rotation = %.6f rad\n"
                 "   0.000000 rad =< rotation < %.6f rad\n"
                 "Escala de ambos ejes:\n",
-                origin.x, origin.y, rotation, 2.0f * M_PI
+                origin.x, origin.y, rotation, C_2_PI
             );
 
             ImGui::SliderFloat("origin.x", &origin.x, 0.0f, GW_Window.width);
             ImGui::SliderFloat("origin.y", &origin.y, 0.0f, GW_Window.height);
-            ImGui::SliderFloat("rotation", &rotation, 0.0f, 2.0f * M_PI, "%.6f");
+            ImGui::SliderFloat("rotation", &rotation, 0.0f, C_2_PI, "%.6f");
             ImGui::TreePop();
         }
 
@@ -617,7 +618,12 @@ int rnd::Axis_Coord_System::renderAxisY(void) {
         };
 
         SDL_RenderGeometry(GW_Window.renderer, NULL, triangle_vertex, 3, NULL, 0);
-        SDL_RenderDebugText(GW_Window.renderer, origin.x - axis_y_info.arrow_height / 2.0f - 5.0f - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, axis_y_info.arrow_height - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, "Y");    
+        SDL_RenderDebugText(
+            GW_Window.renderer, 
+            origin.x - axis_y_info.arrow_height / 2.0f - 5.0f - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
+            axis_y_info.arrow_height - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
+            "Y"
+        );    
 
         point1 = {origin.x, axis_y_info.arrow_height};
     } else {
@@ -1087,21 +1093,21 @@ int rnd::Euclidean_Segment2::render(Axis_Coord_System coord_system) {
     const float angle = std::atan2f(p2.y - p1.y, p2.x - p1.x);
     SDL_FPoint p_selected_down[2] = {
         {
-            p1.x + this->grosor * std::cosf(angle + M_PI_2),
-            p1.y + this->grosor * std::sinf(angle + M_PI_2),
+            p1.x + this->grosor * std::cosf(angle + C_PI_2),
+            p1.y + this->grosor * std::sinf(angle + C_PI_2),
         }, {
-            p1.x + this->grosor * std::cosf(angle - M_PI_2),
-            p1.y + this->grosor * std::sinf(angle - M_PI_2),
+            p1.x + this->grosor * std::cosf(angle - C_PI_2),
+            p1.y + this->grosor * std::sinf(angle - C_PI_2),
         }
     };
     
     SDL_FPoint p_selected_up[2] = {
         {
-            p2.x + grosor * std::cosf(angle + M_PI_2),
-            p2.y + grosor * std::sinf(angle + M_PI_2)
+            p2.x + grosor * std::cosf(angle + C_PI_2),
+            p2.y + grosor * std::sinf(angle + C_PI_2)
         },{
-            p2.x + grosor * std::cosf(angle - M_PI_2),
-            p2.y + grosor * std::sinf(angle - M_PI_2)
+            p2.x + grosor * std::cosf(angle - C_PI_2),
+            p2.y + grosor * std::sinf(angle - C_PI_2)
         }
     };
     
