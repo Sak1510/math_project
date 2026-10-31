@@ -262,8 +262,38 @@ namespace rnd {
      */
     void debugBackgroundText(SDL_Renderer *renderer, SDL_FPoint p, std::string str, SDL_Color bg_c, SDL_Color fg_c);
 
+
+    // Objeto padre de todos los objetos de la calculadora gráfica.
+    class Central_System {
+    private:
+        std::map<uint32_t, void*> *list_id;
+        
+    public:
+        uint32_t getID(void);
+        uint32_t setID(void);
+
+        void setParent(void *p);
+        void **getParents(void);
+    
+        Central_System(void);
+        Central_System(uint32_t *list_id);
+    };
+
+    class Parent_Supreme {
+    private:
+        Central_System *central;
+        uint32_t self_id;
+        void **parents;
+    
+    public:
+        void **getParents(void);
+        const uint32_t getID(void);
+        void setParents(void **parents);
+        void setCentralSystem(Central_System &central);
+    };
+
     // Sistema de coordenadas como objeto base de todo el programa. Permite escalar en sí mismo.
-    class Axis_Coord_System {
+    class Axis_Coord_System : private Parent_Supreme {
     private:
         /**
          *  Renderiza los números del eje de las X's.

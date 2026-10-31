@@ -314,6 +314,28 @@ rnd::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
     this->getWindowSize();
 }
 #pragma endregion /* Graph_Window */
+#pragma region Central_System
+
+
+#pragma endregion /* Central_System */
+#pragma region Parent_Supreme
+void **rnd::Parent_Supreme::getParents(void) {
+    return this->parents;
+}
+
+const uint32_t rnd::Parent_Supreme::getID(void) {
+    return this->self_id;
+}
+
+void rnd::Parent_Supreme::setParents(void **parents) {
+
+}
+
+void rnd::Parent_Supreme::setCentralSystem(Central_System &central) {
+
+}
+
+#pragma endregion /* Parent_Supreme */
 #pragma region Axis_Coord_System
 rnd::Axis_Coord_System::Axis_Coord_System(void) {
     this->origin = {0.0f, 0.0f};
