@@ -623,7 +623,7 @@ int rnd::Axis_Coord_System::renderAxisY(void) {
             origin.x - axis_y_info.arrow_height / 2.0f - 5.0f - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
             axis_y_info.arrow_height - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE, 
             "Y"
-        );    
+         );    
 
         point1 = {origin.x, axis_y_info.arrow_height};
     } else {
@@ -947,7 +947,7 @@ int rnd::Cartesian_Point::drag(Axis_Coord_System& coord_system) {
         return -1;
 
     // Arastra el punto
-    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= 3.0f * this->radius / 2.0f;
+    bool in_range = PixelDistance(this->getCoordsFPoint(coord_system), mouse_pos) <= 1.5f * this->radius;
     if(in_range && io.MouseClicked[0])
         this->is_selected = !this->is_selected;
 
