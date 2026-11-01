@@ -3,8 +3,8 @@
 
 
 bool rnd::inScreen(float *p, Graph_Window GW_Window, float limits[4]) {
-    bool in_width_window  = limits[0] <= p[0] <= GW_Window.width  + limits[1];
-    bool in_height_window = limits[2] <= p[1] <= GW_Window.height + limits[3];
+    bool in_width_window  = (limits[0] <= p[0]) && (p[0] <= GW_Window.width  + limits[1]);
+    bool in_height_window = (limits[2] <= p[1]) && (p[1] <= GW_Window.height + limits[3]);
     
     return in_width_window && in_height_window;
 }
@@ -278,16 +278,16 @@ rnd::Graph_Window::Graph_Window(rnd::Graph_Window &GW_Window) {
     this->window = GW_Window.window;
     this->renderer = GW_Window.renderer;
 
-    this->width = GW_Window.height;
-    this->height = GW_Window.width;
+    this->width = GW_Window.width;
+    this->height = GW_Window.height;
 }
 
 rnd::Graph_Window& rnd::Graph_Window::operator=(rnd::Graph_Window &GW_Window) {
     this->window = GW_Window.window;
     this->renderer = GW_Window.renderer;
 
-    this->width = GW_Window.height;
-    this->height = GW_Window.width;
+    this->width = GW_Window.width;
+    this->height = GW_Window.height;
 
     return *this;
 }
@@ -314,28 +314,6 @@ rnd::Graph_Window::Graph_Window(SDL_Window *window, SDL_Renderer *renderer) {
     this->getWindowSize();
 }
 #pragma endregion /* Graph_Window */
-#pragma region Central_System
-
-
-#pragma endregion /* Central_System */
-#pragma region Parent_Supreme
-void **rnd::Parent_Supreme::getParents(void) {
-    return this->parents;
-}
-
-const uint32_t rnd::Parent_Supreme::getID(void) {
-    return this->self_id;
-}
-
-void rnd::Parent_Supreme::setParents(void **parents) {
-
-}
-
-void rnd::Parent_Supreme::setCentralSystem(Central_System &central) {
-
-}
-
-#pragma endregion /* Parent_Supreme */
 #pragma region Axis_Coord_System
 rnd::Axis_Coord_System::Axis_Coord_System(void) {
     this->origin = {0.0f, 0.0f};
@@ -809,21 +787,20 @@ int rnd::Axis_Coord_System::axisModified() {
     if(!inWindowWidth || !inWindowHeight)
         return -1;
 
-    SDL_Cursor *hand;
     bool left_click = io.MouseDown[0];
     if(!io.WantCaptureMouse) {
         if(left_click) {
-            hand = SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_MOVE);
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand); // Usa el cursor de ImGui (no hay que liberarlo)
             origin.x += motion.x;
             origin.y += motion.y;
-        } else hand = SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_DEFAULT);
+        } else {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
+        }
     }
 
     const float mouse_scale = 3.0f;
     scaleAxis(CoordType::X, wheel * mouse_scale);
     scaleAxis(CoordType::Y, wheel * mouse_scale);
-
-    SDL_SetCursor(hand);
     return 0;
 }
 
@@ -907,18 +884,25 @@ void rnd::Cartesian_Point::setCoords(Axis_Coord_System coord_system, SDL_FPoint 
 }
 
 int rnd::Cartesian_Point::setColor(SDL_Color color) {
-    bool error = !(0 < color.r < 255) || !(0 < color.g < 255) || !(0 < color.b < 255) || !(0 < color.a < 255);
+    bool error =   !(0 < color.r && color.r < 255) 
+                || !(0 < color.g && color.g < 255) 
+                || !(0 < color.b && color.b < 255) 
+                || !(0 < color.a && color.a < 255);
 
-    this->color.r = (0 < color.r < 255) ? color.r : 255;
-    this->color.g = (0 < color.g < 255) ? color.g : 255;
-    this->color.b = (0 < color.b < 255) ? color.b : 255; 
-    this->color.a = (0 < color.a < 255) ? color.a : 255;
+
+    this->color.r = (0 < color.r && color.r < 255) ? color.r : 255;
+    this->color.g = (0 < color.g && color.g < 255) ? color.g : 255;
+    this->color.b = (0 < color.b && color.b < 255) ? color.b : 255; 
+    this->color.a = (0 < color.a && color.a < 255) ? color.a : 255;
 
     return error ? 0 : -1;
 }
 
 int rnd::Cartesian_Point::setColor(SDL_FColor color) {
-    bool error = !(0.0f < color.r < 1.0f) || !(0.0f < color.g < 1.0f) || !(0.0f < color.b < 1.0f) || !(0.0f < color.a < 1.0f);
+    bool error =   !(0.0f < color.r && color.r < 1.0f) 
+                || !(0.0f < color.g && color.g < 1.0f) 
+                || !(0.0f < color.b && color.b < 1.0f) 
+                || !(0.0f < color.a && color.a < 1.0f);
 
     SDL_Color rgb_color = rnd::FColorToColor(color);
     this->color = rgb_color;
